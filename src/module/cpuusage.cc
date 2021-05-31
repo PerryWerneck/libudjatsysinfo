@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <udjat/tools/vmstat.h>
  #include <iostream>
  #include <sstream>
  #include <iomanip>
@@ -26,40 +25,11 @@
 
  namespace Udjat {
 
-	VMStat::CPUUsage::CPUUsage(const char *name) : Abstract::Agent(name) {
-		loadDefaultStates();
+	VMStat::CPUUsage::CPUUsage(const char *name) : Agent<float>(name) {
 	}
 
 	VMStat::CPUUsage::~CPUUsage() {
 	}
 
-	float VMStat::CPUUsage::get() {
-		float value = 10;
-
-		// Update active state based on CPU use value.
-
-		return value;
-	}
-
-	void VMStat::CPUUsage::refresh() {
-		get();
-	}
-
-	void VMStat::CPUUsage::get(const char *name, Json::Value &value) override {
-		value["name"] = this->get();
-	}
-
-	std::string VMStat::CPUUsage::to_string() const override {
-		// https://stackoverflow.com/questions/14432043/float-formatting-in-c
-		stringstream out;
-		out << std::fixed << setprecision(2) << get() << "%";
-		return out.str();
-	}
-
-	void VMStat::CPUUsage::append_state(const pugi::xml_node &node) override {
-	}
-
-	void VMStat::CPUUsage::loadDefaultStates() {
-	}
 
  }

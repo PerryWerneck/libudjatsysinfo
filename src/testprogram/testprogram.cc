@@ -20,7 +20,7 @@
  #include <udjat.h>
  #include <udjat/module.h>
  #include <unistd.h>
- #include <agent.h>
+ #include "../module/private.h"
 
  using namespace std;
  using namespace Udjat;

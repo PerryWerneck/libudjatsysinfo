@@ -17,37 +17,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * @brief Declares VMStat object.
- *
- * References:
- *
- *	<https://www.linuxhowtos.org/System/procstat.htm>
- *
- */
-
 #pragma once
 
-#include <udjat/udjat/defs.h>
+#include <udjat/defs.h>
+#include <udjat/agent.h>
+
+using namespace Udjat;
+using namespace std;
 
 namespace Udjat {
 
-	class UDJAT_API SysStat {
-	private:
+	namespace SysUsage {
 
-		struct {
-			unsigned long user;		///< @brief normal processes executing in user mode
-			unsigned long nice;		///< @brief niced processes executing in user mode
-			unsigned long system;	///< @brief processes executing in kernel mode
-			unsigned long idle;		///< @brief twiddling thumbs
-			unsigned long iowait;	///< @brief waiting for I/O to complete
-			unsigned long irq;		///< @brief servicing interrupts
-			unsigned long softirq;	///< @brief servicing softirqs
-		} cpu;
+		/// @brief CPU Usage agent.
+		class UDJAT_API CPU : public Udjat::Agent<float> {
+		public:
+			CPU(const char *name = "cpuusage");
+			virtual ~CPU();
 
-	public:
-		SysStat();
+		};
 
-	};
+	}
 
 }
+
+
