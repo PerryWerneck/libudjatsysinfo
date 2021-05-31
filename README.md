@@ -1,2 +1,2 @@
-# udjat-module-vmstat
-Virtual memory statistics and CPU usage module for udjat
+# udjat-module-sysusage
+System resources usage module for udjat
