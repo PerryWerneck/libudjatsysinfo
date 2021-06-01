@@ -188,7 +188,7 @@
 	}
 
 	void SysUsage::CPULoad::append_state(const pugi::xml_node &node) {
-		throw runtime_error("Not implemented");
+		this->states.push_back(std::make_shared<State<float>>(node));
 	}
 
 	std::string SysUsage::CPULoad::to_string() const {
@@ -248,10 +248,14 @@
 		double loadavg[3];
 
 		if(getloadavg(loadavg,3) < 0) {
-			throw system_error(EINVAL,system_category(),"Can't get system load averagres");
+			throw system_error(EINVAL,system_category(),"Can't get system load average");
 		}
 
 		float rc = (loadavg[this->type] * 100) / ((double) this->cores);
+
+		if(rc > 100.0) {
+			rc = 100.0;
+		}
 
 		// Find the correct state.
 		for(auto st : this->states) {
