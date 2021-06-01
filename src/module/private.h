@@ -29,20 +29,6 @@ namespace Udjat {
 
 	namespace SysUsage {
 
-		/// @brief SysUsage controller.
-		class Controller {
-		private:
-			Controller(const Controller &src) = delete;
-			Controller(const Controller *src) = delete;
-
-			Controller();
-
-		public:
-
-			static Controller & getInstance();
-			~Controller();
-		};
-
 		/// @brief CPU Load agent based on /proc/loadavg
 		class UDJAT_API CPULoad : public Abstract::Agent {
 		private:
@@ -69,7 +55,7 @@ namespace Udjat {
 			std::shared_ptr<Abstract::State> find_state() const override;
 
 		public:
-			CPULoad(const char *name = "cpuload", uint8_t minutes = 1);
+			CPULoad(const char *name = "cpu", uint8_t minutes = 1);
 			virtual ~CPULoad();
 
 			void refresh() override;
@@ -79,17 +65,6 @@ namespace Udjat {
 			std::string to_string() const override;
 
 			void append_state(const pugi::xml_node &node) override;
-
-		};
-
-		/// @brief CPU Usage agent.
-		class UDJAT_API CPU : public Udjat::Agent<float> {
-		private:
-			float last = 0;
-
-		public:
-			CPU(const char *name = "cpuusage");
-			virtual ~CPU();
 
 		};
 

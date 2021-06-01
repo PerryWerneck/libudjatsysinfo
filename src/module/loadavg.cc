@@ -165,6 +165,7 @@
 
 	float SysUsage::CPULoad::get() {
 
+		/*
 		float values[3];
 
 		Udjat::File::Text avg("/proc/loadavg");
@@ -208,8 +209,15 @@
 			values[ix] = result / (scale == 0.0 ? 1.0 : scale);
 
 		}
+		*/
 
-		float rc = (values[this->type] * 100);
+		double loadavg[3];
+
+		if(getloadavg(loadavg,3) < 0) {
+			throw system_error(EINVAL,system_category(),"Can't get system load averagres");
+		}
+
+		float rc = (loadavg[this->type] * 100);
 
 		// Find the correct state.
 		for(auto st : this->states) {
