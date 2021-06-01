@@ -36,15 +36,9 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::State> SysInfo::CPUAverage::find_state() const {
-		return active_state;
-	}
-
-	SysInfo::CPUAverage::CPUAverage(const char *name, uint8_t minutes) : Abstract::Agent(name) {
-
+	SysInfo::CPUAverage::CPUAverage(const char *name, uint8_t minutes) : SysInfo::Agent(name) {
 		setup(minutes);
 		setDefaultStates();
-
 	}
 
 	void SysInfo::CPUAverage::setup(uint8_t minutes) {
@@ -179,24 +173,6 @@
 
 	}
 
-	void SysInfo::CPUAverage::refresh() {
-		get();
-	}
-
-	void SysInfo::CPUAverage::get(const char *name, Json::Value &value) {
-		value[name] = get();
-	}
-
-	void SysInfo::CPUAverage::append_state(const pugi::xml_node &node) {
-		this->states.push_back(std::make_shared<State<float>>(node));
-	}
-
-	std::string SysInfo::CPUAverage::to_string() const {
-		std::stringstream out;
-		out << std::fixed << std::setprecision(2) << const_cast<CPUAverage &>(*this).get() << "%";
-		return out.str();
-	}
-
 	float SysInfo::CPUAverage::get() {
 
 		/*
@@ -257,30 +233,7 @@
 			rc = 100.0;
 		}
 
-		// Find the correct state.
-		for(auto st : this->states) {
-
-			if(st->compare(rc)) {
-
-				if(st != active_state) {
-
-					// State has changed.
-					this->active_state = st;
-					updated(true);
-
-				} else {
-
-					// State has not changed
-					updated(false);
-
-				}
-
-				break;
-			}
-
-		}
-
-		return rc;
+		return set(rc);
 
 	}
 

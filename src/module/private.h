@@ -29,37 +29,27 @@ namespace Udjat {
 
 	namespace SysInfo {
 
-		/// @brief CPU Load agent based on /proc/loadavg
-		class UDJAT_API CPUAverage : public Abstract::Agent {
-		private:
-			uint8_t type = 0xff;
-
-			/// @brief Number of cores.
-			unsigned int cores = 0;
-
+		/// @brief Base agent.
+		class UDJAT_API Agent : public Abstract::Agent {
+		protected:
 			/// @brief Active state.
 			std::shared_ptr<State<float>> active_state;
 
 			/// @brief Get CPU load, update active state.
-			float get();
+			virtual float get() = 0;
 
 			/// @brief Agent states.
 			std::vector<std::shared_ptr<State<float>>> states;
 
-			/// @brief Use default states.
-			void setDefaultStates();
-
-			/// @brief Setup agent.
-			void setup(uint8_t minutes);
-
-		protected:
-
 			/// @brief Get active state.
 			std::shared_ptr<Abstract::State> find_state() const override;
 
+			/// @brief Update current state based on value.
+			float set(float value);
+
 		public:
-			CPUAverage(const char *name = "cpu", uint8_t minutes = 1);
-			virtual ~CPUAverage();
+			Agent(const char *name);
+			virtual ~Agent();
 
 			void refresh() override;
 
@@ -68,6 +58,44 @@ namespace Udjat {
 			std::string to_string() const override;
 
 			void append_state(const pugi::xml_node &node) override;
+		};
+
+		/// @brief CPU Load agent based on /proc/loadavg
+		class UDJAT_API CPUAverage : public Agent {
+		private:
+			uint8_t type = 0xff;
+
+			/// @brief Number of cores.
+			unsigned int cores = 0;
+
+			/// @brief Use default states.
+			void setDefaultStates();
+
+			/// @brief Setup agent.
+			void setup(uint8_t minutes);
+
+		protected:
+			float get() override;
+
+		public:
+			CPUAverage(const char *name = "cpu", uint8_t minutes = 1);
+			virtual ~CPUAverage();
+
+		};
+
+		/// @brief Memory used agent.
+		class UDJAT_API MemUsed : public Agent {
+		private:
+
+			/// @brief Setup agent.
+			void setup();
+
+		protected:
+			float get() override;
+
+		public:
+			MemUsed(const char *name = "memory");
+			virtual ~MemUsed();
 
 		};
 
