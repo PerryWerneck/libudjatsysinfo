@@ -32,7 +32,10 @@ namespace Udjat {
 		/// @brief CPU Load agent based on /proc/loadavg
 		class UDJAT_API CPULoad : public Abstract::Agent {
 		private:
-			uint8_t type;
+			uint8_t type = 0xff;
+
+			/// @brief Number of cores.
+			unsigned int cores = 0;
 
 			/// @brief Active state.
 			std::shared_ptr<State<float>> active_state;

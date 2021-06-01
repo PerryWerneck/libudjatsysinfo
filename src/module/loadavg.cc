@@ -17,6 +17,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ /*
+  * https://stackoverflow.com/questions/3017162/how-to-get-total-cpu-usage-in-linux-using-c
+  *
+  * Read /proc/cpuinfo to find the number of CPU/cores available to the systems.
+  * Call the getloadavg() (or alternatively read the /proc/loadavg), take the first value,
+  * multiply it by 100 (to convert to percents), divide by number of CPU/cores.
+  * If the value is greater than 100, truncate it to 100. Done.
+  *
+  * Relevant documentation: man getloadavg and man 5 proc
+  *
+  */
+
  #include "private.h"
  #include <udjat/tools/file.h>
  #include <sstream>
@@ -28,7 +40,7 @@
 		return active_state;
 	}
 
-	SysUsage::CPULoad::CPULoad(const char *name, uint8_t minutes) : type(0xFF), Abstract::Agent(name) {
+	SysUsage::CPULoad::CPULoad(const char *name, uint8_t minutes) : Abstract::Agent(name) {
 
 		setup(minutes);
 		setDefaultStates();
@@ -36,6 +48,28 @@
 	}
 
 	void SysUsage::CPULoad::setup(uint8_t minutes) {
+
+		//
+		// Identify the number of cores.
+		//
+		{
+			this->cores = 0;
+			Udjat::File::Text cpuinfo("/proc/cpuinfo");
+
+			for(auto line : cpuinfo) {
+
+				if(!strncasecmp(line->c_str(),"processor",9)) {
+					cores++;
+				}
+			}
+
+			cout << getName() << "\tNumber of CPU cores: " << cores << endl;
+
+		}
+
+		//
+		// Setup by interval
+		//
 		static const struct {
 			uint8_t minutes;
 			const char *label;
@@ -159,7 +193,7 @@
 
 	std::string SysUsage::CPULoad::to_string() const {
 		std::stringstream out;
-		out << std::fixed << std::setprecision(0) << const_cast<CPULoad &>(*this).get() << "%";
+		out << std::fixed << std::setprecision(2) << const_cast<CPULoad &>(*this).get() << "%";
 		return out.str();
 	}
 
@@ -217,7 +251,7 @@
 			throw system_error(EINVAL,system_category(),"Can't get system load averagres");
 		}
 
-		float rc = (loadavg[this->type] * 100);
+		float rc = (loadavg[this->type] * 100) / ((double) this->cores);
 
 		// Find the correct state.
 		for(auto st : this->states) {
