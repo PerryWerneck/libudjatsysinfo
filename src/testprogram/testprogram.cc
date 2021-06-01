@@ -27,7 +27,7 @@
 
  static void cpu_load_test() {
 
-	SysUsage::CPULoad agent;
+	SysInfo::CPUAverage agent;
 	string value = agent.to_string();
 
 	cout << "Agent " << agent.getName() << " value is " << value << endl;

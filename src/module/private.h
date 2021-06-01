@@ -27,10 +27,10 @@ using namespace std;
 
 namespace Udjat {
 
-	namespace SysUsage {
+	namespace SysInfo {
 
 		/// @brief CPU Load agent based on /proc/loadavg
-		class UDJAT_API CPULoad : public Abstract::Agent {
+		class UDJAT_API CPUAverage : public Abstract::Agent {
 		private:
 			uint8_t type = 0xff;
 
@@ -58,8 +58,8 @@ namespace Udjat {
 			std::shared_ptr<Abstract::State> find_state() const override;
 
 		public:
-			CPULoad(const char *name = "cpu", uint8_t minutes = 1);
-			virtual ~CPULoad();
+			CPUAverage(const char *name = "cpu", uint8_t minutes = 1);
+			virtual ~CPUAverage();
 
 			void refresh() override;
 

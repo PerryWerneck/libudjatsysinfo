@@ -36,18 +36,18 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::State> SysUsage::CPULoad::find_state() const {
+	std::shared_ptr<Abstract::State> SysInfo::CPUAverage::find_state() const {
 		return active_state;
 	}
 
-	SysUsage::CPULoad::CPULoad(const char *name, uint8_t minutes) : Abstract::Agent(name) {
+	SysInfo::CPUAverage::CPUAverage(const char *name, uint8_t minutes) : Abstract::Agent(name) {
 
 		setup(minutes);
 		setDefaultStates();
 
 	}
 
-	void SysUsage::CPULoad::setup(uint8_t minutes) {
+	void SysInfo::CPUAverage::setup(uint8_t minutes) {
 
 		//
 		// Identify the number of cores.
@@ -113,10 +113,10 @@
 
 	}
 
-	SysUsage::CPULoad::~CPULoad() {
+	SysInfo::CPUAverage::~CPUAverage() {
 	}
 
-	void SysUsage::CPULoad::setDefaultStates() {
+	void SysInfo::CPUAverage::setDefaultStates() {
 
 		static const struct {
 			float from;
@@ -179,25 +179,25 @@
 
 	}
 
-	void SysUsage::CPULoad::refresh() {
+	void SysInfo::CPUAverage::refresh() {
 		get();
 	}
 
-	void SysUsage::CPULoad::get(const char *name, Json::Value &value) {
+	void SysInfo::CPUAverage::get(const char *name, Json::Value &value) {
 		value[name] = get();
 	}
 
-	void SysUsage::CPULoad::append_state(const pugi::xml_node &node) {
+	void SysInfo::CPUAverage::append_state(const pugi::xml_node &node) {
 		this->states.push_back(std::make_shared<State<float>>(node));
 	}
 
-	std::string SysUsage::CPULoad::to_string() const {
+	std::string SysInfo::CPUAverage::to_string() const {
 		std::stringstream out;
-		out << std::fixed << std::setprecision(2) << const_cast<CPULoad &>(*this).get() << "%";
+		out << std::fixed << std::setprecision(2) << const_cast<CPUAverage &>(*this).get() << "%";
 		return out.str();
 	}
 
-	float SysUsage::CPULoad::get() {
+	float SysInfo::CPUAverage::get() {
 
 		/*
 		float values[3];

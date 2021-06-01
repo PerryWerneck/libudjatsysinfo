@@ -1,2 +1,2 @@
-# udjat-module-sysusage
-System resources usage module for udjat
+# udjat-module-sysinfo
+System information and usage module for udjat
