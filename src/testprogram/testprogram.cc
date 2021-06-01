@@ -25,11 +25,13 @@
  using namespace std;
  using namespace Udjat;
 
- static void cpu_use_test() {
+ static void cpu_load_test() {
 
-	VMStat::CPUUsage agent;
+	SysUsage::CPULoad agent;
+	string value = agent.to_string();
 
-	cout << "Usage of '" << agent.getName() << "' is " << agent.to_string() << endl;
+	cout << "Agent " << agent.getName() << " value is " << value << endl;
+
 
  }
 
@@ -52,7 +54,7 @@
 
 	Logger::redirect(nullptr,true);
 
-	cpu_use_test();
+	cpu_load_test();
 
 	/*
 	Module::load("http");

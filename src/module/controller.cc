@@ -17,20 +17,41 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <iostream>
- #include <sstream>
- #include <iomanip>
-
  #include "private.h"
+ #include <udjat/tools/mainloop.h>
 
  namespace Udjat {
 
-	SysUsage::CPU::CPU(const char *name) : Agent<float>(name) {
-		SysUsage::Controller::getInstance();
+	SysUsage::Controller::Controller() {
+
+#ifdef DEBUG
+		cout << "sysusage\tStarting system usage controller" << endl;
+#endif // DEBUG
+
+		// Update values on every 10 seconds.
+		MainLoop::getInstance().insert(this, 10, [this](const time_t now) {
+
+			// Update timers.
+			cout << "Time!" << endl;
+
+			return true;
+		});
+
 	}
 
-	SysUsage::CPU::~CPU() {
+	SysUsage::Controller::~Controller() {
+
+#ifdef DEBUG
+		cout << "sysusage\tStopping system usage controller" << endl;
+#endif // DEBUG
+
+		MainLoop::getInstance().remove(this);
 	}
 
+	SysUsage::Controller & SysUsage::Controller::getInstance() {
+		static Controller instance;
+		return instance;
+	}
 
  }
+

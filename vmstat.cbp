@@ -33,6 +33,8 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="src/include/udjat/tools/vmstat.h" />
+		<Unit filename="src/module/controller.cc" />
+		<Unit filename="src/module/cpuload.cc" />
 		<Unit filename="src/module/cpuusage.cc" />
 		<Unit filename="src/module/private.h" />
 		<Unit filename="src/testprogram/testprogram.cc" />

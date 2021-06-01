@@ -29,8 +29,64 @@ namespace Udjat {
 
 	namespace SysUsage {
 
+		/// @brief SysUsage controller.
+		class Controller {
+		private:
+			Controller(const Controller &src) = delete;
+			Controller(const Controller *src) = delete;
+
+			Controller();
+
+		public:
+
+			static Controller & getInstance();
+			~Controller();
+		};
+
+		/// @brief CPU Load agent based on /proc/loadavg
+		class UDJAT_API CPULoad : public Abstract::Agent {
+		private:
+			uint8_t type;
+
+			/// @brief Active state.
+			std::shared_ptr<State<float>> active_state;
+
+			/// @brief Get CPU load, update active state.
+			float get();
+
+			/// @brief Agent states.
+			std::vector<std::shared_ptr<State<float>>> states;
+
+			/// @brief Use default states.
+			void setDefaultStates();
+
+			/// @brief Setup agent.
+			void setup(uint8_t minutes);
+
+		protected:
+
+			/// @brief Get active state.
+			std::shared_ptr<Abstract::State> find_state() const override;
+
+		public:
+			CPULoad(const char *name = "cpuload", uint8_t minutes = 1);
+			virtual ~CPULoad();
+
+			void refresh() override;
+
+			void get(const char *name, Json::Value &value) override;
+
+			std::string to_string() const override;
+
+			void append_state(const pugi::xml_node &node) override;
+
+		};
+
 		/// @brief CPU Usage agent.
 		class UDJAT_API CPU : public Udjat::Agent<float> {
+		private:
+			float last = 0;
+
 		public:
 			CPU(const char *name = "cpuusage");
 			virtual ~CPU();
