@@ -90,13 +90,77 @@
 		}
 	};
 
+	double get_scaled(const Udjat::SysConfig::Value &v) {
+
+		// https://github.com/GNOME/libgtop/blob/master/sysdeps/linux/glibtop_private.c
+
+        const char    *ptr = v.value.c_str();
+        char          *next;
+        unsigned long long value;
+
+        value = strtoull(ptr, &next, 0);
+
+        for ( ; *next; ++next) {
+			if (*next == 'k') {
+				value *= 1024;
+				break;
+			} else if (*next == 'M') {
+				value *= 1024 * 1024;
+				break;
+			}
+        }
+
+        return (float) value;
+	}
+
 	class SysInfo::MemUsed::Agent : public Percent {
 	protected:
 
 		float getValue() override {
+			/**
+			 * @page free-memory Determining free memory on Linux
+			 *
+			 * <http://blog.scoutapp.com/articles/2010/10/06/determining-free-memory-on-linux>
+			 *
+			 * When checking the amount of free memory on a Linux server, it’s easy to think you’re running out of memory when you’re not.
+			 *
+			 * Memory Caching & Buffers
+			 *
+			 * Reading data from a disk is far slower than accessing data from memory. Linux caches blocks from the disk in memory.
+			 * In fact, Linux uses all free RAM for the buffer cache to make reading data as efficient as possible.
+			 *
+			 * What happens if a program needs more memory than what’s available? The buffer cache will shrink to accommodate the increased
+			 * memory needs. The buffer cache works like your most efficient coworker: when things aren’t busy, he runs around making things
+			 * run smoother. When an important task comes up, he drops the less important chores.
+			 *
+			 * Actual Free Memory
+			 *
+			 * The actual free memory available is:
+			 *
+			 * Actual Free Memory = Free (39 MB) + Buffers (95) + Cached (3590) = 3,724 MB
+			 *
+			 */
 
+			// The actual free memory available is:
+			// Actual Free Memory = Free (39 MB) + Buffers (95) + Cached (3590) = 3,724 MB
+			// That’s 95x more free memory than than we initially thought.
+			// If you are using Scout, Eric Lindvall’s Memory Profiler plugin already takes the buffer
 
-			return 0;
+			// https://github.com/GNOME/libgtop/blob/master/sysdeps/linux/mem.c
+			// https://www.thegeekdiary.com/understanding-proc-meminfo-file-analyzing-memory-utilization-in-linux/
+
+			Udjat::SysConfig::File meminfo("/proc/meminfo",":");
+
+			auto total  = get_scaled(meminfo["MemTotal"]);
+			auto user	= total - get_scaled(meminfo["MemAvailable"]);
+
+			// auto free   = get_scaled(meminfo["MemFree"]);
+			// auto shared = get_scaled(meminfo["Shmem"]);
+			// auto buffer = get_scaled(meminfo["Buffers"]);
+			// auto cached = get_scaled(meminfo["Cached"]) + get_scaled(meminfo["Slab"]);
+			// auto used   = total - free;
+
+			return (user * 100) /total;
 		};
 
 	public:
