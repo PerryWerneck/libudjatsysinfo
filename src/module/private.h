@@ -19,11 +19,14 @@
 
 #pragma once
 
+#include <config.h>
 #include <udjat/defs.h>
 #include <udjat/agent.h>
 #include <udjat/factory.h>
 #include <udjat/tools/sysconfig.h>
+#include <sys/sysinfo.h>
 
+using namespace pugi;
 using namespace Udjat;
 using namespace std;
 
@@ -31,11 +34,97 @@ namespace Udjat {
 
 	namespace SysInfo {
 
-		/// @brief Base agent.
-		class UDJAT_API Agent : public Abstract::Agent {
-		protected:
+		/// @brief Percentual value agent.
+		class Percent : public Abstract::Agent {
+		public:
+
+			struct StateDescription {
+				float value;				///< @brief State max value.
+				const char * name;		///< @brief State name.
+				Udjat::Level level;		///< @brief State level.
+				const char * summary;	///< @brief State summary.
+				const char * body;		///< @brief State description
+			};
+
+		private:
+
 			/// @brief Active state.
 			std::shared_ptr<State<float>> active_state;
+
+			/// @brief Agent states.
+			std::vector<std::shared_ptr<State<float>>> states;
+
+		protected:
+
+			/// @brief Load states (if necessary).
+			/// @param states List of states to load.
+			/// @param length length of the state list.
+			void load(const StateDescription *states, size_t length);
+
+			/// @brief Get Value from system.
+			virtual float getValue() = 0;
+
+		public:
+
+			Percent(const char *name);
+			virtual ~Percent();
+
+			/// @brief Get active state.
+			std::shared_ptr<Abstract::State> find_state() const override;
+
+			void refresh() override;
+
+			/// @brief Get updated value.
+			float get();
+
+			void get(const char *name, Json::Value &value) override;
+
+			std::string to_string() const override;
+
+			void append_state(const pugi::xml_node &node) override;
+
+		};
+
+		class SwapUsed : public Udjat::Factory {
+		private:
+			class Agent;
+
+		public:
+			SwapUsed();
+			virtual ~SwapUsed();
+
+			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+		};
+
+		class LoadAverage : public Udjat::Factory {
+		private:
+			class Agent;
+
+		public:
+			LoadAverage();
+			virtual ~LoadAverage();
+
+			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+		};
+
+		class MemUsed : public Udjat::Factory {
+		private:
+			class Agent;
+
+		public:
+			MemUsed();
+			virtual ~MemUsed();
+
+			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+		};
+
+		/*
+		/// @brief Base agent.
+		class UDJAT_API Percent : public Abstract::Agent {
+		protected:
 
 			/// @brief Get CPU load, update active state.
 			virtual float get() = 0;
@@ -64,96 +153,7 @@ namespace Udjat {
 
 			void append_state(const pugi::xml_node &node) override;
 		};
-
-		/// @brief CPU Load agent based on /proc/loadavg
-		class UDJAT_API CPUAverage : public Agent {
-		private:
-			uint8_t type = 0xff;
-
-			/// @brief Number of cores.
-			unsigned int cores = 0;
-
-			/// @brief Use default states.
-			void setDefaultStates();
-
-			/// @brief Setup agent.
-			void setup(uint8_t minutes);
-
-		protected:
-			float get() override;
-
-		public:
-
-			class UDJAT_API Factory : public Udjat::Factory {
-			public:
-				Factory();
-				void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
-
-			};
-
-			CPUAverage(const pugi::xml_node &node);
-			CPUAverage(const char *name = "cpu", uint8_t minutes = 1);
-			virtual ~CPUAverage();
-
-		};
-
-		/// @brief Memory used agent.
-		class UDJAT_API MemUsed : public Agent {
-		private:
-
-			/// @brief Setup agent.
-			void setup();
-
-			/// @brief Use default states.
-			void setDefaultStates();
-
-		protected:
-			float get() override;
-
-		public:
-
-			class UDJAT_API Factory : public Udjat::Factory {
-			public:
-				Factory();
-				void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
-
-			};
-
-			MemUsed(const char *name = "memory");
-			MemUsed(const pugi::xml_node &node);
-			virtual ~MemUsed();
-
-		};
-
-
-		/// @brief Swap used agent.
-		class UDJAT_API SwapUsed : public Agent {
-		private:
-
-			/// @brief Setup agent.
-			void setup();
-
-			/// @brief Use default states.
-			void setDefaultStates();
-
-		protected:
-			float get() override;
-
-		public:
-
-			class UDJAT_API Factory : public Udjat::Factory {
-			public:
-				Factory();
-				void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
-
-			};
-
-			SwapUsed(const char *name = "swap");
-			SwapUsed(const pugi::xml_node &node);
-			virtual ~SwapUsed();
-
-		};
-
+		*/
 	}
 
 }

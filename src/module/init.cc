@@ -33,11 +33,12 @@
  };
 
  class Module : public Udjat::Module {
- public:
+ private:
+	SysInfo::MemUsed		memuse;
+	SysInfo::SwapUsed		swapuse;
+	SysInfo::LoadAverage	loadavg;
 
-	SysInfo::CPUAverage::Factory	cpuavg;
-	SysInfo::MemUsed::Factory 		memused;
-	SysInfo::SwapUsed::Factory 		swpused;
+ public:
 
  	Module() : Udjat::Module("sysinfo",&moduleinfo) {
  	};

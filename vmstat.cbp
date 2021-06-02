@@ -34,9 +34,10 @@
 		</Compiler>
 		<Unit filename="src/include/udjat/tools/vmstat.h" />
 		<Unit filename="src/module/agent.cc" />
-		<Unit filename="src/module/cpuaverage.cc" />
 		<Unit filename="src/module/init.cc" />
+		<Unit filename="src/module/loadavg.cc" />
 		<Unit filename="src/module/memused.cc" />
+		<Unit filename="src/module/percent.cc" />
 		<Unit filename="src/module/private.h" />
 		<Unit filename="src/module/swapused.cc" />
 		<Unit filename="src/testprogram/testprogram.cc" />

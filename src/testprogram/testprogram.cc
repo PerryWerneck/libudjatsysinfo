@@ -20,44 +20,9 @@
  #include <udjat.h>
  #include <udjat/module.h>
  #include <unistd.h>
- #include "../module/private.h"
 
  using namespace std;
  using namespace Udjat;
-
- static void cpu_used_test() {
-
-	SysInfo::CPUAverage agent;
-	string value = agent.to_string();
-	cout << "Agent " << agent.getName() << " value is " << value << endl;
-
- }
-
- static void mem_used_test() {
-
-	SysInfo::MemUsed mAgent;
-	SysInfo::SwapUsed sAgent;
-
-	string vmem = mAgent.to_string();
-	cout << "Agent " << mAgent.getName() << " value is " << vmem << endl;
-
-	string vswap= sAgent.to_string();
-	cout << "Agent " << sAgent.getName() << " value is " << vswap << endl;
-
- }
-
- static void agent_test() {
-
-	for(auto agent : *Abstract::Agent::init("${PWD}/test.xml")) {
-		cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
-	}
-
-	cout << "Waiting for requests" << endl;
-	Udjat::run();
-
-	Abstract::Agent::deinit();
-
- }
 
  int main(int argc, char **argv) {
 
@@ -68,7 +33,14 @@
 	Module::load("http");
 	auto module = udjat_module_init();
 
-	agent_test();
+	for(auto agent : *Abstract::Agent::init("${PWD}/test.xml")) {
+		cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
+	}
+
+	cout << "Waiting for requests" << endl;
+	Udjat::run();
+
+	Abstract::Agent::deinit();
 
 	cout << "Removing module" << endl;
 	delete module;

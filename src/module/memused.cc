@@ -54,6 +54,8 @@
  *
  */
 
+ #include "private.h"
+
  namespace Udjat {
 
 	static const Udjat::ModuleInfo moduleinfo{
@@ -64,131 +66,60 @@
 		PACKAGE_BUGREPORT 											// The bug report address.
 	};
 
-	SysInfo::MemUsed::Factory::Factory() : Udjat::Factory("mem-used",&moduleinfo) {
-	}
+	static const SysInfo::Percent::StateDescription internal_states[] = {
+		{
+			80.0,
+			"low",
+			Udjat::ready,
+			"Memory usage is lower than 80%",
+			""
+		},
+		{
+			90.0,
+			"medium",
+			Udjat::warning,
+			"Memory usage is lower than 90%",
+			""
+		},
+		{
+			100.0,
+			"high",
+			Udjat::error,
+			"Memory usage is higher than 90%",
+			""
+		}
+	};
 
-	void SysInfo::MemUsed::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<SysInfo::MemUsed>(node));
-	}
+	class SysInfo::MemUsed::Agent : public Percent {
+	protected:
 
-	SysInfo::MemUsed::MemUsed(const char *name) : SysInfo::Agent(name) {
-		setup();
-		setDefaultStates();
-	}
+		float getValue() override {
 
-	SysInfo::MemUsed::MemUsed(const pugi::xml_node &node)  : SysInfo::Agent("memory") {
-		setup();
-		load(node);
-		if(!hasStates()) {
-			setDefaultStates();
+
+			return 0;
 		};
-	}
 
-	void SysInfo::MemUsed::setup() {
-		this->icon = "utilities-system-monitor";
-		this->label = "Used Memory Percentage";
+	public:
+		Agent(const xml_node &node) : Percent("memory") {
+			this->icon = "utilities-system-monitor";
+			this->label = "Used Memory Percentage";
+			Abstract::Agent::load(node);
+			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
+		}
+
+		virtual ~Agent() {
+		}
+
+	};
+
+	SysInfo::MemUsed::MemUsed() : Udjat::Factory("mem-used",&moduleinfo) {
 	}
 
 	SysInfo::MemUsed::~MemUsed() {
 	}
 
-	void SysInfo::MemUsed::setDefaultStates() {
-
-		static const struct {
-			float from;
-			float to;
-			const char 						* name;			///< @brief State name.
-			Udjat::Level					  level;		///< @brief State level.
-			const char						* summary;		///< @brief State summary.
-			const char						* body;			///< @brief State description
-		} states[] = {
-			{
-				0.0,
-				80.0,
-				"low",
-				Udjat::ready,
-				"Memory usage is lower than 80%",
-				""
-			},
-			{
-				80.0,
-				90.0,
-				"medium",
-				Udjat::warning,
-				"Memory usage is lower than 90%",
-				""
-			},
-			{
-				90.0,
-				100.0,
-				"high",
-				Udjat::error,
-				"Memory usage is higher than 90%",
-				""
-			}
-
-		};
-
-		cout << getName() << "\tUsing default states" << endl;
-
-		for(size_t ix = 0; ix < (sizeof(states)/ sizeof(states[0])); ix++) {
-
-			this->states.push_back(
-				make_shared<Udjat::State<float>>(
-					states[ix].name,
-					states[ix].from,
-					states[ix].to,
-					states[ix].level,
-					states[ix].summary,
-					states[ix].body
-				)
-			);
-
-		}
-
-	}
-
-	float SysInfo::MemUsed::get() {
-		/**
-		 * @page free-memory Determining free memory on Linux
-		 *
-		 * <http://blog.scoutapp.com/articles/2010/10/06/determining-free-memory-on-linux>
-		 *
-		 * When checking the amount of free memory on a Linux server, it’s easy to think you’re running out of memory when you’re not.
-		 *
-		 * Memory Caching & Buffers
-		 *
-		 * Reading data from a disk is far slower than accessing data from memory. Linux caches blocks from the disk in memory.
-		 * In fact, Linux uses all free RAM for the buffer cache to make reading data as efficient as possible.
-		 *
-		 * What happens if a program needs more memory than what’s available? The buffer cache will shrink to accommodate the increased
-		 * memory needs. The buffer cache works like your most efficient coworker: when things aren’t busy, he runs around making things
-		 * run smoother. When an important task comes up, he drops the less important chores.
-		 *
-		 * Actual Free Memory
-		 *
-		 * The actual free memory available is:
-		 *
-		 * Actual Free Memory = Free (39 MB) + Buffers (95) + Cached (3590) = 3,724 MB
-		 *
-		 */
-
-		// The actual free memory available is:
-		// Actual Free Memory = Free (39 MB) + Buffers (95) + Cached (3590) = 3,724 MB
-		// That’s 95x more free memory than than we initially thought.
-		// If you are using Scout, Eric Lindvall’s Memory Profiler plugin already takes the buffer
-		// cache into account when determining free memory. This plugin is installed by default on newly monitored servers.
-
-		// https://gitlab.gnome.org/GNOME/gnome-system-monitor
-
-		Udjat::SysConfig::File meminfo("/proc/meminfo",":");
-
-		float free = to_bytes(meminfo["MemFree"]) + to_bytes(meminfo["Buffers"]) + to_bytes(meminfo["Cached"]);
-		float total = to_bytes(meminfo["MemTotal"]);
-		float used = total - free;
-
-		return set( (used * 100) /total );
-
+	void SysInfo::MemUsed::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+		parent.insert(make_shared<Agent>(node));
 	}
 
  }

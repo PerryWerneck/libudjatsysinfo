@@ -23,6 +23,8 @@
  #include <sstream>
  #include <iomanip>
 
+ #include "private.h"
+
  namespace Udjat {
 
 	static const Udjat::ModuleInfo moduleinfo{
@@ -33,108 +35,81 @@
 		PACKAGE_BUGREPORT 											// The bug report address.
 	};
 
-	SysInfo::SwapUsed::Factory::Factory() : Udjat::Factory("swap-used",&moduleinfo) {
-	}
+	static const SysInfo::Percent::StateDescription internal_states[] = {
+		{
+			10.0,
+			"low",
+			Udjat::ready,
+			"Swap usage is lower than 10%",
+			""
+		},
+		{
+			80.0,
+			"low",
+			Udjat::ready,
+			"Swap usage is lower than 80%",
+			""
+		},
+		{
+			90.0,
+			"medium",
+			Udjat::warning,
+			"Swap usage is lower than 90%",
+			""
+		},
+		{
+			100.0,
+			"high",
+			Udjat::error,
+			"Swap usage is higher than 90%",
+			""
+		}
+	};
 
-	void SysInfo::SwapUsed::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<SysInfo::SwapUsed>(node));
-	}
+	class SysInfo::SwapUsed::Agent : public Percent {
+	protected:
 
-	SysInfo::SwapUsed::SwapUsed(const char *name) : SysInfo::Agent(name) {
-		setup();
-		setDefaultStates();
-	}
+		float getValue() override {
 
-	SysInfo::SwapUsed::SwapUsed(const pugi::xml_node &node) : SysInfo::Agent("swap") {
-		setup();
-		load(node);
-		if(!hasStates()) {
-			setDefaultStates();
+			struct sysinfo info;
+			memset(&info,0,sizeof(info));
+
+			if(sysinfo(&info) != 0) {
+				throw system_error(errno,system_category(),"Cant get system information");
+			}
+
+			float free = (float) info.freeswap;
+			float total = (float) info.totalswap;
+
+#ifdef DEBUG
+			cout << "Swap use is " << std::fixed << std::setprecision(2) << (((total-free) * 100) /total) << "%" << endl;
+#endif // DEBUG
+
+			return ((total-free) * 100) /total;
+
 		};
-	}
 
-	void SysInfo::SwapUsed::setup() {
-		this->icon = "utilities-system-monitor";
-		this->label = "Used Swap Percentage";
+	public:
+		Agent(const xml_node &node) : Percent("swap") {
+			this->icon = "utilities-system-monitor";
+			this->label = "Used Swap Percentage";
+			Abstract::Agent::load(node);
+			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
+		}
+
+		virtual ~Agent() {
+		}
+
+	};
+
+	SysInfo::SwapUsed::SwapUsed() : Udjat::Factory("swap-used",&moduleinfo) {
 	}
 
 	SysInfo::SwapUsed::~SwapUsed() {
 	}
 
-	void SysInfo::SwapUsed::setDefaultStates() {
-
-		static const struct {
-			float from;
-			float to;
-			const char 						* name;			///< @brief State name.
-			Udjat::Level					  level;		///< @brief State level.
-			const char						* summary;		///< @brief State summary.
-			const char						* body;			///< @brief State description
-		} states[] = {
-			{
-				0.0,
-				10.0,
-				"low",
-				Udjat::ready,
-				"Swap usage is lower than 10%",
-				""
-			},
-			{
-				10.0,
-				80.0,
-				"low",
-				Udjat::ready,
-				"Swap usage is lower than 80%",
-				""
-			},
-			{
-				80.0,
-				90.0,
-				"medium",
-				Udjat::warning,
-				"Swap usage is lower than 90%",
-				""
-			},
-			{
-				90.0,
-				100.0,
-				"high",
-				Udjat::error,
-				"Swap usage is higher than 90%",
-				""
-			}
-
-		};
-
-		cout << getName() << "\tUsing default states" << endl;
-
-		for(size_t ix = 0; ix < (sizeof(states)/ sizeof(states[0])); ix++) {
-
-			this->states.push_back(
-				make_shared<Udjat::State<float>>(
-					states[ix].name,
-					states[ix].from,
-					states[ix].to,
-					states[ix].level,
-					states[ix].summary,
-					states[ix].body
-				)
-			);
-
-		}
-
-	}
-
-	float SysInfo::SwapUsed::get() {
-
-		Udjat::SysConfig::File meminfo("/proc/meminfo",":");
-
-		float free =  to_bytes(meminfo["SwapFree"]);
-		float total = to_bytes(meminfo["SwapTotal"]);
-		float used = total - free;
-
-		return set( (used * 100) /total );
-
+	void SysInfo::SwapUsed::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+		parent.insert(make_shared<Agent>(node));
 	}
 
  }
