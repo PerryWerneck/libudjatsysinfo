@@ -74,7 +74,7 @@
 			struct sysinfo info;
 			memset(&info,0,sizeof(info));
 
-			if(sysinfo(&info) != 0) {
+			if(sysinfo(&info) < 0) {
 				throw system_error(errno,system_category(),"Cant get system information");
 			}
 

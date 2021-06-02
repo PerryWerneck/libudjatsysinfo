@@ -37,6 +37,7 @@
 	SysInfo::MemUsed		memuse;
 	SysInfo::SwapUsed		swapuse;
 	SysInfo::LoadAverage	loadavg;
+	SysInfo::UpTime			uptime;
 
  public:
 

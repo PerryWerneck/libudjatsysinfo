@@ -121,39 +121,18 @@ namespace Udjat {
 
 		};
 
-		/*
-		/// @brief Base agent.
-		class UDJAT_API Percent : public Abstract::Agent {
-		protected:
-
-			/// @brief Get CPU load, update active state.
-			virtual float get() = 0;
-
-			/// @brief Agent states.
-			std::vector<std::shared_ptr<State<float>>> states;
-
-			/// @brief Get active state.
-			std::shared_ptr<Abstract::State> find_state() const override;
-
-			/// @brief Update current state based on value.
-			float set(float value);
-
-		protected:
-			static float to_bytes(const Udjat::SysConfig::Value &v);
+		class UpTime : public Udjat::Factory {
+		private:
+			class Agent;
 
 		public:
-			Agent(const char *name);
-			virtual ~Agent();
+			UpTime();
+			virtual ~UpTime();
 
-			void refresh() override;
+			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
 
-			void get(const char *name, Json::Value &value) override;
-
-			std::string to_string() const override;
-
-			void append_state(const pugi::xml_node &node) override;
 		};
-		*/
+
 	}
 
 }

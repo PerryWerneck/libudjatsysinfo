@@ -1,0 +1,134 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
+/*
+ * Copyright (C) 2021 Perry Werneck <perry.werneck@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+ #include <config.h>
+ #include "private.h"
+ #include <udjat/tools/sysconfig.h>
+ #include <sstream>
+ #include <iomanip>
+ #include <sstream>
+
+ #include "private.h"
+
+ namespace Udjat {
+
+	static const Udjat::ModuleInfo moduleinfo{
+		PACKAGE_NAME,												// The module name.
+		"Get system uptime", 										// The module description.
+		PACKAGE_VERSION, 											// The module version.
+		PACKAGE_URL, 												// The package URL.
+		PACKAGE_BUGREPORT 											// The bug report address.
+	};
+
+	class SysInfo::UpTime::Agent : public Abstract::Agent {
+
+	public:
+		Agent(const xml_node &node) : Abstract::Agent("uptime") {
+			this->icon = "utilities-system-monitor";
+			this->label = "System uptime";
+			Abstract::Agent::load(node);
+		}
+
+		virtual ~Agent() {
+		}
+
+		void get(const char *name, Json::Value &value) override {
+
+			struct sysinfo info;
+			memset(&info,0,sizeof(info));
+
+			if(sysinfo(&info) < 0) {
+				throw system_error(errno,system_category(),"Cant get system information");
+			}
+
+			if(info.uptime < 60) {
+				value[name] = "Less than one minute";
+				return;
+			}
+
+			long updays = info.uptime / 86400;
+			long uphours = (info.uptime - (updays * 86400)) / 3600;
+			long upmins = (info.uptime - (updays * 86400) - (uphours * 3600)) / 60;
+
+			uint8_t key = (updays > 0 ? 1 : 0) + (uphours > 0 ? 2 : 0) + (upmins > 0 ? 4 : 0);
+
+			static const struct {
+				uint8_t	key;
+				const char * fmt;
+			} itens[] = {
+				{ 1,	"{d} {D}" 						},	// Only days.
+				{ 2,	"{h} {H}"						},	// Only hours.
+				{ 3,	"{d} {D} and {h} {H}"			},	// Days and hours.
+				{ 4,	"{m} {M}"						},	// Only minutes.
+				{ 5,	"{d} {D} and {m} {M}"			},	// Days and minutes.
+				{ 6,	"{h} {H} and {m} {M}"			},	// Hours and minutes.
+				{ 7,	"{d} {D}, {h} {H} and {m} {M}"	},	// Days, hours and minutes.
+			};
+
+			struct {
+				const char *tag;
+				string text;
+			} values[] = {
+				{ "{d}", std::to_string(updays) },
+				{ "{D}", string( updays > 1 ? "days" : "day") },
+				{ "{h}", std::to_string(uphours) },
+				{ "{H}", string( uphours > 1 ? "hours" : "hour") },
+				{ "{m}", std::to_string(upmins) },
+				{ "{M}", string( upmins > 1 ? "minutes" : "minute") }
+			};
+
+#ifdef DEBUG
+			cout << "days: " << updays << " hours: " << uphours << " minutes: " << upmins << " key: " << ((int) key) << endl;
+#endif // DEBUG
+
+			string out;
+			for(size_t item = 0; item < (sizeof(itens)/sizeof(itens[0]));item++) {
+
+				if(itens[item].key == key) {
+
+					out = itens[item].fmt;
+
+					for(size_t value = 0; value < (sizeof(values)/sizeof(values[0])); value++) {
+						size_t pos = out.find(values[value].tag);
+						if(pos != string::npos) {
+							out.replace(pos,strlen(values[value].tag),values[value].text);
+						}
+					}
+
+					break;
+				}
+
+			}
+
+			value[name] = out;
+		}
+
+	};
+
+	SysInfo::UpTime::UpTime() : Udjat::Factory("system-uptime",&moduleinfo) {
+	}
+
+	SysInfo::UpTime::~UpTime() {
+	}
+
+	void SysInfo::UpTime::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+		parent.insert(make_shared<Agent>(node));
+	}
+
+ }
