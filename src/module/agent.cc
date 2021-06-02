@@ -64,6 +64,50 @@
 		return active_state;
 	}
 
+	float SysInfo::Agent::to_bytes(const Udjat::SysConfig::Value &v) {
+
+		const char *ptr = v.value.c_str();
+
+		// Skip spaces.
+		while(*ptr && isspace(*ptr)) {
+			ptr++;
+		}
+
+		// Get values
+		uint64_t rc = 0;
+		while(isdigit(*ptr)) {
+			rc *= 10;
+			rc += (*ptr - '0');
+			ptr++;
+		}
+
+		// Skip spaces.
+		while(*ptr && isspace(*ptr)) {
+			ptr++;
+		}
+
+		if(*ptr) {
+			// Convert to bytes.
+			static const struct {
+				const char *type;
+				uint64_t value;
+			} adj[] = {
+				{ "GB", 1073741824LL	},
+				{ "MB", 1048576LL		},
+				{ "KB", 1024LL			}
+			};
+
+			for(size_t ix = 0; ix < (sizeof(adj)/sizeof(adj[0])); ix++) {
+				if(!strcasecmp(ptr,adj[ix].type)) {
+					rc *= adj[ix].value;
+					break;
+				}
+			}
+		}
+
+		return (float) rc;
+	}
+
 	float SysInfo::Agent::set(float value) {
 
 		// Find the correct state.

@@ -17,18 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- /*
-  * https://stackoverflow.com/questions/3017162/how-to-get-total-cpu-usage-in-linux-using-c
-  *
-  * Read /proc/cpuinfo to find the number of CPU/cores available to the systems.
-  * Call the getloadavg() (or alternatively read the /proc/loadavg), take the first value,
-  * multiply it by 100 (to convert to percents), divide by number of CPU/cores.
-  * If the value is greater than 100, truncate it to 100. Done.
-  *
-  * Relevant documentation: man getloadavg and man 5 proc
-  *
-  */
-
  #include "private.h"
  #include <udjat/tools/sysconfig.h>
  #include <sstream>
@@ -69,12 +57,71 @@
 
 	SysInfo::MemUsed::MemUsed(const char *name) : SysInfo::Agent(name) {
 		setup();
+		setDefaultStates();
 	}
 
 	void SysInfo::MemUsed::setup() {
+		this->icon = "utilities-system-monitor";
+		this->label = "Used Memory Percentage";
 	}
 
 	SysInfo::MemUsed::~MemUsed() {
+	}
+
+	void SysInfo::MemUsed::setDefaultStates() {
+
+		static const struct {
+			float from;
+			float to;
+			const char 						* name;			///< @brief State name.
+			Udjat::Level					  level;		///< @brief State level.
+			const char						* summary;		///< @brief State summary.
+			const char						* body;			///< @brief State description
+		} states[] = {
+			{
+				0.0,
+				80.0,
+				"low",
+				Udjat::ready,
+				"Memory usage is lower than 80%",
+				""
+			},
+			{
+				80.0,
+				90.0,
+				"medium",
+				Udjat::warning,
+				"Memory usage is lower than 90%",
+				""
+			},
+			{
+				90.0,
+				100.0,
+				"high",
+				Udjat::error,
+				"Memory usage is higher than 90%",
+				""
+			}
+
+		};
+
+		cout << getName() << "\tUsing default states" << endl;
+
+		for(size_t ix = 0; ix < (sizeof(states)/ sizeof(states[0])); ix++) {
+
+			this->states.push_back(
+				make_shared<Udjat::State<float>>(
+					states[ix].name,
+					states[ix].from,
+					states[ix].to,
+					states[ix].level,
+					states[ix].summary,
+					states[ix].body
+				)
+			);
+
+		}
+
 	}
 
 	float SysInfo::MemUsed::get() {
@@ -108,23 +155,15 @@
 		// If you are using Scout, Eric Lindvall’s Memory Profiler plugin already takes the buffer
 		// cache into account when determining free memory. This plugin is installed by default on newly monitored servers.
 
+		// https://gitlab.gnome.org/GNOME/gnome-system-monitor
+
 		Udjat::SysConfig::File meminfo("/proc/meminfo",":");
 
-		auto total = meminfo["MemTotal"];
-		auto free  = meminfo["MemFree"];
-		auto buffer = meminfo["Buffers"];
-		auto cached = meminfo["Cached"];
+		float free = to_bytes(meminfo["MemFree"]) + to_bytes(meminfo["Buffers"]) + to_bytes(meminfo["Cached"]);
+		float total = to_bytes(meminfo["MemTotal"]);
+		float used = total - free;
 
-		cout 	<< "Total: " << total.value
-				<< " free: " << free.value
-				<< " buffer: " << buffer.value
-				<< " cached: " << cached.value
-				<< endl;
-
-		float rc = 0;
-
-
-		return set(rc);
+		return set( (used * 100) /total );
 
 	}
 

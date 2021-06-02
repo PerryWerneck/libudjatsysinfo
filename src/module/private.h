@@ -21,6 +21,7 @@
 
 #include <udjat/defs.h>
 #include <udjat/agent.h>
+#include <udjat/tools/sysconfig.h>
 
 using namespace Udjat;
 using namespace std;
@@ -46,6 +47,9 @@ namespace Udjat {
 
 			/// @brief Update current state based on value.
 			float set(float value);
+
+		protected:
+			static float to_bytes(const Udjat::SysConfig::Value &v);
 
 		public:
 			Agent(const char *name);
@@ -90,12 +94,35 @@ namespace Udjat {
 			/// @brief Setup agent.
 			void setup();
 
+			/// @brief Use default states.
+			void setDefaultStates();
+
 		protected:
 			float get() override;
 
 		public:
 			MemUsed(const char *name = "memory");
 			virtual ~MemUsed();
+
+		};
+
+
+		/// @brief Swap used agent.
+		class UDJAT_API SwapUsed : public Agent {
+		private:
+
+			/// @brief Setup agent.
+			void setup();
+
+			/// @brief Use default states.
+			void setDefaultStates();
+
+		protected:
+			float get() override;
+
+		public:
+			SwapUsed(const char *name = "swap");
+			virtual ~SwapUsed();
 
 		};
 

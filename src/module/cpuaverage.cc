@@ -43,6 +43,8 @@
 
 	void SysInfo::CPUAverage::setup(uint8_t minutes) {
 
+		this->icon = "utilities-system-monitor";
+
 		//
 		// Identify the number of cores.
 		//

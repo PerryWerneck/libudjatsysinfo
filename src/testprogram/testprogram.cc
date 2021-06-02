@@ -25,13 +25,24 @@
  using namespace std;
  using namespace Udjat;
 
- static void cpu_load_test() {
+ static void cpu_used_test() {
 
 	SysInfo::CPUAverage agent;
 	string value = agent.to_string();
-
 	cout << "Agent " << agent.getName() << " value is " << value << endl;
 
+ }
+
+ static void mem_used_test() {
+
+	SysInfo::MemUsed mAgent;
+	SysInfo::SwapUsed sAgent;
+
+	string vmem = mAgent.to_string();
+	cout << "Agent " << mAgent.getName() << " value is " << vmem << endl;
+
+	string vswap= sAgent.to_string();
+	cout << "Agent " << sAgent.getName() << " value is " << vswap << endl;
 
  }
 
@@ -54,7 +65,7 @@
 
 	Logger::redirect(nullptr,true);
 
-	cpu_load_test();
+	mem_used_test();
 
 	/*
 	Module::load("http");
