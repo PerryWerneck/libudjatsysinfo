@@ -21,6 +21,7 @@
 
 #include <udjat/defs.h>
 #include <udjat/agent.h>
+#include <udjat/factory.h>
 #include <udjat/tools/sysconfig.h>
 
 using namespace Udjat;
@@ -82,6 +83,15 @@ namespace Udjat {
 			float get() override;
 
 		public:
+
+			class UDJAT_API Factory : public Udjat::Factory {
+			public:
+				Factory();
+				void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+			};
+
+			CPUAverage(const pugi::xml_node &node);
 			CPUAverage(const char *name = "cpu", uint8_t minutes = 1);
 			virtual ~CPUAverage();
 
@@ -101,6 +111,14 @@ namespace Udjat {
 			float get() override;
 
 		public:
+
+			class UDJAT_API Factory : public Udjat::Factory {
+			public:
+				Factory();
+				void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+			};
+
 			MemUsed(const char *name = "memory");
 			virtual ~MemUsed();
 
@@ -121,6 +139,14 @@ namespace Udjat {
 			float get() override;
 
 		public:
+
+			class UDJAT_API Factory : public Udjat::Factory {
+			public:
+				Factory();
+				void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+			};
+
 			SwapUsed(const char *name = "swap");
 			virtual ~SwapUsed();
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config>
+
+	<!-- update-timer cant be only 60, 300 or 900 -->
+	<cpu-average name="cpu" update-timer='60' />
+	
+</config>
+

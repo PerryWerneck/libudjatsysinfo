@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
  #include "private.h"
  #include <udjat/tools/sysconfig.h>
  #include <sstream>

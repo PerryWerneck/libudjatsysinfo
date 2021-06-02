@@ -29,6 +29,7 @@
   *
   */
 
+ #include <config.h>
  #include "private.h"
  #include <udjat/tools/file.h>
  #include <sstream>
@@ -36,9 +37,46 @@
 
  namespace Udjat {
 
+	static const Udjat::ModuleInfo moduleinfo{
+		PACKAGE_NAME,												// The module name.
+		"Get CPU average use in the latest 1, 5 or 15 minutes", 	// The module description.
+		PACKAGE_VERSION, 											// The module version.
+		PACKAGE_URL, 												// The package URL.
+		PACKAGE_BUGREPORT 											// The bug report address.
+	};
+
+	SysInfo::CPUAverage::Factory::Factory() : Udjat::Factory("cpu-average",&moduleinfo) {
+	}
+
+	void SysInfo::CPUAverage::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+		parent.insert(make_shared<SysInfo::CPUAverage>(node));
+	}
+
 	SysInfo::CPUAverage::CPUAverage(const char *name, uint8_t minutes) : SysInfo::Agent(name) {
 		setup(minutes);
 		setDefaultStates();
+	}
+
+	SysInfo::CPUAverage::CPUAverage(const pugi::xml_node &node) : SysInfo::Agent("cpu") {
+
+		load(node);
+
+		time_t timer = getUpdateInterval();
+
+#ifdef DEBUG
+		cout << "Update timer: " << timer << endl;
+#endif // DEBUG
+
+		if(!timer) {
+			throw runtime_error("Update interval is required");
+		}
+
+		setup(timer/60);
+
+		if(!hasStates()) {
+			setDefaultStates();
+		};
+
 	}
 
 	void SysInfo::CPUAverage::setup(uint8_t minutes) {

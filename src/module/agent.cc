@@ -37,6 +37,7 @@
  namespace Udjat {
 
 	SysInfo::Agent::Agent(const char *name) : Abstract::Agent(name) {
+		active_state = make_shared<State<float>>("Undefined",0,Udjat::unimportant);
 	}
 
 	SysInfo::Agent::~Agent() {

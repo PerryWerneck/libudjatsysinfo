@@ -65,9 +65,6 @@
 
 	Logger::redirect(nullptr,true);
 
-	mem_used_test();
-
-	/*
 	Module::load("http");
 	auto module = udjat_module_init();
 
@@ -76,7 +73,6 @@
 	cout << "Removing module" << endl;
 	delete module;
 	Module::unload();
-	*/
 
 	return 0;
 }
