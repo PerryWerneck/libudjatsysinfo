@@ -4,6 +4,8 @@
 
 	<!-- update-timer cant be only 60, 300 or 900 -->
 	<cpu-average name="cpu" update-timer='60' />
+	<mem-used />
+	<swap-used />
 	
 </config>
 

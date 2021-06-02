@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <config.h>
  #include "private.h"
  #include <udjat/tools/sysconfig.h>
  #include <sstream>
@@ -24,9 +25,32 @@
 
  namespace Udjat {
 
+	static const Udjat::ModuleInfo moduleinfo{
+		PACKAGE_NAME,												// The module name.
+		"Get swap use", 											// The module description.
+		PACKAGE_VERSION, 											// The module version.
+		PACKAGE_URL, 												// The package URL.
+		PACKAGE_BUGREPORT 											// The bug report address.
+	};
+
+	SysInfo::SwapUsed::Factory::Factory() : Udjat::Factory("swap-used",&moduleinfo) {
+	}
+
+	void SysInfo::SwapUsed::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+		parent.insert(make_shared<SysInfo::SwapUsed>(node));
+	}
+
 	SysInfo::SwapUsed::SwapUsed(const char *name) : SysInfo::Agent(name) {
 		setup();
 		setDefaultStates();
+	}
+
+	SysInfo::SwapUsed::SwapUsed(const pugi::xml_node &node) : SysInfo::Agent("swap") {
+		setup();
+		load(node);
+		if(!hasStates()) {
+			setDefaultStates();
+		};
 	}
 
 	void SysInfo::SwapUsed::setup() {

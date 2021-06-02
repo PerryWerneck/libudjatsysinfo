@@ -120,6 +120,7 @@ namespace Udjat {
 			};
 
 			MemUsed(const char *name = "memory");
+			MemUsed(const pugi::xml_node &node);
 			virtual ~MemUsed();
 
 		};
@@ -148,6 +149,7 @@ namespace Udjat {
 			};
 
 			SwapUsed(const char *name = "swap");
+			SwapUsed(const pugi::xml_node &node);
 			virtual ~SwapUsed();
 
 		};

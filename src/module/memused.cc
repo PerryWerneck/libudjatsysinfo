@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <config.h>
  #include "private.h"
  #include <udjat/tools/sysconfig.h>
  #include <sstream>
@@ -55,9 +56,32 @@
 
  namespace Udjat {
 
+	static const Udjat::ModuleInfo moduleinfo{
+		PACKAGE_NAME,												// The module name.
+		"Get memory use", 											// The module description.
+		PACKAGE_VERSION, 											// The module version.
+		PACKAGE_URL, 												// The package URL.
+		PACKAGE_BUGREPORT 											// The bug report address.
+	};
+
+	SysInfo::MemUsed::Factory::Factory() : Udjat::Factory("mem-used",&moduleinfo) {
+	}
+
+	void SysInfo::MemUsed::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+		parent.insert(make_shared<SysInfo::MemUsed>(node));
+	}
+
 	SysInfo::MemUsed::MemUsed(const char *name) : SysInfo::Agent(name) {
 		setup();
 		setDefaultStates();
+	}
+
+	SysInfo::MemUsed::MemUsed(const pugi::xml_node &node)  : SysInfo::Agent("memory") {
+		setup();
+		load(node);
+		if(!hasStates()) {
+			setDefaultStates();
+		};
 	}
 
 	void SysInfo::MemUsed::setup() {
