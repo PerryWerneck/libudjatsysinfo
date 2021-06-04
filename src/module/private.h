@@ -133,6 +133,18 @@ namespace Udjat {
 
 		};
 
+		class SysTime : public Udjat::Factory {
+		private:
+			class Agent;
+
+		public:
+			SysTime();
+			virtual ~SysTime();
+
+			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+		};
+
 	}
 
 }

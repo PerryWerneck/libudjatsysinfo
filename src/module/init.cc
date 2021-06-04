@@ -38,6 +38,7 @@
 	SysInfo::SwapUsed		swapuse;
 	SysInfo::LoadAverage	loadavg;
 	SysInfo::UpTime			uptime;
+	SysInfo::SysTime		systime;
 
  public:
 

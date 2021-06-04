@@ -37,6 +37,40 @@
 	};
 
 	class SysInfo::UpTime::Agent : public Abstract::Agent {
+	private:
+
+		std::vector<std::shared_ptr<State<long>>> states;
+
+		long getUptime() const {
+			struct sysinfo info;
+			memset(&info,0,sizeof(info));
+
+			if(sysinfo(&info) < 0) {
+				throw system_error(errno,system_category(),"Cant get system information");
+			}
+
+			return info.uptime;
+		}
+
+	protected:
+
+		std::shared_ptr<Abstract::State> find_state() const override {
+
+			struct sysinfo info;
+			memset(&info,0,sizeof(info));
+
+			if(sysinfo(&info) < 0) {
+				throw system_error(errno,system_category(),"Cant get system information");
+			}
+
+			for(auto state : states) {
+				if(state->compare(info.uptime))
+					return state;
+			}
+
+			return Abstract::Agent::find_state();
+
+		}
 
 	public:
 		Agent(const xml_node &node) : Abstract::Agent("uptime") {
@@ -48,23 +82,30 @@
 		virtual ~Agent() {
 		}
 
+		void append_state(const pugi::xml_node &node) override {
+			states.push_back(std::make_shared<State<long>>(node));
+		}
+
+		void refresh() {
+			getUptime();
+			updated(true);
+		}
+
 		void get(const char *name, Json::Value &value) override {
+			value[name] = to_string();
+		}
 
-			struct sysinfo info;
-			memset(&info,0,sizeof(info));
+		std::string to_string() const override {
 
-			if(sysinfo(&info) < 0) {
-				throw system_error(errno,system_category(),"Cant get system information");
+			long uptime = getUptime();
+
+			if(uptime < 60) {
+				return "Less than one minute";
 			}
 
-			if(info.uptime < 60) {
-				value[name] = "Less than one minute";
-				return;
-			}
-
-			long updays = info.uptime / 86400;
-			long uphours = (info.uptime - (updays * 86400)) / 3600;
-			long upmins = (info.uptime - (updays * 86400) - (uphours * 3600)) / 60;
+			long updays = uptime / 86400;
+			long uphours = (uptime - (updays * 86400)) / 3600;
+			long upmins = (uptime - (updays * 86400) - (uphours * 3600)) / 60;
 
 			uint8_t key = (updays > 0 ? 1 : 0) + (uphours > 0 ? 2 : 0) + (upmins > 0 ? 4 : 0);
 
@@ -116,7 +157,7 @@
 
 			}
 
-			value[name] = out;
+			return out;
 		}
 
 	};
