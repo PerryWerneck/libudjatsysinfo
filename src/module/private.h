@@ -48,9 +48,6 @@ namespace Udjat {
 
 		private:
 
-			/// @brief Active state.
-			std::shared_ptr<State<float>> active_state;
-
 			/// @brief Agent states.
 			std::vector<std::shared_ptr<State<float>>> states;
 
@@ -62,7 +59,10 @@ namespace Udjat {
 			void load(const StateDescription *states, size_t length);
 
 			/// @brief Get Value from system.
-			virtual float getValue() = 0;
+			virtual float getValue() const = 0;
+
+			/// @brief Get state from value
+			std::shared_ptr<Abstract::State> find_state(const float &value) const;
 
 		public:
 

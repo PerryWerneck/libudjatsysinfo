@@ -133,7 +133,7 @@
 
 	protected:
 
-		float getValue() override {
+		float getValue() const override {
 
 			double loadavg[3];
 

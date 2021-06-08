@@ -116,7 +116,7 @@
 	class SysInfo::MemUsed::Agent : public Percent {
 	protected:
 
-		float getValue() override {
+		float getValue() const override {
 			/**
 			 * @page free-memory Determining free memory on Linux
 			 *

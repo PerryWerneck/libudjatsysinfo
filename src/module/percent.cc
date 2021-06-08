@@ -24,14 +24,22 @@
  namespace Udjat {
 
 	SysInfo::Percent::Percent(const char *name) : Abstract::Agent(name) {
-		active_state = make_shared<State<float>>("Undefined",0,Udjat::unimportant);
 	}
 
 	SysInfo::Percent::~Percent() {
 	}
 
 	std::shared_ptr<Abstract::State> SysInfo::Percent::find_state() const {
-		return active_state;
+		return find_state(this->getValue());
+	}
+
+	std::shared_ptr<Abstract::State> SysInfo::Percent::find_state(const float &value) const {
+		for(auto state : this->states) {
+			if(state->compare(value)) {
+				return state;
+			}
+		}
+		return Abstract::Agent::find_state();
 	}
 
 	void SysInfo::Percent::load(const StateDescription *states, size_t length) {
@@ -66,20 +74,8 @@
 
 		float value = this->getValue();
 
-		for(auto state : this->states) {
-			if(state->compare(value)) {
-
-				if(state != this->active_state) {
-					// State has changed.
-					this->active_state = state;
-					updated(true);
-				} else {
-					// State has not changed.
-					updated(false);
-				}
-				break;
-			}
-		}
+		// TODO: Save last value, check if it changes.
+		updated(true);
 
 		return value;
 

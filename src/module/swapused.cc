@@ -69,7 +69,7 @@
 	class SysInfo::SwapUsed::Agent : public Percent {
 	protected:
 
-		float getValue() override {
+		float getValue() const override {
 
 			struct sysinfo info;
 			memset(&info,0,sizeof(info));
