@@ -62,7 +62,7 @@ namespace Udjat {
 			virtual float getValue() const = 0;
 
 			/// @brief Get state from value
-			std::shared_ptr<Abstract::State> find_state(const float &value) const;
+			std::shared_ptr<Abstract::State> stateFromValue(const float &value) const;
 
 		public:
 
@@ -70,12 +70,9 @@ namespace Udjat {
 			virtual ~Percent();
 
 			/// @brief Get active state.
-			std::shared_ptr<Abstract::State> find_state() const override;
+			std::shared_ptr<Abstract::State> stateFromValue() const override;
 
 			void refresh() override;
-
-			/// @brief Get updated value.
-			float get();
 
 			void get(const char *name, Json::Value &value) override;
 

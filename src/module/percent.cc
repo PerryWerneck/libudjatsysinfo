@@ -29,17 +29,17 @@
 	SysInfo::Percent::~Percent() {
 	}
 
-	std::shared_ptr<Abstract::State> SysInfo::Percent::find_state() const {
-		return find_state(this->getValue());
+	std::shared_ptr<Abstract::State> SysInfo::Percent::stateFromValue() const {
+		return stateFromValue(this->getValue());
 	}
 
-	std::shared_ptr<Abstract::State> SysInfo::Percent::find_state(const float &value) const {
+	std::shared_ptr<Abstract::State> SysInfo::Percent::stateFromValue(const float &value) const {
 		for(auto state : this->states) {
 			if(state->compare(value)) {
 				return state;
 			}
 		}
-		return Abstract::Agent::find_state();
+		return Abstract::Agent::stateFromValue();
 	}
 
 	void SysInfo::Percent::load(const StateDescription *states, size_t length) {
@@ -70,28 +70,25 @@
 
 	}
 
-	float SysInfo::Percent::get() {
-
-		float value = this->getValue();
-
+	void SysInfo::Percent::refresh() {
 		// TODO: Save last value, check if it changes.
 		updated(true);
-
-		return value;
-
-	}
-
-	void SysInfo::Percent::refresh() {
-		this->get();
 	}
 
 	void SysInfo::Percent::get(const char *name, Json::Value &value) {
-		value[name] = this->get();
+		float v = this->getValue();
+		activate(stateFromValue(v));
+		value[name] = v;
 	}
 
 	std::string SysInfo::Percent::to_string() const {
 		std::stringstream out;
-		out << std::fixed << std::setprecision(2) << const_cast<SysInfo::Percent &>(*this).get() << "%";
+
+		float value = this->getValue();
+
+		const_cast<SysInfo::Percent *>(this)->activate(stateFromValue(value));
+		out << std::fixed << std::setprecision(2) << value << "%";
+
 		return out.str();
 	}
 

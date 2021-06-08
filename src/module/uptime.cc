@@ -54,7 +54,7 @@
 
 	protected:
 
-		std::shared_ptr<Abstract::State> find_state() const override {
+		std::shared_ptr<Abstract::State> stateFromValue() const override {
 
 			struct sysinfo info;
 			memset(&info,0,sizeof(info));
@@ -68,7 +68,7 @@
 					return state;
 			}
 
-			return Abstract::Agent::find_state();
+			return Abstract::Agent::stateFromValue();
 
 		}
 
