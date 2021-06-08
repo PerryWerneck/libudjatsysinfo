@@ -73,7 +73,7 @@
 			100,
 			"full",
 			Udjat::critical,
-			"CPU usage is too high",
+			"System load is too high",
 			""
 		}
 	};
@@ -147,7 +147,11 @@
 				rc = 100.0;
 			}
 
-			return 0;
+#ifdef DEBUG
+			cout << "Load average is " << std::fixed << std::setprecision(2) << rc << "%" << endl;
+#endif // DEBUG
+
+			return rc;
 		};
 
 	public:
