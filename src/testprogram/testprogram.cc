@@ -30,18 +30,27 @@
 
 	Logger::redirect(nullptr,true);
 
-	Module::load("http");
-	Module::load("info");
 	auto module = udjat_module_init();
 
-	for(auto agent : *Abstract::Agent::init("${PWD}/test.xml")) {
-		cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
-	}
+	try {
 
-	cout << "http://localhost:8989/api/1.0/info/modules" << endl;
-	cout << "http://localhost:8989/api/1.0/info/workers" << endl;
-	cout << "http://localhost:8989/api/1.0/info/factories" << endl;
-	cout << "http://localhost:8989/api/1.0/info/protocols" << endl;
+		Module::load("http");
+		Module::load("info");
+
+		cout << "http://localhost:8989/api/1.0/info/modules" << endl;
+		cout << "http://localhost:8989/api/1.0/info/workers" << endl;
+		cout << "http://localhost:8989/api/1.0/info/factories" << endl;
+		cout << "http://localhost:8989/api/1.0/info/protocols" << endl;
+
+		for(auto agent : *Abstract::Agent::init("${PWD}/test.xml")) {
+			cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
+		}
+
+	} catch(const std::exception &e) {
+
+		cerr << e.what() << endl;
+
+	}
 
 	cout << "Waiting for requests" << endl;
 	Udjat::run();
