@@ -35,7 +35,7 @@ namespace Udjat {
 	namespace SysInfo {
 
 		/// @brief Percentual value agent.
-		class Percent : public Abstract::Agent {
+		class Percent : public Udjat::Agent<float> {
 		public:
 
 			struct StateDescription {
@@ -45,11 +45,6 @@ namespace Udjat {
 				const char * summary;	///< @brief State summary.
 				const char * body;		///< @brief State description
 			};
-
-		private:
-
-			/// @brief Agent states.
-			std::vector<std::shared_ptr<State<float>>> states;
 
 		protected:
 
@@ -61,24 +56,14 @@ namespace Udjat {
 			/// @brief Get Value from system.
 			virtual float getValue() const = 0;
 
-			/// @brief Get state from value
-			std::shared_ptr<Abstract::State> stateFromValue(const float &value) const;
-
 		public:
 
 			Percent(const char *name);
 			virtual ~Percent();
 
-			/// @brief Get active state.
-			std::shared_ptr<Abstract::State> stateFromValue() const override;
-
 			void refresh() override;
 
-			void get(const char *name, Json::Value &value) override;
-
 			std::string to_string() const override;
-
-			void append_state(const pugi::xml_node &node) override;
 
 		};
 

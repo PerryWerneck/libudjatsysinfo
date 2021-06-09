@@ -80,12 +80,9 @@
 
 			float free = (float) info.freeswap;
 			float total = (float) info.totalswap;
+			float rc = ((total-free) * 100) /total;
 
-#ifdef DEBUG
-			cout << "Swap use is " << std::fixed << std::setprecision(2) << (((total-free) * 100) /total) << "%" << endl;
-#endif // DEBUG
-
-			return ((total-free) * 100) /total;
+			return rc;
 
 		};
 

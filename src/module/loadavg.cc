@@ -147,10 +147,6 @@
 				rc = 100.0;
 			}
 
-#ifdef DEBUG
-			cout << "Load average is " << std::fixed << std::setprecision(2) << rc << "%" << endl;
-#endif // DEBUG
-
 			return rc;
 		};
 
@@ -189,6 +185,7 @@
 			}
 
 			setup(timer/60);
+			Abstract::Agent::load(node);
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 
 		}

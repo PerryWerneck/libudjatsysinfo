@@ -23,23 +23,10 @@
 
  namespace Udjat {
 
-	SysInfo::Percent::Percent(const char *name) : Abstract::Agent(name) {
+	SysInfo::Percent::Percent(const char *name) : Agent<float>(name) {
 	}
 
 	SysInfo::Percent::~Percent() {
-	}
-
-	std::shared_ptr<Abstract::State> SysInfo::Percent::stateFromValue() const {
-		return stateFromValue(this->getValue());
-	}
-
-	std::shared_ptr<Abstract::State> SysInfo::Percent::stateFromValue(const float &value) const {
-		for(auto state : this->states) {
-			if(state->compare(value)) {
-				return state;
-			}
-		}
-		return Abstract::Agent::stateFromValue();
 	}
 
 	void SysInfo::Percent::load(const StateDescription *states, size_t length) {
@@ -53,7 +40,7 @@
 
 		for(size_t ix = 0; ix < length; ix++) {
 
-			this->states.push_back(
+			this->push_back(
 				make_shared<Udjat::State<float>>(
 					states->name,
 					from,
@@ -71,29 +58,13 @@
 	}
 
 	void SysInfo::Percent::refresh() {
-		// TODO: Save last value, check if it changes.
-		updated(true);
-	}
-
-	void SysInfo::Percent::get(const char *name, Json::Value &value) {
-		float v = this->getValue();
-		activate(stateFromValue(v));
-		value[name] = v;
+		set(this->getValue());
 	}
 
 	std::string SysInfo::Percent::to_string() const {
 		std::stringstream out;
-
-		float value = this->getValue();
-
-		const_cast<SysInfo::Percent *>(this)->activate(stateFromValue(value));
-		out << std::fixed << std::setprecision(2) << value << "%";
-
+		out << std::fixed << std::setprecision(2) << this->get() << "%";
 		return out.str();
-	}
-
-	void SysInfo::Percent::append_state(const pugi::xml_node &node) {
-		this->states.push_back(std::make_shared<State<float>>(node));
 	}
 
  }

@@ -160,11 +160,9 @@
 			// auto cached = get_scaled(meminfo["Cached"]) + get_scaled(meminfo["Slab"]);
 			// auto used   = total - free;
 
-#ifdef DEBUG
-			cout << "Memory use is " << std::fixed << std::setprecision(2) << ((user * 100) /total) << "%" << endl;
-#endif // DEBUG
+			float rc = (user * 100) /total;
 
-			return (user * 100) /total;
+			return rc;
 		};
 
 	public:
