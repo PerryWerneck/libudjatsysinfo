@@ -40,11 +40,11 @@
  namespace Udjat {
 
 	static const Udjat::ModuleInfo moduleinfo {
-		PACKAGE_NAME,												// The module name.
-		"Get CPU average use in the latest 1, 5 or 15 minutes", 	// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
+		PACKAGE_NAME,														// The module name.
+		"Get system load average use in the latest 1, 5 or 15 minutes", 	// The module description.
+		PACKAGE_VERSION, 													// The module version.
+		PACKAGE_URL, 														// The package URL.
+		PACKAGE_BUGREPORT 													// The bug report address.
 	};
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
@@ -97,21 +97,21 @@
 				{
 					1,
 					"System load in the last minute",
-					"Average system and I/O utilization of the last one minute"
+					"Average system load in the last minute"
 				},
 
 				// 1 = 5 minutes average.
 				{
 					5,
 					"System load in the last 5 minutes",
-					"Average system and I/O utilization of the last five minutes"
+					"Average system load in the last five minutes"
 				},
 
 				// 2 = 15 minutes average.
 				{
 					15,
 					"System load in the last 15 minutes",
-					"Average system and I/O utilization of the last fifteen minutes"
+					"Average system load in the last fifteen minutes"
 				}
 
 			};
