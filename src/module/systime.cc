@@ -47,8 +47,9 @@
 		virtual ~Agent() {
 		}
 
-		void get(const char *name, Json::Value &value) override {
-			value[name] = TimeStamp().to_string(TIMESTAMP_FORMAT_JSON);
+		Udjat::Value &get(Udjat::Value &value) override {
+			value = TimeStamp();
+			return value;
 		}
 
 		std::string to_string() const override {

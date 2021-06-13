@@ -91,8 +91,9 @@
 			updated(true);
 		}
 
-		void get(const char *name, Json::Value &value) override {
-			value[name] = to_string();
+		Udjat::Value & get(Udjat::Value &value) override {
+			value = to_string();
+			return value;
 		}
 
 		std::string to_string() const override {
