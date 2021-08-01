@@ -39,9 +39,9 @@
 	SysInfo::LoadAverage	loadavg;
 	SysInfo::UpTime			uptime;
 	SysInfo::SysTime		systime;
+	SysInfo::DiskStat		diskstat;
 
  public:
-
  	Module() : Udjat::Module("sysinfo",&moduleinfo) {
  	};
 

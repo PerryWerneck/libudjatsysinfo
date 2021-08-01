@@ -20,6 +20,7 @@
  #include "private.h"
  #include <sstream>
  #include <iomanip>
+ #include <udjat/tools/value.h>
 
  namespace Udjat {
 
@@ -36,7 +37,7 @@
 
 		cout << getName() << "\tUsing default states" << endl;
 
-		float from = 0;
+		float from = 0.0;
 
 		for(size_t ix = 0; ix < length; ix++) {
 
@@ -57,13 +58,33 @@
 
 	}
 
-	void SysInfo::Percent::refresh() {
+	void SysInfo::Percent::append_state(const pugi::xml_node &node) {
+
+		class State : public Udjat::State<float> {
+		public:
+			State(const pugi::xml_node &node) : Udjat::State<float>(node) {
+				from /= 100;
+				to /= 100;
+			}
+
+		};
+
+		push_back(std::make_shared<State>(node));
+
+	}
+
+	Udjat::Value & SysInfo::Percent::get(Udjat::Value &value) {
+		return value.setFraction(Udjat::Agent<float>::get());
+	}
+
+	bool SysInfo::Percent::refresh() {
 		set(this->getValue());
+		return true;
 	}
 
 	std::string SysInfo::Percent::to_string() const {
 		std::stringstream out;
-		out << std::fixed << std::setprecision(2) << this->get() << "%";
+		out << std::fixed << std::setprecision(2) << (Udjat::Agent<float>::get() * 100) << '%';
 		return out.str();
 	}
 

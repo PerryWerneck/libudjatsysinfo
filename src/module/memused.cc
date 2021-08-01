@@ -68,21 +68,21 @@
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
 		{
-			80.0,
+			0.8,
 			"low",
 			Udjat::ready,
 			"Memory usage is lower than 80%",
 			""
 		},
 		{
-			90.0,
+			0.9,
 			"medium",
 			Udjat::warning,
 			"Memory usage is lower than 90%",
 			""
 		},
 		{
-			100.0,
+			1.0,
 			"high",
 			Udjat::error,
 			"Memory usage is higher than 90%",
@@ -160,7 +160,7 @@
 			// auto cached = get_scaled(meminfo["Cached"]) + get_scaled(meminfo["Slab"]);
 			// auto used   = total - free;
 
-			float rc = (user * 100) /total;
+			float rc = user / total;
 
 			return rc;
 		};
@@ -184,8 +184,9 @@
 	SysInfo::MemUsed::~MemUsed() {
 	}
 
-	void SysInfo::MemUsed::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	bool SysInfo::MemUsed::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
 		parent.insert(make_shared<Agent>(node));
+		return true;
 	}
 
  }

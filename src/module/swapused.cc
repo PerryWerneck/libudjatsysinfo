@@ -37,28 +37,28 @@
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
 		{
-			10.0,
+			0.1,
 			"low",
 			Udjat::ready,
 			"Swap usage is lower than 10%",
 			""
 		},
 		{
-			80.0,
+			0.8,
 			"low",
 			Udjat::ready,
 			"Swap usage is lower than 80%",
 			""
 		},
 		{
-			90.0,
+			0.9,
 			"medium",
 			Udjat::warning,
 			"Swap usage is lower than 90%",
 			""
 		},
 		{
-			100.0,
+			1.0,
 			"high",
 			Udjat::error,
 			"Swap usage is higher than 90%",
@@ -80,7 +80,7 @@
 
 			float free = (float) info.freeswap;
 			float total = (float) info.totalswap;
-			float rc = ((total-free) * 100) /total;
+			float rc = (total-free) / total;
 
 			return rc;
 
@@ -105,8 +105,9 @@
 	SysInfo::SwapUsed::~SwapUsed() {
 	}
 
-	void SysInfo::SwapUsed::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	bool SysInfo::SwapUsed::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
 		parent.insert(make_shared<Agent>(node));
+		return true;
 	}
 
  }

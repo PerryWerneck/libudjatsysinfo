@@ -63,8 +63,9 @@
 	SysInfo::SysTime::~SysTime() {
 	}
 
-	void SysInfo::SysTime::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	bool SysInfo::SysTime::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
 		parent.insert(make_shared<Agent>(node));
+		return true;
 	}
 
  }

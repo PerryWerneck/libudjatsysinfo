@@ -49,28 +49,28 @@
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
 		{
-			50.0,
+			0.5,
 			"good",
 			Udjat::ready,
 			"System load is lower than 50%",
 			""
 		},
 		{
-			80.0,
+			0.8,
 			"gt50",
 			Udjat::warning,
 			"System load is higher than 50%",
 			""
 		},
 		{
-			95.0,
+			0.95,
 			"gt90",
 			Udjat::error,
 			"System load is higher than 80%",
 			""
 		},
 		{
-			100,
+			1.0,
 			"full",
 			Udjat::critical,
 			"System load is too high",
@@ -141,7 +141,7 @@
 				throw system_error(EINVAL,system_category(),"Can't get system load average");
 			}
 
-			float rc = (loadavg[this->type] * 100) / ((double) this->cores);
+			float rc = loadavg[this->type] / ((double) this->cores);
 
 			if(rc > 100.0) {
 				rc = 100.0;
@@ -201,8 +201,9 @@
 	SysInfo::LoadAverage::~LoadAverage() {
 	}
 
-	void SysInfo::LoadAverage::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	bool SysInfo::LoadAverage::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
 		parent.insert(make_shared<Agent>(node));
+		return true;
 	}
 
  }

@@ -86,9 +86,10 @@
 			states.push_back(std::make_shared<State<long>>(node));
 		}
 
-		void refresh() {
+		bool refresh() {
 			getUptime();
 			updated(true);
+			return true;
 		}
 
 		Udjat::Value & get(Udjat::Value &value) override {
@@ -169,8 +170,9 @@
 	SysInfo::UpTime::~UpTime() {
 	}
 
-	void SysInfo::UpTime::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	bool SysInfo::UpTime::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
 		parent.insert(make_shared<Agent>(node));
+		return true;
 	}
 
  }

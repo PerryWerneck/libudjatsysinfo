@@ -33,6 +33,7 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="src/include/udjat/tools/vmstat.h" />
+		<Unit filename="src/module/diskstat.cc" />
 		<Unit filename="src/module/init.cc" />
 		<Unit filename="src/module/loadavg.cc" />
 		<Unit filename="src/module/memused.cc" />

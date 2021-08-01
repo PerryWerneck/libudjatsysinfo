@@ -61,9 +61,13 @@ namespace Udjat {
 			Percent(const char *name);
 			virtual ~Percent();
 
-			void refresh() override;
+			bool refresh() override;
+
+			Udjat::Value & get(Udjat::Value &value) override;
 
 			std::string to_string() const override;
+
+			void append_state(const pugi::xml_node &node) override;
 
 		};
 
@@ -75,7 +79,7 @@ namespace Udjat {
 			SwapUsed();
 			virtual ~SwapUsed();
 
-			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -87,7 +91,7 @@ namespace Udjat {
 			LoadAverage();
 			virtual ~LoadAverage();
 
-			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -99,7 +103,7 @@ namespace Udjat {
 			MemUsed();
 			virtual ~MemUsed();
 
-			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -111,7 +115,7 @@ namespace Udjat {
 			UpTime();
 			virtual ~UpTime();
 
-			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -123,7 +127,20 @@ namespace Udjat {
 			SysTime();
 			virtual ~SysTime();
 
-			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+		};
+
+
+		class DiskStat : public Udjat::Factory {
+		private:
+			class Agent;
+
+		public:
+			DiskStat();
+			virtual ~DiskStat();
+
+			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
 
 		};
 

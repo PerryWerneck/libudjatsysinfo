@@ -9,6 +9,7 @@
 	<swap-used />
 	<system-uptime />
 	<system-systime />
+	<system-diskstat update-timer='1' />
 	
 </config>
 
