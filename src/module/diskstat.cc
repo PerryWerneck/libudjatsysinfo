@@ -176,7 +176,7 @@
 			cout << "Read: " << this->read << " Write: " << this->write << endl;
 #endif // DEBUG
 
-			// Save values for next read
+			// Save values for next cicle
 			saved.timestamp = now;
 			saved.read = read;
 			saved.write = write;
