@@ -198,8 +198,7 @@
 		}
 
 		Value & get(Value &value) override {
-			value = getValue() * 100;
-			return value;
+			return value.setFraction(getValue());
 		}
 
 		std::string to_string() const override {
