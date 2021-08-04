@@ -201,6 +201,17 @@
 			return value.setFraction(getValue());
 		}
 
+		void get(const Request &request, Response &response) override {
+
+			Abstract::Agent::get(request,response);
+
+			auto &cpu = response["details"];
+			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
+				cpu[stats[ix].name].setFraction(values[ix]);
+			}
+
+		}
+
 		std::string to_string() const override {
 			std::stringstream out;
 			out << std::fixed << std::setprecision(2) << (getValue() * 100) << "%";
