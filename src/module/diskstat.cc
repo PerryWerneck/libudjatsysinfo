@@ -25,22 +25,11 @@
  #include <sstream>
  #include <udjat/tools/xml.h>
  #include <sys/time.h>
+ #include <sstream>
 
  #include "private.h"
 
  namespace Udjat {
-
-	static const struct Unit {
-		float value;
-		const char *id;
-		const char *label;
-	} units[] = {
-		{          1.0,  "B",  "B/s"  },
-		{       1024.0, "KB", "KB/s" },
-		{       1024.0, "KB", "KB/s" },
-		{    1048576.0, "MB", "MB/s" },
-		{ 1073741824.0, "GB", "GB/s" }
-	};
 
 	static const Udjat::ModuleInfo moduleinfo{
 		PACKAGE_NAME,												// The module name.
@@ -50,33 +39,63 @@
 		PACKAGE_BUGREPORT 											// The bug report address.
 	};
 
+	static const char *labels[] = {
+		"Average disk speed",
+		"Read disk speed",
+		"Write disk speed"
+	};
+
 	class SysInfo::DiskStat::Agent : public Abstract::Agent {
 	private:
 		unsigned short type;
 
-		const Unit *unit= nullptr;
+		const Disk::Unit *unit= nullptr;
 
-		struct {
-			unsigned long timestamp;
-			float read  = 0;
-			float write = 0;
-		} saved;
+		Disk::Stat::Data diskstat;
 
-		/// @brief Read (Bytes/second);
-		float read = 0;
+		/// @brief Get stats from all physical disks.
+		/*
+		static Disk::Stat & load(Disk::Stat &stat) {
 
-		/// @brief Write (Bytes/second);
-		float write = 0;
+			for(Disk::Stat &disk : Disk::Stat::get()) {
 
-		static unsigned long getCurrentTime() {
+				if(disk.physical()) {
+					stat += disk;
+				}
 
-			::timeval tv;
-
-			if(gettimeofday(&tv, NULL) < 0) {
-				throw system_error(errno,system_category(),"Cant get time of day");
 			}
 
-			return (tv.tv_sec * 1000) + (tv.tv_usec /1000);
+			return stat;
+
+		}
+		*/
+
+		float getAverage() const {
+			return ((diskstat.read + diskstat.write) / 2) / unit->value;
+		}
+
+		float getRead() const {
+			return diskstat.read / unit->value;
+		}
+
+		float getWrite() const {
+			return diskstat.write / unit->value;
+		}
+
+		float getValueByType() const {
+
+			switch(type) {
+			case 0: // Average disk speed
+				return getAverage();
+
+			case 1: // Read disk speed
+				return getRead();
+
+			case 2: // Write disk speed
+				return getWrite();
+			}
+
+			return 0;
 
 		}
 
@@ -84,45 +103,28 @@
 		Agent(const xml_node &node) : Abstract::Agent("diskstat"), type(Attribute(node,"stat-type").select("average","read","write",nullptr)) {
 
 			this->icon = "utilities-system-monitor";
-			this->unit = &units[0];
-
-			// Load unit.
-			{
-				const char * unit = Attribute(node,"size-unit").as_string("MB");
-
-				for(size_t ix = 0; ix < ((sizeof(units)/sizeof(units[0]))); ix++) {
-					if(strcasecmp(unit,units[ix].id) == 0 || strcasecmp(unit,units[ix].label)) {
-						this->unit = &units[ix];
-						break;
-					}
-				}
-
-			}
-
-			static const char *labels[] = {
-				"Average disk speed",
-				"Read disk speed",
-				"Write disk speed"
-			};
-			this->label = labels[type];
+			this->unit = Udjat::Disk::Unit::get(node);
 
 			Abstract::Agent::load(node);
+
+			if(!(this->label && *this->label)) {
+				this->label = Quark(string{labels[type]} + " in " + unit->speed).c_str();
+			}
 
 			if(!getUpdateInterval()) {
 				throw runtime_error("Disk stats requires an update time");
 			}
 
-			saved.timestamp = getCurrentTime();
-
-			for(Disk::Stat &stat : Disk::Stat::get()) {
-
-				if(stat.physical()) {
-					float blocksize = (float) stat.getBlockSize();
-					saved.read += (((float) stat.read.blocks) * blocksize);
-					saved.write += (((float) stat.write.blocks) * blocksize);
+			for(Disk::Stat &disk : Disk::Stat::get()) {
+				if(disk.physical()) {
+					diskstat += Disk::Stat::Data(disk);
 				}
-
 			}
+
+			/*
+			load(st);
+			st.reset(diskstat);
+			*/
 
 		}
 
@@ -130,63 +132,34 @@
 		}
 
 		Udjat::Value &get(Udjat::Value &value) override {
-
-
+			value = getValueByType();
 			return value;
 		}
 
 		bool refresh() override {
 
-			unsigned long now	= getCurrentTime();
-			unsigned long msec = (now - saved.timestamp);
-
-			cout << "msec=" << msec << endl;
-
-			if(msec == 0) {
-				return false;
-			}
-
-			float read = 0;
-			float write = 0;
-			for(Disk::Stat &stat : Disk::Stat::get()) {
-
-				if(stat.physical()) {
-					float blocksize = (float) stat.getBlockSize();
-					read += (((float) stat.read.blocks) * blocksize);
-					write += (((float) stat.write.blocks) * blocksize);
+			Disk::Stat::Data current;
+			for(Disk::Stat &disk : Disk::Stat::get()) {
+				if(disk.physical()) {
+					current += Disk::Stat::Data(disk);
 				}
-
 			}
 
-			// Compute read/write performances
-
-			if(saved.read && read > saved.read) {
-				this->read = (read - saved.read) / ((float) msec / 1000);
-			} else {
-				this->read = 0;
-			}
-
-			if(saved.write && write > saved.write) {
-				this->write = (write - saved.write) / ((float) msec / 1000);
-			} else {
-				this->write = 0;
-			}
+			diskstat.update(current);
 
 #ifdef DEBUG
-			cout << "Read: " << this->read << " Write: " << this->write << endl;
+			cout << "Read: " << this->diskstat.read << " Write: " << this->diskstat.write << endl;
 #endif // DEBUG
-
-			// Save values for next cicle
-			saved.timestamp = now;
-			saved.read = read;
-			saved.write = write;
 
 			return true;
 		}
 
 		std::string to_string() const override {
-			return TimeStamp().to_string();
+			std::stringstream out;
+			out << std::fixed << std::setprecision(2) << getValueByType() << " " << unit->speed;
+			return out.str();
 		}
+
 	};
 
 	SysInfo::DiskStat::DiskStat() : Udjat::Factory("system-diskstat",&moduleinfo) {
