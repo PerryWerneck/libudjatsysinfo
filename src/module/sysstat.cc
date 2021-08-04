@@ -18,7 +18,12 @@
  */
 
  #include <config.h>
+ #include <iostream>
+ #include <fstream>
+
  #include "private.h"
+
+ using namespace std;
 
  namespace Udjat {
 
@@ -75,6 +80,15 @@
 
 		/// @brief Read values from /proc/stat.
 		static void read(unsigned long * values ) {
+
+			ifstream in("/proc/stat", ifstream::in);
+
+			in.ignore(3);
+
+			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
+				in >> values[ix];
+			}
+
 		}
 
 	public:
@@ -96,6 +110,23 @@
 		}
 
 		bool refresh() override {
+
+			// Get current system usage.
+			unsigned long current[N_ELEMENTS(stats)];
+			read(current);
+
+			// Compute differences from last cycle.
+			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
+				unsigned long up = current[ix];
+				if(current[ix] >= saved[ix]) {
+					current[ix] -= saved[ix];
+				} else {
+					current[ix] = 0;
+				}
+				saved[ix] = up;
+			}
+
+			// Compute values on %
 
 			return true;
 		}

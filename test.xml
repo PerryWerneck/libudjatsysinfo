@@ -9,7 +9,13 @@
 	<swap-used />
 	<system-uptime />
 	<system-systime />
-	<system-diskstat update-timer='1' />
+	<system-diskstat update-timer='30' />
+	
+	<!-- Information from /proc/stat -->
+	<system-stat update-timer='10'>
+	
+	
+	</system-stat>
 	
 </config>
 
