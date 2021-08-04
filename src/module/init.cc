@@ -40,6 +40,7 @@
 	SysInfo::UpTime			uptime;
 	SysInfo::SysTime		systime;
 	SysInfo::DiskStat		diskstat;
+	SysInfo::SysStat		sisstat;
 
  public:
  	Module() : Udjat::Module("sysinfo",&moduleinfo) {

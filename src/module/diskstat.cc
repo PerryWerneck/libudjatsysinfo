@@ -27,8 +27,6 @@
  #include <sys/time.h>
  #include <sstream>
 
- #include "private.h"
-
  namespace Udjat {
 
 	static const Udjat::ModuleInfo moduleinfo{
@@ -112,7 +110,7 @@
 			}
 
 			if(!getUpdateInterval()) {
-				throw runtime_error("Disk stats requires an update time");
+				throw runtime_error("Disk stats requires an update timer");
 			}
 
 			for(Disk::Stat &disk : Disk::Stat::get()) {

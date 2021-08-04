@@ -144,6 +144,19 @@ namespace Udjat {
 
 		};
 
+		class SysStat : public Udjat::Factory {
+		private:
+			class Agent;
+
+		public:
+			SysStat();
+			virtual ~SysStat();
+
+			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+		};
+
+
 	}
 
 }

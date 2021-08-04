@@ -40,6 +40,7 @@
 		<Unit filename="src/module/percent.cc" />
 		<Unit filename="src/module/private.h" />
 		<Unit filename="src/module/swapused.cc" />
+		<Unit filename="src/module/sysstat.cc" />
 		<Unit filename="src/module/systime.cc" />
 		<Unit filename="src/module/uptime.cc" />
 		<Unit filename="src/testprogram/testprogram.cc" />
