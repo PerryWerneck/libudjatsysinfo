@@ -40,33 +40,41 @@
 	static const struct {
 		const char *name;
 		const char *label;
+		const char *summary;
 	} stats[] = {
 		{
 			"user",		// 0
+			"Normal processes",
 			"CPU used by normal processes executing in user mode"
 		},
 		{
 			"nice",		// 1
+			"Niced processes",
 			"CPU used by niced processes executing in user mode"
 		},
 		{
 			"system",	// 2
+			"Kernel mode",
 			"CPU used by processes executing in kernel mode"
 		},
 		{
 			"idle",		// 3
+			"IDLE",
 			"twiddling thumbs"
 		},
 		{
 			"iowait",	// 4
+			"Waiting for I/O",
 			"CPU waiting for I/O to complete"
 		},
 		{
 			"irq",		// 5
+			"Interrupts",
 			"CPU used when servicing interrupts"
 		},
 		{
 			"softirq",	// 6
+			"Soft IRQS",
 			"CPU used when servicing softirqs"
 		}
 	};
@@ -178,9 +186,11 @@
 			this->type = getFieldFromNode(node);
 
 			if(this->type >= 0) {
+				this->summary = stats[this->type].summary;
 				this->label = stats[this->type].label;
 			} else if(this->type == -1) {
-				this->label = "Total CPU used by all processes and interrupts";
+				this->summary = "Total CPU used by all processes and interrupts";
+				this->label = "CPU use";
 			}
 
 			Abstract::Agent::load(node);
@@ -210,6 +220,18 @@
 				cpu[stats[ix].name].setFraction(values[ix]);
 			}
 
+		}
+
+		void get(const Request &request, Report &report) override {
+
+			report.start("name","label","value",nullptr);
+
+			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
+				report 	<< stats[ix].name
+						<< stats[ix].label
+						<< values[ix];
+
+			}
 		}
 
 		std::string to_string() const override {
