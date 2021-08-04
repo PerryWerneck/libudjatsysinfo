@@ -12,7 +12,7 @@
 	<system-diskstat update-timer='30' />
 	
 	<!-- Information from /proc/stat -->
-	<system-stat update-timer='10'>
+	<system-stat update-timer='10' field-name='cpu-use' >
 	
 	
 	</system-stat>

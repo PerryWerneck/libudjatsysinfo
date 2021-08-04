@@ -19,7 +19,9 @@
 
  #include <config.h>
  #include <iostream>
+ #include <sstream>
  #include <fstream>
+ #include <iomanip>
 
  #include "private.h"
 
@@ -40,37 +42,75 @@
 		const char *label;
 	} stats[] = {
 		{
-			"user",
+			"user",		// 0
 			"CPU used by normal processes executing in user mode"
 		},
 		{
-			"nice",
+			"nice",		// 1
 			"CPU used by niced processes executing in user mode"
 		},
 		{
-			"system",
+			"system",	// 2
 			"CPU used by processes executing in kernel mode"
 		},
 		{
-			"idle",
+			"idle",		// 3
 			"twiddling thumbs"
 		},
 		{
-			"iowait",
+			"iowait",	// 4
 			"CPU waiting for I/O to complete"
 		},
 		{
-			"irq",
+			"irq",		// 5
 			"CPU used when servicing interrupts"
 		},
 		{
-			"softirq",
+			"softirq",	// 6
 			"CPU used when servicing softirqs"
 		}
 	};
 
+	static short getFieldFromNode(const xml_node &node) {
+
+		const char * field = Attribute(node,"field-name").as_string("cpu-use");
+
+		for(unsigned short ix = 0; ix < N_ELEMENTS(stats); ix++) {
+			if(!strcasecmp(stats[ix].name,field)) {
+				return ix;
+			}
+		}
+
+		if(!strcasecmp("cpu-use",field)) {
+			return -1;
+		}
+
+		throw runtime_error(string{"Invalid field name: '"} + field + "'");
+	}
+
 	class SysInfo::SysStat::Agent : public Abstract::Agent {
 	private:
+
+		/// @brief System stat state.
+		class State : public Udjat::State<float> {
+		private:
+			short type = -1;
+
+		public:
+			State(const xml_node &node) : Udjat::State<float>(node), type(getFieldFromNode(node)) {
+			}
+
+			inline short getType() const noexcept {
+				return type;
+			}
+
+		};
+
+		/// @brief Agent states.
+		std::vector<std::shared_ptr<State>> states;
+
+		/// @brief Selected type.
+		short type = -1;
 
 		/// @brief Saved values from last cycle.
 		unsigned long saved[N_ELEMENTS(stats)];
@@ -91,10 +131,58 @@
 
 		}
 
+	protected:
+
+		float getValue() const noexcept {
+
+			if(type >= 0) {
+				return values[type];
+			}
+
+			float total = 0;
+
+			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
+				total += values[ix];
+			}
+
+			if(type == -1) {
+				return total - values[3];
+			}
+
+			return 0;
+		}
+
+		std::shared_ptr<Abstract::State> stateFromValue() const override {
+
+			float value = getValue() * 100;
+			for(auto state : states) {
+
+				if(state->getType() != this->type) {
+					continue;
+				}
+
+				if(state->compare(value)) {
+					return state;
+				}
+
+			}
+
+			return Abstract::Agent::stateFromValue();
+		}
+
+
 	public:
 		Agent(const xml_node &node) : Abstract::Agent("sysstat") {
 
 			this->icon = "utilities-system-monitor";
+			this->type = getFieldFromNode(node);
+
+			if(this->type >= 0) {
+				this->label = stats[this->type].label;
+			} else if(this->type == -1) {
+				this->label = "Total CPU used by all processes and interrupts";
+			}
+
 			Abstract::Agent::load(node);
 
 			if(!getUpdateInterval()) {
@@ -109,6 +197,17 @@
 
 		}
 
+		Value & get(Value &value) override {
+			value = getValue() * 100;
+			return value;
+		}
+
+		std::string to_string() const override {
+			std::stringstream out;
+			out << std::fixed << std::setprecision(2) << (getValue() * 100) << "%";
+			return out.str();
+		}
+
 		bool refresh() override {
 
 			// Get current system usage.
@@ -116,6 +215,7 @@
 			read(current);
 
 			// Compute differences from last cycle.
+			float total = 0;
 			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
 				unsigned long up = current[ix];
 				if(current[ix] >= saved[ix]) {
@@ -123,12 +223,27 @@
 				} else {
 					current[ix] = 0;
 				}
+				total += (float) current[ix];
 				saved[ix] = up;
 			}
 
 			// Compute values on %
+			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
 
+				values[ix] = ((float) current[ix]) / total;
+
+#ifdef DEBUG
+				cout << stats[ix].name << " = " << fixed << setprecision(2) << (values[ix] * 100) << " %" << endl;
+#endif // DEBUG
+
+			}
+
+			updated(true);
 			return true;
+		}
+
+		void append_state(const pugi::xml_node &node) override {
+			states.push_back(std::make_shared<State>(node));
 		}
 
 	};
