@@ -141,7 +141,7 @@
 
 	protected:
 
-		float getValue() const noexcept {
+		float getValue(short type) const noexcept {
 
 			if(type >= 0) {
 				return values[type];
@@ -162,14 +162,9 @@
 
 		std::shared_ptr<Abstract::State> stateFromValue() const override {
 
-			float value = getValue() * 100;
 			for(auto state : states) {
 
-				if(state->getType() != this->type) {
-					continue;
-				}
-
-				if(state->compare(value)) {
+				if(state->compare(getValue(state->getType()) * 100)) {
 					return state;
 				}
 
@@ -208,7 +203,7 @@
 		}
 
 		Value & get(Value &value) override {
-			return value.setFraction(getValue());
+			return value.setFraction(getValue(this->type));
 		}
 
 		void get(const Request &request, Response &response) override {
@@ -224,19 +219,20 @@
 
 		void get(const Request &request, Report &report) override {
 
-			report.start("name","label","value",nullptr);
+			report.start("name","label","summary","value",nullptr);
 
 			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
 				report 	<< stats[ix].name
 						<< stats[ix].label
-						<< values[ix];
+						<< stats[ix].summary
+						<< (values[ix] * 100);
 
 			}
 		}
 
 		std::string to_string() const override {
 			std::stringstream out;
-			out << std::fixed << std::setprecision(2) << (getValue() * 100) << "%";
+			out << std::fixed << std::setprecision(2) << (getValue(this->type) * 100) << "%";
 			return out.str();
 		}
 

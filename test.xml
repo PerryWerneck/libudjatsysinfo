@@ -13,7 +13,9 @@
 	
 	<!-- Information from /proc/stat -->
 	<system-stat update-timer='10' field-name='cpu-use' >
-	
+
+		<state name='user' field-name='user' from-value='10' to-value='100' level='ready' summary='User usage is over 10%' />	
+		<state name='idle' field-name='idle' from-value='70' to-value='100' level='ready' summary='System is IDLE' />
 	
 	</system-stat>
 	
