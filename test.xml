@@ -11,10 +11,25 @@
 	<system-systime />
 	<system-diskstat update-timer='30' />
 	
-	<!-- Information from /proc/stat -->
-	<system-stat update-timer='10' field-name='cpu-use' >
+	<!-- 
+	
+		Information from /proc/stat 
+	
+		Field names:
+		
+			user	CPU used by normal processes executing in user mode
+			nice	CPU used by niced processes executing in user mode
+			system	CPU used by processes executing in kernel mode
+			idle	twiddling thumbs
+			iowait	CPU waiting for I/O to complete
+			irq		CPU used when servicing interrupts
+			softirq	CPU used when servicing softirqs
+	
+	-->
+	<system-stat field-name='cpu-use' update-timer='10' >
 
-		<state name='user' field-name='user' from-value='10' to-value='100' level='ready' summary='User usage is over 10%' />	
+		<state name='iowait' field-name='iowait' from-value='1' to-value='100' level='warning' summary='I/O wait is greater than 1%' />	
+		<state name='user' field-name='user' from-value='10' to-value='100' level='ready' summary='User CPU use is greater than 10%' />	
 		<state name='idle' field-name='idle' from-value='70' to-value='100' level='ready' summary='System is IDLE' />
 	
 	</system-stat>
