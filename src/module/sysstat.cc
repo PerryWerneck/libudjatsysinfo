@@ -22,6 +22,7 @@
  #include <sstream>
  #include <fstream>
  #include <iomanip>
+ #include <udjat/tools/system/stat.h>
 
  #include "private.h"
 
@@ -43,57 +44,49 @@
 		const char *summary;
 	} stats[] = {
 		{
-			"user",		// 0
+			"users",
 			"Normal processes",
 			"CPU used by normal processes executing in user mode"
 		},
 		{
-			"nice",		// 1
+			"niced",
 			"Niced processes",
 			"CPU used by niced processes executing in user mode"
 		},
 		{
-			"system",	// 2
+			"kernel",
 			"Kernel mode",
 			"CPU used by processes executing in kernel mode"
 		},
 		{
-			"idle",		// 3
+			"idle",
 			"IDLE",
 			"twiddling thumbs"
 		},
 		{
-			"iowait",	// 4
+			"iowait",
 			"Waiting for I/O",
 			"CPU waiting for I/O to complete"
 		},
 		{
-			"irq",		// 5
+			"irq",
 			"Interrupts",
 			"CPU used when servicing interrupts"
 		},
 		{
-			"softirq",	// 6
+			"sirq",
 			"Soft IRQS",
 			"CPU used when servicing softirqs"
+		},
+		{
+			"total",
+			"Total CPU used by all processes and interrupts",
+			"Total use of CPU"
 		}
 	};
 
-	static short getFieldFromNode(const xml_node &node) {
-
-		const char * field = Attribute(node,"field-name").as_string("cpu-use");
-
-		for(unsigned short ix = 0; ix < N_ELEMENTS(stats); ix++) {
-			if(!strcasecmp(stats[ix].name,field)) {
-				return ix;
-			}
-		}
-
-		if(!strcasecmp("cpu-use",field)) {
-			return -1;
-		}
-
-		throw runtime_error(string{"Invalid field name: '"} + field + "'");
+	static System::Stat::Type getFieldFromNode(const xml_node &node) {
+		return System::Stat::getIndex(Attribute(node,"field-name").as_string("total"));
 	}
 
 	class SysInfo::SysStat::Agent : public Abstract::Agent {
@@ -102,13 +95,13 @@
 		/// @brief System stat state.
 		class State : public Udjat::State<float> {
 		private:
-			short type = -1;
+			System::Stat::Type type = System::Stat::TOTAL;
 
 		public:
 			State(const xml_node &node) : Udjat::State<float>(node), type(getFieldFromNode(node)) {
 			}
 
-			inline short getType() const noexcept {
+			inline System::Stat::Type getType() const noexcept {
 				return type;
 			}
 
@@ -118,46 +111,31 @@
 		std::vector<std::shared_ptr<State>> states;
 
 		/// @brief Selected type.
-		short type = -1;
+		System::Stat::Type type = System::Stat::TOTAL;
 
 		/// @brief Saved values from last cycle.
-		unsigned long saved[N_ELEMENTS(stats)];
+		System::Stat saved;
 
 		/// @brief Current values (in %).
-		float values[N_ELEMENTS(stats)];
+		float values[System::Stat::TOTAL];
 
-		/// @brief Read values from /proc/stat.
-		static void read(unsigned long * values ) {
-
-			ifstream in("/proc/stat", ifstream::in);
-
-			in.ignore(3);
-
-			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
-				in >> values[ix];
-			}
-
-		}
 
 	protected:
 
-		float getValue(short type) const noexcept {
+		float getValue(System::Stat::Type type) const noexcept {
 
-			if(type >= 0) {
+			if(type < System::Stat::TOTAL) {
 				return values[type];
 			}
 
 			float total = 0;
 
-			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
+			for(size_t ix = 0; ix < N_ELEMENTS(values); ix++) {
 				total += values[ix];
 			}
 
-			if(type == -1) {
-				return total - values[3];
-			}
+			return total - values[System::Stat::IDLE];
 
-			return 0;
 		}
 
 		std::shared_ptr<Abstract::State> stateFromValue() const override {
@@ -179,14 +157,8 @@
 
 			this->icon = "utilities-system-monitor";
 			this->type = getFieldFromNode(node);
-
-			if(this->type >= 0) {
-				this->summary = stats[this->type].summary;
-				this->label = stats[this->type].label;
-			} else if(this->type == -1) {
-				this->summary = "Total CPU used by all processes and interrupts";
-				this->label = "CPU use";
-			}
+			this->summary = stats[this->type].summary;
+			this->label = stats[this->type].label;
 
 			Abstract::Agent::load(node);
 
@@ -194,11 +166,9 @@
 				throw runtime_error("System stats requires an update timer");
 			}
 
-			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
+			for(size_t ix = 0; ix < N_ELEMENTS(values); ix++) {
 				values[ix] = 0;
 			}
-
-			read(saved);
 
 		}
 
@@ -211,7 +181,7 @@
 			Abstract::Agent::get(request,response);
 
 			auto &cpu = response["details"];
-			for(size_t ix = 0; ix < N_ELEMENTS(stats); ix++) {
+			for(size_t ix = 0; ix < N_ELEMENTS(values); ix++) {
 				cpu[stats[ix].name].setFraction(values[ix]);
 			}
 
@@ -238,6 +208,23 @@
 
 		bool refresh() override {
 
+			System::Stat current;
+			System::Stat diff(current);
+
+			diff -= this->saved;	// Get only the diference.
+			this->saved = current;	// Update saved value.
+
+			cout << "USER=" << diff.user << " IDLE=" << diff.idle << " TOTAL=" << diff.total() << endl;
+
+			float total = (float) diff.total();
+			for(size_t ix = 0; ix < N_ELEMENTS(values); ix++) {
+				values[ix] = ((float) diff[(System::Stat::Type) ix]) / total;
+#ifdef DEBUG
+				cout << stats[ix].name << " = " << fixed << setprecision(2) << (values[ix] * 100) << " %" << endl;
+#endif // DEBUG
+			}
+
+			/*
 			// Get current system usage.
 			unsigned long current[N_ELEMENTS(stats)];
 			read(current);
@@ -260,11 +247,10 @@
 
 				values[ix] = ((float) current[ix]) / total;
 
-#ifdef DEBUG
-				cout << stats[ix].name << " = " << fixed << setprecision(2) << (values[ix] * 100) << " %" << endl;
-#endif // DEBUG
 
 			}
+
+			*/
 
 			updated(true);
 			return true;

@@ -26,7 +26,7 @@
 			softirq	CPU used when servicing softirqs
 	
 	-->
-	<system-stat field-name='cpu-use' update-timer='10' >
+	<system-stat field-name='total' update-timer='2' >
 
 		<state name='iowait' field-name='iowait' from-value='1' to-value='100' level='warning' summary='I/O wait is greater than 1%' />	
 		<state name='user' field-name='user' from-value='10' to-value='100' level='ready' summary='User CPU use is greater than 10%' />	
