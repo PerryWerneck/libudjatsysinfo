@@ -19,7 +19,7 @@
 
  #include <config.h>
  #include "private.h"
- #include <udjat/disk/stat.h>
+ #include <udjat/tools/disk/stat.h>
  #include <sstream>
  #include <iomanip>
  #include <sstream>
