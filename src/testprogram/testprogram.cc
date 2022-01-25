@@ -31,7 +31,7 @@
 	Logger::redirect(nullptr,true);
 
 	auto module = udjat_module_init();
-	auto agent = Abstract::Agent::init("${PWD}/test.xml");
+	auto agent = Udjat::init("test.xml");
 
 	try {
 

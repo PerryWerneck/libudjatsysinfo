@@ -54,6 +54,13 @@ stamp-h1
 Makefile
 valgrind.suppression
 
+# Misc
+ABOUT-NLS
+intl
+m4
+po
+
+
 # Personal Notes
 *.[0-9]
 
