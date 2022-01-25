@@ -17,7 +17,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <udjat.h>
  #include <udjat/module.h>
  #include <udjat/tools/mainloop.h>
  #include <unistd.h>
@@ -32,12 +31,12 @@
 	Logger::redirect(nullptr,true);
 
 	auto module = udjat_module_init();
-	auto agent = Abstract::Agent::init("${PWD}/test.xml");
+	auto agent = Udjat::init("test.xml");
 
 	try {
 
-		Module::load("http");
-		Module::load("info");
+		Module::load("http",false);
+		Module::load("info",false);
 
 		cout << "http://localhost:8989/api/1.0/info/modules.xml" << endl;
 		cout << "http://localhost:8989/api/1.0/info/workers.xml" << endl;
