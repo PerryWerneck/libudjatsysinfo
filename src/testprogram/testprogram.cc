@@ -35,9 +35,6 @@
 
 	try {
 
-		Module::load("http",false);
-		Module::load("info",false);
-
 		cout << "http://localhost:8989/api/1.0/info/modules.xml" << endl;
 		cout << "http://localhost:8989/api/1.0/info/workers.xml" << endl;
 		cout << "http://localhost:8989/api/1.0/info/factories.xml" << endl;
