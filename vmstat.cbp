@@ -32,7 +32,12 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="src/include/udjat/tools/vmstat.h" />
+		<Unit filename="src/include/config.h" />
+		<Unit filename="src/include/udjat/tools/disk/stat.h" />
+		<Unit filename="src/include/udjat/tools/system/info.h" />
+		<Unit filename="src/include/udjat/tools/system/stat.h" />
+		<Unit filename="src/library/os/linux/sysinfo.cc" />
+		<Unit filename="src/library/os/linux/sysstats.cc" />
 		<Unit filename="src/module/diskstat.cc" />
 		<Unit filename="src/module/init.cc" />
 		<Unit filename="src/module/loadavg.cc" />
