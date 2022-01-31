@@ -225,7 +225,7 @@ install-dev: \
 		$(DESTDIR)$(includedir)/udjat/tools/disk
 
 	@$(INSTALL_DATA) \
-		src/include/udjat/tools/system/*.h \
+		src/include/udjat/tools/disk/*.h \
 		$(DESTDIR)$(includedir)/udjat/tools/disk
 
 	# Install PKG-CONFIG files
