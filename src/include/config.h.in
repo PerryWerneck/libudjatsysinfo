@@ -24,6 +24,12 @@
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
+/* The library description */
+#undef PACKAGE_LIBRARY_DESCRIPTION
+
+/* The module library name */
+#undef PACKAGE_LIBRARY_NAME
+
 /* The module major version */
 #undef PACKAGE_MAJOR_VERSION
 

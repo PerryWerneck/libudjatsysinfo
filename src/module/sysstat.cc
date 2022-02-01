@@ -38,10 +38,6 @@
 		PACKAGE_BUGREPORT 											// The bug report address.
 	};
 
-	static System::Stat::Type getFieldFromNode(const xml_node &node) {
-		return System::Stat::getIndex(Attribute(node,"field-name").as_string("total"));
-	}
-
 	class SysInfo::SysStat::Agent : public Abstract::Agent {
 	private:
 
@@ -51,7 +47,7 @@
 			System::Stat::Type type = System::Stat::TOTAL;
 
 		public:
-			State(const xml_node &node) : Udjat::State<float>(node), type(getFieldFromNode(node)) {
+			State(const xml_node &node) : Udjat::State<float>(node), type(System::Stat::TypeFactory(node)) {
 			}
 
 			inline System::Stat::Type getType() const noexcept {
@@ -106,7 +102,7 @@
 
 
 	public:
-		Agent(const xml_node &node) : Abstract::Agent("sysstat"), type(getFieldFromNode(node)) {
+		Agent(const xml_node &node) : Abstract::Agent("sysstat"), type(System::Stat::TypeFactory(node)) {
 
 			this->icon = "utilities-system-monitor";
 			this->summary = System::Stat::getSummary(this->type);
@@ -134,20 +130,20 @@
 
 			auto &cpu = response["details"];
 			for(size_t ix = 0; ix < N_ELEMENTS(values); ix++) {
-				cpu[System::Stat::typenames[ix]].setFraction(values[ix]);
+				(cpu[std::to_string((System::Stat::Type) ix)]).setFraction(values[ix]);
 			}
 
 		}
 
-		void get(const Request &request, Report &report) override {
+		void get(const Request UDJAT_UNUSED(&request), Report &report) override {
 
 			report.start("name","label","summary","value",nullptr);
 
 			for(size_t ix = 0; ix < N_ELEMENTS(values); ix++) {
-				report 	<< System::Stat::typenames[ix]
-						<< System::Stat::getLabel((System::Stat::Type) ix)
-						<< System::Stat::getSummary((System::Stat::Type) ix)
-						<< (values[ix] * 100);
+				report 	<< string{std::to_string((System::Stat::Type) ix)}
+						<< string{System::Stat::getLabel((System::Stat::Type) ix)}
+						<< string{System::Stat::getSummary((System::Stat::Type) ix)}
+						<< std::to_string((values[ix] * 100));
 
 			}
 		}
@@ -170,7 +166,7 @@
 			for(size_t ix = 0; ix < N_ELEMENTS(values); ix++) {
 				values[ix] = ((float) diff[(System::Stat::Type) ix]) / total;
 #ifdef DEBUG
-				cout << System::Stat::typenames[ix] << " = " << fixed << setprecision(2) << (values[ix] * 100) << " %" << endl;
+				cout << ((System::Stat::Type) ix) << " = " << fixed << setprecision(2) << (values[ix] * 100) << " %" << endl;
 #endif // DEBUG
 			}
 

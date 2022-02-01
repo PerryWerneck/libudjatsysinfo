@@ -2,6 +2,9 @@
 
 <config>
 
+	<module name='civetweb' required='no' />
+	<module name='information' required='no' />
+
 	<!-- update-timer cant be only 60, 300 or 900 -->
 	<load-average update-timer='60' />
 	

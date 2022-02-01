@@ -59,7 +59,7 @@ ABOUT-NLS
 intl
 m4
 po
-
+*.pc
 
 # Personal Notes
 *.[0-9]
