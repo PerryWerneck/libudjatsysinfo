@@ -74,8 +74,8 @@
 
 	public:
 		Agent(const xml_node &node) : Abstract::Agent("uptime") {
-			this->icon = "utilities-system-monitor";
-			this->label = "System uptime";
+			Object::properties.icon = "utilities-system-monitor";
+			Object::properties.label = "System uptime";
 			Abstract::Agent::load(node);
 		}
 

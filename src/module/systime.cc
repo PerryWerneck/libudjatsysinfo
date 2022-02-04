@@ -39,8 +39,8 @@
 	class SysInfo::SysTime::Agent : public Abstract::Agent {
 	public:
 		Agent(const xml_node &node) : Abstract::Agent("systime") {
-			this->icon = "utilities-system-monitor";
-			this->label = "System Time";
+			Object::properties.icon = "utilities-system-monitor";
+			Object::properties.label = "System Time";
 			Abstract::Agent::load(node);
 		}
 

@@ -167,8 +167,8 @@
 
 	public:
 		Agent(const xml_node &node) : Percent("memory") {
-			this->icon = "utilities-system-monitor";
-			this->label = "Used Memory Percentage";
+			Object::properties.icon = "utilities-system-monitor";
+			Object::properties.label = "Used Memory Percentage";
 			Abstract::Agent::load(node);
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 		}

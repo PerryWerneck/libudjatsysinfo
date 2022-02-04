@@ -100,13 +100,13 @@
 	public:
 		Agent(const xml_node &node) : Abstract::Agent("diskstat"), type(Attribute(node,"stat-type").select("average","read","write",nullptr)) {
 
-			this->icon = "utilities-system-monitor";
+			Object::properties.icon = "utilities-system-monitor";
 			this->unit = Udjat::Disk::Unit::get(node);
 
 			Abstract::Agent::load(node);
 
-			if(!(this->label && *this->label)) {
-				this->label = Quark(string{labels[type]} + " in " + unit->speed).c_str();
+			if(!(Object::properties.label && *Object::properties.label)) {
+				Object::properties.label = Quark(string{labels[type]} + " in " + unit->speed).c_str();
 			}
 
 			if(!getUpdateInterval()) {

@@ -88,8 +88,8 @@
 
 	public:
 		Agent(const xml_node &node) : Percent("swap") {
-			this->icon = "utilities-system-monitor";
-			this->label = "Used Swap Percentage";
+			Object::properties.icon = "utilities-system-monitor";
+			Object::properties.label = "Used Swap Percentage";
 			Abstract::Agent::load(node);
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 		}

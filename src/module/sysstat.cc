@@ -104,9 +104,9 @@
 	public:
 		Agent(const xml_node &node) : Abstract::Agent("sysstat"), type(System::Stat::TypeFactory(node)) {
 
-			this->icon = "utilities-system-monitor";
-			this->summary = System::Stat::getSummary(this->type);
-			this->label = System::Stat::getLabel(this->type);
+			Object::properties.icon = "utilities-system-monitor";
+			Object::properties.summary = System::Stat::getSummary(this->type);
+			Object::properties.label = System::Stat::getLabel(this->type);
 
 			Abstract::Agent::load(node);
 

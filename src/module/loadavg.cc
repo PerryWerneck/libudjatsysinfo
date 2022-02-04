@@ -120,8 +120,8 @@
 			for(size_t type = 0; type < (sizeof(types)/sizeof(types[0])); type++) {
 				if(minutes == types[type].minutes) {
 					this->type = type;
-					this->label = types[type].label;
-					this->summary = types[type].summary;
+					Object::properties.label = types[type].label;
+					Object::properties.summary = types[type].summary;
 					return;
 				}
 			}
@@ -164,13 +164,13 @@
 						cores++;
 					}
 				}
-				cout << getName() << "\tNumber of CPU cores: " << cores << endl;
+				info() << "Number of CPU cores: " << cores << endl;
 			}
 
 			//
 			// Setup agent
 			//
-			this->icon = "utilities-system-monitor";
+			Object::properties.icon = "utilities-system-monitor";
 
 			Abstract::Agent::load(node);
 

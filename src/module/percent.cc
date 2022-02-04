@@ -35,7 +35,7 @@
 		if(this->hasStates())
 			return;
 
-		cout << getName() << "\tUsing default states" << endl;
+		info() << "Using default states" << endl;
 
 		float from = 0.0;
 
