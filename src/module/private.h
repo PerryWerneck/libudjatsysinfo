@@ -63,7 +63,7 @@ namespace Udjat {
 
 			bool refresh() override;
 
-			Udjat::Value & getProperties(Udjat::Value &value) const noexcept override;
+			Udjat::Value & get(Udjat::Value &value) const override;
 
 			std::string to_string() const override;
 

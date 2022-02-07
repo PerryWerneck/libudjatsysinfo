@@ -120,9 +120,8 @@
 
 		}
 
-		Value & getProperties(Value &value) const noexcept override {
-			Abstract::Agent::getProperties(value);
-			value["value"].setFraction(getValue(this->type));
+		Value & get(Value &value) const override {
+			value.setFraction(getValue(this->type));
 			return value;
 		}
 

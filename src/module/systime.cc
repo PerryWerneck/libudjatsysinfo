@@ -47,9 +47,8 @@
 		virtual ~Agent() {
 		}
 
-		Udjat::Value &getProperties(Udjat::Value &value) const noexcept override {
-			Abstract::Agent::getProperties(value);
-			value["value"] = TimeStamp();
+		Udjat::Value &get(Udjat::Value &value) const override {
+			value = TimeStamp();
 			return value;
 		}
 
