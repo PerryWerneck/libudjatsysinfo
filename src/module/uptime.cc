@@ -92,8 +92,9 @@
 			return true;
 		}
 
-		Udjat::Value & get(Udjat::Value &value) override {
-			value = to_string();
+		Udjat::Value & getProperties(Udjat::Value &value) const noexcept override {
+			Abstract::Agent::getProperties(value);
+			value["value"] = to_string();
 			return value;
 		}
 

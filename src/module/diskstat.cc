@@ -129,8 +129,8 @@
 		virtual ~Agent() {
 		}
 
-		Udjat::Value &get(Udjat::Value &value) override {
-			value = getValueByType();
+		Udjat::Value &getProperties(Udjat::Value &value) const noexcept override {
+			value["value"] = getValueByType();
 			return value;
 		}
 

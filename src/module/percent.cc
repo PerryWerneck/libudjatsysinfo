@@ -73,8 +73,10 @@
 
 	}
 
-	Udjat::Value & SysInfo::Percent::get(Udjat::Value &value) {
-		return value.setFraction(Udjat::Agent<float>::get());
+	Udjat::Value & SysInfo::Percent::getProperties(Udjat::Value &value) const noexcept {
+		Abstract::Agent::getProperties(value);
+		value["value"].setFraction(Udjat::Agent<float>::get());
+		return value;
 	}
 
 	bool SysInfo::Percent::refresh() {

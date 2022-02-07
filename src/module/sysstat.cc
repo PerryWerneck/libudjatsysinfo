@@ -120,8 +120,10 @@
 
 		}
 
-		Value & get(Value &value) override {
-			return value.setFraction(getValue(this->type));
+		Value & getProperties(Value &value) const noexcept override {
+			Abstract::Agent::getProperties(value);
+			value["value"].setFraction(getValue(this->type));
+			return value;
 		}
 
 		void get(const Request &request, Response &response) override {
@@ -135,7 +137,9 @@
 
 		}
 
-		void get(const Request UDJAT_UNUSED(&request), Report &report) override {
+		void get(const Request &request, Report &report) override {
+
+			Abstract::Agent::get(request,report);
 
 			report.start("name","label","summary","value",nullptr);
 
