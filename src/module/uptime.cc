@@ -23,18 +23,13 @@
  #include <sstream>
  #include <iomanip>
  #include <sstream>
+ #include <udjat/moduleinfo.h>
 
  #include "private.h"
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get system uptime", 										// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get system uptime"};
 
 	class SysInfo::UpTime::Agent : public Abstract::Agent {
 	private:
@@ -164,7 +159,7 @@
 
 	};
 
-	SysInfo::UpTime::UpTime() : Udjat::Factory("system-uptime",&moduleinfo) {
+	SysInfo::UpTime::UpTime() : Udjat::Factory("system-uptime",moduleinfo) {
 	}
 
 	SysInfo::UpTime::~UpTime() {

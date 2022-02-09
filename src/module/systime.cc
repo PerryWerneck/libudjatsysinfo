@@ -25,16 +25,11 @@
  #include <sstream>
 
  #include "private.h"
+ #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get system time", 											// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get system time"};
 
 	class SysInfo::SysTime::Agent : public Abstract::Agent {
 	public:
@@ -57,7 +52,7 @@
 		}
 	};
 
-	SysInfo::SysTime::SysTime() : Udjat::Factory("system-systime",&moduleinfo) {
+	SysInfo::SysTime::SysTime() : Udjat::Factory("system-systime",moduleinfo) {
 	}
 
 	SysInfo::SysTime::~SysTime() {

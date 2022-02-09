@@ -54,17 +54,13 @@
  *
  */
 
+ #include <config.h>
  #include "private.h"
+ #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get memory use", 											// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get memory use"};
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
 		{
@@ -178,7 +174,7 @@
 
 	};
 
-	SysInfo::MemUsed::MemUsed() : Udjat::Factory("mem-used",&moduleinfo) {
+	SysInfo::MemUsed::MemUsed() : Udjat::Factory("mem-used",moduleinfo) {
 	}
 
 	SysInfo::MemUsed::~MemUsed() {

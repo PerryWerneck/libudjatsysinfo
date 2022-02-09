@@ -36,16 +36,11 @@
  #include <iomanip>
 
  #include "private.h"
+ #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo {
-		PACKAGE_NAME,														// The module name.
-		"Get system load average use in the latest 1, 5 or 15 minutes", 	// The module description.
-		PACKAGE_VERSION, 													// The module version.
-		PACKAGE_URL, 														// The package URL.
-		PACKAGE_BUGREPORT 													// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo {"Get system load average use in the latest 1, 5 or 15 minutes"};
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
 		{
@@ -195,7 +190,7 @@
 
 	};
 
-	SysInfo::LoadAverage::LoadAverage() : Udjat::Factory("load-average",&moduleinfo) {
+	SysInfo::LoadAverage::LoadAverage() : Udjat::Factory("load-average",moduleinfo) {
 	}
 
 	SysInfo::LoadAverage::~LoadAverage() {

@@ -21,16 +21,11 @@
  #include "private.h"
  #include <udjat/module.h>
  #include <unistd.h>
+ #include <udjat/moduleinfo.h>
 
  using namespace std;
 
- static const Udjat::ModuleInfo moduleinfo{
-	PACKAGE_NAME,								// The module name.
-	"System information agents", 				// The module description.
-	PACKAGE_VERSION, 							// The module version.
-	PACKAGE_URL, 								// The package URL.
-	PACKAGE_BUGREPORT 							// The bug report address.
- };
+ static const Udjat::ModuleInfo moduleinfo{"System information agents"};
 
  class Module : public Udjat::Module {
  private:
@@ -43,7 +38,7 @@
 	SysInfo::SysStat		sisstat;
 
  public:
- 	Module() : Udjat::Module("sysinfo",&moduleinfo) {
+ 	Module() : Udjat::Module("sysinfo",moduleinfo) {
  	};
 
  	virtual ~Module() {

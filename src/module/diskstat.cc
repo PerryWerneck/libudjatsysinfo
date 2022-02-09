@@ -26,16 +26,11 @@
  #include <udjat/tools/xml.h>
  #include <sys/time.h>
  #include <sstream>
+ #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get Disk Read/Write speed average", 						// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get Disk Read/Write speed average"};
 
 	static const char *labels[] = {
 		"Average disk speed",
@@ -160,7 +155,7 @@
 
 	};
 
-	SysInfo::DiskStat::DiskStat() : Udjat::Factory("system-diskstat",&moduleinfo) {
+	SysInfo::DiskStat::DiskStat() : Udjat::Factory("system-diskstat",moduleinfo) {
 	}
 
 	SysInfo::DiskStat::~DiskStat() {

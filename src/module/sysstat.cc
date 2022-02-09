@@ -23,6 +23,7 @@
  #include <fstream>
  #include <iomanip>
  #include <udjat/tools/system/stat.h>
+ #include <udjat/moduleinfo.h>
 
  #include "private.h"
 
@@ -30,13 +31,7 @@
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get System stats", 										// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get System stats"};
 
 	class SysInfo::SysStat::Agent : public Abstract::Agent {
 	private:
@@ -183,7 +178,7 @@
 
 	};
 
-	SysInfo::SysStat::SysStat() : Udjat::Factory("system-stat",&moduleinfo) {
+	SysInfo::SysStat::SysStat() : Udjat::Factory("system-stat",moduleinfo) {
 	}
 
 	SysInfo::SysStat::~SysStat() {

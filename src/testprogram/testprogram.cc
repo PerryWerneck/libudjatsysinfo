@@ -31,7 +31,7 @@
 	Logger::redirect(nullptr,true);
 
 	auto module = udjat_module_init();
-	auto agent = Udjat::load("./test.xml");
+	Udjat::load("./test.xml");
 
 	try {
 
@@ -40,7 +40,7 @@
 		cout << "http://localhost:8989/api/1.0/info/factories.xml" << endl;
 		cout << "http://localhost:8989/api/1.0/info/protocols.xml" << endl;
 
-		for(auto child : *agent) {
+		for(auto child : *Abstract::Agent::root()) {
 			cout << "http://localhost:8989/api/1.0/agent/" << child->name() << ".xml" << endl;
 		}
 

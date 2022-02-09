@@ -22,18 +22,13 @@
  #include <udjat/tools/sysconfig.h>
  #include <sstream>
  #include <iomanip>
+ #include <udjat/moduleinfo.h>
 
  #include "private.h"
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get swap use", 											// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get swap use"};
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
 		{
@@ -99,7 +94,7 @@
 
 	};
 
-	SysInfo::SwapUsed::SwapUsed() : Udjat::Factory("swap-used",&moduleinfo) {
+	SysInfo::SwapUsed::SwapUsed() : Udjat::Factory("swap-used",moduleinfo) {
 	}
 
 	SysInfo::SwapUsed::~SwapUsed() {
