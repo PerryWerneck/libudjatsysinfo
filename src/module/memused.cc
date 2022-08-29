@@ -67,21 +67,21 @@
 			0.8,
 			"low",
 			Udjat::ready,
-			"Memory usage is lower than 80%",
+			N_( "Memory usage is lower than 80%" ),
 			""
 		},
 		{
 			0.9,
 			"medium",
 			Udjat::warning,
-			"Memory usage is lower than 90%",
+			N_( "Memory usage is lower than 90%" ),
 			""
 		},
 		{
 			1.0,
 			"high",
 			Udjat::error,
-			"Memory usage is higher than 90%",
+			N_( "Memory usage is higher than 90%" ),
 			""
 		}
 	};
@@ -164,7 +164,7 @@
 	public:
 		Agent(const xml_node &node) : Percent("memory") {
 			Object::properties.icon = "utilities-system-monitor";
-			Object::properties.label = "Used Memory Percentage";
+			Object::properties.label = _( "Used Memory Percentage" );
 			Abstract::Agent::load(node);
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 		}

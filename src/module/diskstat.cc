@@ -33,9 +33,9 @@
 	static const Udjat::ModuleInfo moduleinfo{"Get Disk Read/Write speed average"};
 
 	static const char *labels[] = {
-		"Average disk speed",
-		"Read disk speed",
-		"Write disk speed"
+		N_( "Average disk speed" ),
+		N_( "Read disk speed" ),
+		N_( "Write disk speed" )
 	};
 
 	class SysInfo::DiskStat::Agent : public Abstract::Agent {
@@ -101,7 +101,11 @@
 			Abstract::Agent::load(node);
 
 			if(!(Object::properties.label && *Object::properties.label)) {
+#ifdef GETTEXT_PACKAGE
+				Object::properties.label = Quark(string{dgettext(GETTEXT_PACKAGE,labels[type])} + _( " in " ) + unit->speed).c_str();
+#else
 				Object::properties.label = Quark(string{labels[type]} + " in " + unit->speed).c_str();
+#endif // GETTEXT_PACKAGE
 			}
 
 			if(!getUpdateInterval()) {

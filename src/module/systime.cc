@@ -20,6 +20,7 @@
  #include <config.h>
  #include "private.h"
  #include <udjat/tools/timestamp.h>
+ #include <udjat/tools/intl.h>
  #include <sstream>
  #include <iomanip>
  #include <sstream>
@@ -35,7 +36,7 @@
 	public:
 		Agent(const xml_node &node) : Abstract::Agent("systime") {
 			Object::properties.icon = "utilities-system-monitor";
-			Object::properties.label = "System Time";
+			Object::properties.label = _( "System Time" );
 			Abstract::Agent::load(node);
 		}
 
@@ -58,9 +59,8 @@
 	SysInfo::SysTime::~SysTime() {
 	}
 
-	bool SysInfo::SysTime::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::SysTime::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node)  const {
+		return make_shared<Agent>(node);
 	}
 
  }

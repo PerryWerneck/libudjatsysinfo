@@ -17,10 +17,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <config.h>
  #include "private.h"
  #include <sstream>
  #include <iomanip>
  #include <udjat/tools/value.h>
+ #include <udjat/tools/intl.h>
 
  namespace Udjat {
 
@@ -32,7 +34,7 @@
 
 	void SysInfo::Percent::load(const StateDescription *states, size_t length) {
 
-		if(this->hasStates())
+		if(!this->states().empty())
 			return;
 
 		info() << "Using default states" << endl;
@@ -47,8 +49,13 @@
 					from,
 					states->value,
 					states->level,
+#ifdef GETTEXT_PACKAGE
+					dgettext(GETTEXT_PACKAGE,states->summary),
+					dgettext(GETTEXT_PACKAGE,states->body)
+#else
 					states->summary,
 					states->body
+#endif // GETTEXT_PACKAGE
 				)
 			);
 

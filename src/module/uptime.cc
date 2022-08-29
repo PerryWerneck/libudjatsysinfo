@@ -20,6 +20,7 @@
  #include <config.h>
  #include "private.h"
  #include <udjat/tools/sysconfig.h>
+ #include <udjat/tools/intl.h>
  #include <sstream>
  #include <iomanip>
  #include <sstream>
@@ -77,8 +78,10 @@
 		virtual ~Agent() {
 		}
 
-		void append_state(const pugi::xml_node &node) override {
-			states.push_back(std::make_shared<State<long>>(node));
+		std::shared_ptr<Abstract::State> StateFactory(const pugi::xml_node &node) override {
+			auto state = std::make_shared<State<long>>(node);
+			states.push_back(state);
+			return state;
 		}
 
 		bool refresh() {
@@ -97,7 +100,7 @@
 			long uptime = getUptime();
 
 			if(uptime < 60) {
-				return "Less than one minute";
+				return _( "Less than one minute" );
 			}
 
 			long updays = uptime / 86400;
@@ -110,13 +113,13 @@
 				uint8_t	key;
 				const char * fmt;
 			} itens[] = {
-				{ 1,	"{d} {D}" 						},	// Only days.
-				{ 2,	"{h} {H}"						},	// Only hours.
-				{ 3,	"{d} {D} and {h} {H}"			},	// Days and hours.
-				{ 4,	"{m} {M}"						},	// Only minutes.
-				{ 5,	"{d} {D} and {m} {M}"			},	// Days and minutes.
-				{ 6,	"{h} {H} and {m} {M}"			},	// Hours and minutes.
-				{ 7,	"{d} {D}, {h} {H} and {m} {M}"	},	// Days, hours and minutes.
+				{ 1,	N_( "{d} {D}" ) 						},	// Only days.
+				{ 2,	N_( "{h} {H}" )							},	// Only hours.
+				{ 3,	N_( "{d} {D} and {h} {H}" )				},	// Days and hours.
+				{ 4,	N_( "{m} {M}" )							},	// Only minutes.
+				{ 5,	N_( "{d} {D} and {m} {M}" )				},	// Days and minutes.
+				{ 6,	N_( "{h} {H} and {m} {M}" )				},	// Hours and minutes.
+				{ 7,	N_( "{d} {D}, {h} {H} and {m} {M}" )	},	// Days, hours and minutes.
 			};
 
 			struct {
@@ -124,11 +127,11 @@
 				string text;
 			} values[] = {
 				{ "{d}", std::to_string(updays) },
-				{ "{D}", string( updays > 1 ? "days" : "day") },
+				{ "{D}", string( updays > 1 ?  _("days") : _("day")) },
 				{ "{h}", std::to_string(uphours) },
-				{ "{H}", string( uphours > 1 ? "hours" : "hour") },
+				{ "{H}", string( uphours > 1 ? _("hours") : _("hour")) },
 				{ "{m}", std::to_string(upmins) },
-				{ "{M}", string( upmins > 1 ? "minutes" : "minute") }
+				{ "{M}", string( upmins > 1 ? _("minutes") : _("minute")) }
 			};
 
 #ifdef DEBUG
@@ -140,7 +143,11 @@
 
 				if(itens[item].key == key) {
 
+#ifdef GETTEXT_PACKAGE
+					out = dgettext(GETTEXT_PACKAGE,itens[item].fmt);
+#else
 					out = itens[item].fmt;
+#endif // GETTEXT_PACKAGE
 
 					for(size_t value = 0; value < (sizeof(values)/sizeof(values[0])); value++) {
 						size_t pos = out.find(values[value].tag);
@@ -165,9 +172,8 @@
 	SysInfo::UpTime::~UpTime() {
 	}
 
-	bool SysInfo::UpTime::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::UpTime::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node)  const {
+		return make_shared<Agent>(node);
 	}
 
  }

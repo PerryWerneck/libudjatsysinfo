@@ -172,8 +172,10 @@
 			return true;
 		}
 
-		void append_state(const pugi::xml_node &node) override {
-			states.push_back(std::make_shared<State>(node));
+		std::shared_ptr<Abstract::State> StateFactory(const pugi::xml_node &node) override {
+			auto state = std::make_shared<State>(node);
+			states.push_back(state);
+			return state;
 		}
 
 	};
@@ -184,9 +186,8 @@
 	SysInfo::SysStat::~SysStat() {
 	}
 
-	bool SysInfo::SysStat::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::SysStat::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node)  const {
+		return make_shared<Agent>(node);
 	}
 
  }

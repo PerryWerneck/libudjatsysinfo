@@ -34,6 +34,7 @@
  #include <udjat/tools/file.h>
  #include <sstream>
  #include <iomanip>
+ #include <udjat/tools/intl.h>
 
  #include "private.h"
  #include <udjat/moduleinfo.h>
@@ -47,28 +48,28 @@
 			0.5,
 			"good",
 			Udjat::ready,
-			"System load is lower than 50%",
+			N_( "System load is lower than 50%" ),
 			""
 		},
 		{
 			0.8,
 			"gt50",
 			Udjat::warning,
-			"System load is higher than 50%",
+			N_( "System load is higher than 50%" ),
 			""
 		},
 		{
 			0.95,
 			"gt90",
 			Udjat::error,
-			"System load is higher than 80%",
+			N_( "System load is higher than 80%" ),
 			""
 		},
 		{
 			1.0,
 			"full",
 			Udjat::critical,
-			"System load is too high",
+			N_( "System load is too high" ),
 			""
 		}
 	};
@@ -91,22 +92,22 @@
 				// 0 = 1 minute average.
 				{
 					1,
-					"System load in the last minute",
-					"Average system load in the last minute"
+					N_( "System load in the last minute" ),
+					N_( "Average system load in the last minute" )
 				},
 
 				// 1 = 5 minutes average.
 				{
 					5,
-					"System load in the last 5 minutes",
-					"Average system load in the last five minutes"
+					N_( "System load in the last 5 minutes" ),
+					N_( "Average system load in the last five minutes" )
 				},
 
 				// 2 = 15 minutes average.
 				{
 					15,
-					"System load in the last 15 minutes",
-					"Average system load in the last fifteen minutes"
+					N_( "System load in the last 15 minutes" ),
+					N_( "Average system load in the last fifteen minutes" )
 				}
 
 			};
@@ -133,7 +134,7 @@
 			double loadavg[3];
 
 			if(getloadavg(loadavg,3) < 0) {
-				throw system_error(EINVAL,system_category(),"Can't get system load average");
+				throw system_error(EINVAL,system_category(),_("Can't get system load average"));
 			}
 
 			float rc = loadavg[this->type] / ((double) this->cores);
