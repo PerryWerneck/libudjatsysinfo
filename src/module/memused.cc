@@ -20,6 +20,7 @@
  #include <config.h>
  #include "private.h"
  #include <udjat/tools/sysconfig.h>
+ #include <udjat/tools/intl.h>
  #include <sstream>
  #include <iomanip>
 
@@ -180,9 +181,8 @@
 	SysInfo::MemUsed::~MemUsed() {
 	}
 
-	bool SysInfo::MemUsed::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::MemUsed::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const {
+		return make_shared<Agent>(node);
 	}
 
  }

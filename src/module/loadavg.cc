@@ -197,9 +197,8 @@
 	SysInfo::LoadAverage::~LoadAverage() {
 	}
 
-	bool SysInfo::LoadAverage::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::LoadAverage::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const {
+		return make_shared<Agent>(node);
 	}
 
  }

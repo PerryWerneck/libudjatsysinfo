@@ -34,7 +34,7 @@
 
 	void SysInfo::Percent::load(const StateDescription *states, size_t length) {
 
-		if(!this->states().empty())
+		if(!this->states.empty())
 			return;
 
 		info() << "Using default states" << endl;
@@ -65,7 +65,7 @@
 
 	}
 
-	void SysInfo::Percent::append_state(const pugi::xml_node &node) {
+	std::shared_ptr<Abstract::State> SysInfo::Percent::StateFactory(const pugi::xml_node &node)  {
 
 		class State : public Udjat::State<float> {
 		public:
@@ -76,7 +76,9 @@
 
 		};
 
-		push_back(std::make_shared<State>(node));
+		auto state = std::make_shared<State>(node);
+		states.push_back(state);
+		return state;
 
 	}
 
