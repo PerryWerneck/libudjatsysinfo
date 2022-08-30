@@ -103,8 +103,6 @@
 			Object::properties.summary = System::Stat::getSummary(this->type);
 			Object::properties.label = System::Stat::getLabel(this->type);
 
-			Abstract::Agent::load(node);
-
 			if(!getUpdateInterval()) {
 				throw runtime_error("System stats requires an update timer");
 			}

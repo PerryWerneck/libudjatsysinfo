@@ -37,7 +37,6 @@
 		Agent(const xml_node &node) : Abstract::Agent("systime") {
 			Object::properties.icon = "utilities-system-monitor";
 			Object::properties.label = _( "System Time" );
-			Abstract::Agent::load(node);
 		}
 
 		virtual ~Agent() {

@@ -168,8 +168,6 @@
 			//
 			Object::properties.icon = "utilities-system-monitor";
 
-			Abstract::Agent::load(node);
-
 			time_t timer = getUpdateInterval();
 
 #ifdef DEBUG
@@ -181,7 +179,6 @@
 			}
 
 			setup(timer/60);
-			Abstract::Agent::load(node);
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 
 		}

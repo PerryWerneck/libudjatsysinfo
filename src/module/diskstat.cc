@@ -99,8 +99,6 @@
 			Object::properties.icon = "utilities-system-monitor";
 			this->unit = Udjat::Disk::Unit::get(node);
 
-			Abstract::Agent::load(node);
-
 			if(!(Object::properties.label && *Object::properties.label)) {
 #ifdef GETTEXT_PACKAGE
 				Object::properties.label = Quark(string{dgettext(GETTEXT_PACKAGE,labels[type])} + _( " in " ) + unit->speed).c_str();
