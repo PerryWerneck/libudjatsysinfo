@@ -144,7 +144,7 @@
 			}
 		}
 
-		std::string to_string() const override {
+		std::string to_string() const noexcept override {
 			std::stringstream out;
 			out << std::fixed << std::setprecision(2) << (getValue(this->type) * 100) << "%";
 			return out.str();

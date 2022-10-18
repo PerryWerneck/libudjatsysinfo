@@ -92,7 +92,7 @@
 		return true;
 	}
 
-	std::string SysInfo::Percent::to_string() const {
+	std::string SysInfo::Percent::to_string() const noexcept {
 		std::stringstream out;
 		out << std::fixed << std::setprecision(2) << (Udjat::Agent<float>::get() * 100) << '%';
 		return out.str();

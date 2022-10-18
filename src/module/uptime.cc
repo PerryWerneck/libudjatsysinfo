@@ -94,7 +94,7 @@
 			return value;
 		}
 
-		std::string to_string() const override {
+		std::string to_string() const noexcept override {
 
 			long uptime = getUptime();
 

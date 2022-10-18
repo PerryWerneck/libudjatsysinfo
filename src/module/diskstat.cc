@@ -107,7 +107,7 @@
 #endif // GETTEXT_PACKAGE
 			}
 
-			if(!getUpdateInterval()) {
+			if(!timer()) {
 				throw runtime_error("Disk stats requires an update timer");
 			}
 
@@ -150,7 +150,7 @@
 			return true;
 		}
 
-		std::string to_string() const override {
+		std::string to_string() const noexcept override {
 			std::stringstream out;
 			out << std::fixed << std::setprecision(2) << getValueByType() << " " << unit->speed;
 			return out.str();
@@ -164,7 +164,7 @@
 	SysInfo::DiskStat::~DiskStat() {
 	}
 
-	std::shared_ptr<Abstract::Agent> SysInfo::DiskStat::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const {
+	std::shared_ptr<Abstract::Agent> SysInfo::DiskStat::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node) const {
 		return make_shared<Agent>(node);
 	}
 

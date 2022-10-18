@@ -21,6 +21,7 @@
 
  #include <udjat/tools/systemservice.h>
  #include <udjat/tools/application.h>
+ #include <udjat/tools/logger.h>
  #include <udjat/agent.h>
  #include <udjat/factory.h>
  #include <udjat/module.h>
@@ -44,14 +45,7 @@ int main(int argc, char **argv) {
 			SystemService::init();
 
 			if(Module::find("httpd")) {
-
-				if(Module::find("information")) {
-					cout << "http://localhost:8989/api/1.0/info/modules.xml" << endl;
-					cout << "http://localhost:8989/api/1.0/info/workers.xml" << endl;
-					cout << "http://localhost:8989/api/1.0/info/factories.xml" << endl;
-					cout << "http://localhost:8989/api/1.0/info/services.xml" << endl;
-				}
-
+				Logger::trace() << "http://localhost:8989" << endl;
 			}
 
 			auto root = Abstract::Agent::root();

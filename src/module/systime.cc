@@ -47,7 +47,7 @@
 			return value;
 		}
 
-		std::string to_string() const override {
+		std::string to_string() const noexcept override {
 			return TimeStamp().to_string();
 		}
 	};
