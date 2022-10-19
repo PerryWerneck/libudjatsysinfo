@@ -154,6 +154,11 @@ $(POTDIR)/%.pot: \
 	@$(MKDIR) $(dir $@)
 	@touch $@
 
+install-%: \
+	%/Makefile
+
+	@$(MAKE) -C `dirname $<` DESTDIR=$(DESTDIR) install
+
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
@@ -214,7 +219,8 @@ $(BINRLS)/$(PACKAGE_NAME)@LIBEXT@: \
 install: \
 	install-@OSNAME@ \
 	install-module \
-	install-dev
+	install-dev \
+	install-locale
 
 install-linux: \
 	$(BINRLS)/$(SONAME)
