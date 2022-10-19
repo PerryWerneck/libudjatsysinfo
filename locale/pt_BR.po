@@ -1,0 +1,111 @@
+#: src/module/diskstat.cc:104
+msgid " in "
+msgstr ""
+
+#: src/module/diskstat.cc:37
+msgid "Average disk speed"
+msgstr ""
+
+#: src/module/loadavg.cc:111
+msgid "Average system load in the last fifteen minutes"
+msgstr ""
+
+#: src/module/loadavg.cc:104
+msgid "Average system load in the last five minutes"
+msgstr ""
+
+#: src/module/loadavg.cc:97
+msgid "Average system load in the last minute"
+msgstr ""
+
+#: src/module/swapused.cc:74
+msgid "Can't get system information"
+msgstr ""
+
+#: src/module/loadavg.cc:143
+msgid "Can't get system load average"
+msgstr ""
+
+#: src/module/uptime.cc:34
+msgid "Get system uptime"
+msgstr ""
+
+#: src/module/memused.cc:85
+msgid "Memory usage is higher than 90%"
+msgstr ""
+
+#: src/module/memused.cc:71
+msgid "Memory usage is lower than 80%"
+msgstr ""
+
+#: src/module/memused.cc:78
+msgid "Memory usage is lower than 90%"
+msgstr ""
+
+#: src/module/diskstat.cc:38
+msgid "Read disk speed"
+msgstr ""
+
+#: src/module/swapused.cc:60
+msgid "Swap usage is higher than 90%"
+msgstr ""
+
+#: src/module/swapused.cc:39
+msgid "Swap usage is lower than 10%"
+msgstr ""
+
+#: src/module/swapused.cc:46
+msgid "Swap usage is lower than 80%"
+msgstr ""
+
+#: src/module/swapused.cc:53
+msgid "Swap usage is lower than 90%"
+msgstr ""
+
+#: src/module/systime.cc:39
+msgid "System Time"
+msgstr ""
+
+#: src/module/loadavg.cc:110
+msgid "System load in the last 15 minutes"
+msgstr ""
+
+#: src/module/loadavg.cc:103
+msgid "System load in the last 5 minutes"
+msgstr ""
+
+#: src/module/loadavg.cc:96
+msgid "System load in the last minute"
+msgstr ""
+
+#: src/module/loadavg.cc:59
+msgid "System load is higher than 50%"
+msgstr ""
+
+#: src/module/loadavg.cc:66
+msgid "System load is higher than 80%"
+msgstr ""
+
+#: src/module/loadavg.cc:52
+msgid "System load is lower than 50%"
+msgstr ""
+
+#: src/module/loadavg.cc:73
+msgid "System load is too high"
+msgstr ""
+
+#: src/module/uptime.cc:75
+msgid "System uptime"
+msgstr ""
+
+#: src/module/memused.cc:166
+msgid "Used Memory Percentage"
+msgstr ""
+
+#: src/module/swapused.cc:86
+msgid "Used Swap Percentage"
+msgstr ""
+
+#: src/module/diskstat.cc:39
+msgid "Write disk speed"
+msgstr ""
