@@ -82,7 +82,7 @@
 
 		}
 
-		std::shared_ptr<Abstract::State> stateFromValue() const override {
+		std::shared_ptr<Abstract::State> computeState() override {
 
 			for(auto state : states) {
 
@@ -92,18 +92,18 @@
 
 			}
 
-			return Abstract::Agent::stateFromValue();
+			return Abstract::Agent::computeState();
 		}
 
 
 	public:
-		Agent(const xml_node &node) : Abstract::Agent("sysstat"), type(System::Stat::TypeFactory(node)) {
+		Agent(const xml_node &node) : Abstract::Agent(node), type(System::Stat::TypeFactory(node)) {
 
 			Object::properties.icon = "utilities-system-monitor";
 			Object::properties.summary = System::Stat::getSummary(this->type);
 			Object::properties.label = System::Stat::getLabel(this->type);
 
-			if(!getUpdateInterval()) {
+			if(!timer()) {
 				throw runtime_error("System stats requires an update timer");
 			}
 
@@ -184,7 +184,7 @@
 	SysInfo::SysStat::~SysStat() {
 	}
 
-	std::shared_ptr<Abstract::Agent> SysInfo::SysStat::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node)  const {
+	std::shared_ptr<Abstract::Agent> SysInfo::SysStat::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node)  const {
 		return make_shared<Agent>(node);
 	}
 

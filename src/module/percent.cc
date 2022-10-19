@@ -28,9 +28,15 @@
 
 	SysInfo::Percent::Percent(const pugi::xml_node &node, const char *label, const char *summary) : Agent<float>(node) {
 
-		Object::properties.icon = getAttribute(node, "icon", "utilities-system-monitor");
-		Object::properties.label = getAttribute(node, "label", label);
-		Object::properties.summary = getAttribute(node, "summary", summary);
+		Object::properties.icon = "utilities-system-monitor";
+
+		if(label && *label) {
+			Object::properties.label = label;
+		}
+
+		if(summary && *summary) {
+			Object::properties.summary = summary;
+		}
 
 	}
 

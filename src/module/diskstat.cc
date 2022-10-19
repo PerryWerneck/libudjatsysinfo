@@ -94,7 +94,7 @@
 		}
 
 	public:
-		Agent(const xml_node &node) : Abstract::Agent("diskstat"), type(Attribute(node,"stat-type").select("average","read","write",nullptr)) {
+		Agent(const xml_node &node) : Abstract::Agent(node), type(Attribute(node,"stat-type").select("average","read","write",nullptr)) {
 
 			Object::properties.icon = "utilities-system-monitor";
 			this->unit = Udjat::Disk::Unit::get(node);
