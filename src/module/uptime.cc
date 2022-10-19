@@ -25,12 +25,13 @@
  #include <iomanip>
  #include <sstream>
  #include <udjat/moduleinfo.h>
+ #include <udjat/tools/intl.h>
 
  #include "private.h"
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{"Get system uptime"};
+	static const Udjat::ModuleInfo moduleinfo{ N_("Get system uptime") };
 
 	class SysInfo::UpTime::Agent : public Abstract::Agent {
 	private:
@@ -70,8 +71,8 @@
 
 	public:
 		Agent(const xml_node &node) : Abstract::Agent("uptime") {
-			Object::properties.icon = "utilities-system-monitor";
-			Object::properties.label = "System uptime";
+			Object::properties.icon = getAttribute(node, "icon", "utilities-system-monitor");
+			Object::properties.label = getAttribute(node, "label", _( "System uptime" ));
 		}
 
 		virtual ~Agent() {
@@ -96,6 +97,9 @@
 
 		std::string to_string() const noexcept override {
 
+			return TimeStamp(getUptime()).to_verbose_string();
+
+			/*
 			long uptime = getUptime();
 
 			if(uptime < 60) {
@@ -161,6 +165,7 @@
 			}
 
 			return out;
+			*/
 		}
 
 	};
@@ -171,7 +176,7 @@
 	SysInfo::UpTime::~UpTime() {
 	}
 
-	std::shared_ptr<Abstract::Agent> SysInfo::UpTime::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node)  const {
+	std::shared_ptr<Abstract::Agent> SysInfo::UpTime::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node)  const {
 		return make_shared<Agent>(node);
 	}
 

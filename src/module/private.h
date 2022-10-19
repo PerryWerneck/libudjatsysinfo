@@ -58,7 +58,7 @@ namespace Udjat {
 
 		public:
 
-			Percent(const char *name);
+			Percent(const pugi::xml_node &node, const char *label, const char *summary = "");
 			virtual ~Percent();
 
 			bool refresh() override;

@@ -83,9 +83,8 @@
 		};
 
 	public:
-		Agent(const xml_node &node) : Percent("swap") {
+		Agent(const xml_node &node) : Percent(node, _( "Used Swap Percentage" )) {
 			Object::properties.icon = "utilities-system-monitor";
-			Object::properties.label = _( "Used Swap Percentage" );
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 		}
 

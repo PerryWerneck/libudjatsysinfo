@@ -38,6 +38,7 @@
 
  #include "private.h"
  #include <udjat/moduleinfo.h>
+ #include <udjat/tools/logger.h>
 
  namespace Udjat {
 
@@ -116,8 +117,13 @@
 			for(size_t type = 0; type < (sizeof(types)/sizeof(types[0])); type++) {
 				if(minutes == types[type].minutes) {
 					this->type = type;
+#ifdef GETTEXT_PACKAGE
+					Object::properties.label = dgettext(GETTEXT_PACKAGE,types[type].label);
+					Object::properties.summary = dgettext(GETTEXT_PACKAGE,types[type].summary);
+#else
 					Object::properties.label = types[type].label;
 					Object::properties.summary = types[type].summary;
+#endif // GETTEXT_PACKAGE
 					return;
 				}
 			}
@@ -147,7 +153,7 @@
 		};
 
 	public:
-		Agent(const xml_node &node) : Percent("loadavg") {
+		Agent(const xml_node &node) : Percent(node,"","") {
 
 			//
 			// Identify the number of cores.
@@ -168,17 +174,15 @@
 			//
 			Object::properties.icon = "utilities-system-monitor";
 
-			time_t timer = getUpdateInterval();
+			time_t update_timer = timer();
 
-#ifdef DEBUG
-			cout << "Update timer: " << timer << endl;
-#endif // DEBUG
+			debug("Agent update timer set to ",update_timer," seconds");
 
-			if(!timer) {
-				throw runtime_error("Update interval is required");
+			if(!update_timer) {
+				throw runtime_error("Missing required attribute update-timer");
 			}
 
-			setup(timer/60);
+			setup(update_timer/60);
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 
 		}
@@ -194,7 +198,7 @@
 	SysInfo::LoadAverage::~LoadAverage() {
 	}
 
-	std::shared_ptr<Abstract::Agent> SysInfo::LoadAverage::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const {
+	std::shared_ptr<Abstract::Agent> SysInfo::LoadAverage::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node) const {
 		return make_shared<Agent>(node);
 	}
 
