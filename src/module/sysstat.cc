@@ -23,6 +23,7 @@
  #include <fstream>
  #include <iomanip>
  #include <udjat/tools/system/stat.h>
+ #include <udjat/moduleinfo.h>
 
  #include "private.h"
 
@@ -30,13 +31,7 @@
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get System stats", 										// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get System stats"};
 
 	class SysInfo::SysStat::Agent : public Abstract::Agent {
 	private:
@@ -87,7 +82,7 @@
 
 		}
 
-		std::shared_ptr<Abstract::State> stateFromValue() const override {
+		std::shared_ptr<Abstract::State> computeState() override {
 
 			for(auto state : states) {
 
@@ -97,20 +92,18 @@
 
 			}
 
-			return Abstract::Agent::stateFromValue();
+			return Abstract::Agent::computeState();
 		}
 
 
 	public:
-		Agent(const xml_node &node) : Abstract::Agent("sysstat"), type(System::Stat::TypeFactory(node)) {
+		Agent(const xml_node &node) : Abstract::Agent(node), type(System::Stat::TypeFactory(node)) {
 
-			this->icon = "utilities-system-monitor";
-			this->summary = System::Stat::getSummary(this->type);
-			this->label = System::Stat::getLabel(this->type);
+			Object::properties.icon = "utilities-system-monitor";
+			Object::properties.summary = System::Stat::getSummary(this->type);
+			Object::properties.label = System::Stat::getLabel(this->type);
 
-			Abstract::Agent::load(node);
-
-			if(!getUpdateInterval()) {
+			if(!timer()) {
 				throw runtime_error("System stats requires an update timer");
 			}
 
@@ -120,8 +113,9 @@
 
 		}
 
-		Value & get(Value &value) override {
-			return value.setFraction(getValue(this->type));
+		Value & get(Value &value) const override {
+			value.setFraction(getValue(this->type));
+			return value;
 		}
 
 		void get(const Request &request, Response &response) override {
@@ -135,7 +129,9 @@
 
 		}
 
-		void get(const Request UDJAT_UNUSED(&request), Report &report) override {
+		void get(const Request &request, Report &report) override {
+
+			Abstract::Agent::get(request,report);
 
 			report.start("name","label","summary","value",nullptr);
 
@@ -148,7 +144,7 @@
 			}
 		}
 
-		std::string to_string() const override {
+		std::string to_string() const noexcept override {
 			std::stringstream out;
 			out << std::fixed << std::setprecision(2) << (getValue(this->type) * 100) << "%";
 			return out.str();
@@ -174,21 +170,22 @@
 			return true;
 		}
 
-		void append_state(const pugi::xml_node &node) override {
-			states.push_back(std::make_shared<State>(node));
+		std::shared_ptr<Abstract::State> StateFactory(const pugi::xml_node &node) override {
+			auto state = std::make_shared<State>(node);
+			states.push_back(state);
+			return state;
 		}
 
 	};
 
-	SysInfo::SysStat::SysStat() : Udjat::Factory("system-stat",&moduleinfo) {
+	SysInfo::SysStat::SysStat() : Udjat::Factory("system-stat",moduleinfo) {
 	}
 
 	SysInfo::SysStat::~SysStat() {
 	}
 
-	bool SysInfo::SysStat::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::SysStat::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node)  const {
+		return make_shared<Agent>(node);
 	}
 
  }

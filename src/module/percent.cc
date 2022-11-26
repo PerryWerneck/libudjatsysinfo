@@ -17,14 +17,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <config.h>
  #include "private.h"
  #include <sstream>
  #include <iomanip>
  #include <udjat/tools/value.h>
+ #include <udjat/tools/intl.h>
 
  namespace Udjat {
 
-	SysInfo::Percent::Percent(const char *name) : Agent<float>(name) {
+	SysInfo::Percent::Percent(const pugi::xml_node &node, const char *label, const char *summary) : Agent<float>(node) {
+
+		Object::properties.icon = "utilities-system-monitor";
+
+		if(label && *label) {
+			Object::properties.label = label;
+		}
+
+		if(summary && *summary) {
+			Object::properties.summary = summary;
+		}
+
 	}
 
 	SysInfo::Percent::~Percent() {
@@ -32,10 +45,10 @@
 
 	void SysInfo::Percent::load(const StateDescription *states, size_t length) {
 
-		if(this->hasStates())
+		if(!this->states.empty())
 			return;
 
-		cout << getName() << "\tUsing default states" << endl;
+		info() << "Using default states" << endl;
 
 		float from = 0.0;
 
@@ -47,8 +60,13 @@
 					from,
 					states->value,
 					states->level,
+#ifdef GETTEXT_PACKAGE
+					dgettext(GETTEXT_PACKAGE,states->summary),
+					dgettext(GETTEXT_PACKAGE,states->body)
+#else
 					states->summary,
 					states->body
+#endif // GETTEXT_PACKAGE
 				)
 			);
 
@@ -58,7 +76,7 @@
 
 	}
 
-	void SysInfo::Percent::append_state(const pugi::xml_node &node) {
+	std::shared_ptr<Abstract::State> SysInfo::Percent::StateFactory(const pugi::xml_node &node)  {
 
 		class State : public Udjat::State<float> {
 		public:
@@ -69,12 +87,15 @@
 
 		};
 
-		push_back(std::make_shared<State>(node));
+		auto state = std::make_shared<State>(node);
+		states.push_back(state);
+		return state;
 
 	}
 
-	Udjat::Value & SysInfo::Percent::get(Udjat::Value &value) {
-		return value.setFraction(Udjat::Agent<float>::get());
+	Udjat::Value & SysInfo::Percent::get(Udjat::Value &value) const {
+		value.setFraction(Udjat::Agent<float>::get());
+		return value;
 	}
 
 	bool SysInfo::Percent::refresh() {
@@ -82,7 +103,7 @@
 		return true;
 	}
 
-	std::string SysInfo::Percent::to_string() const {
+	std::string SysInfo::Percent::to_string() const noexcept {
 		std::stringstream out;
 		out << std::fixed << std::setprecision(2) << (Udjat::Agent<float>::get() * 100) << '%';
 		return out.str();

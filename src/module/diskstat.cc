@@ -20,27 +20,23 @@
  #include <config.h>
  #include "private.h"
  #include <udjat/tools/disk/stat.h>
+ #include <udjat/tools/intl.h>
  #include <sstream>
  #include <iomanip>
  #include <sstream>
  #include <udjat/tools/xml.h>
  #include <sys/time.h>
  #include <sstream>
+ #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get Disk Read/Write speed average", 						// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get Disk Read/Write speed average"};
 
 	static const char *labels[] = {
-		"Average disk speed",
-		"Read disk speed",
-		"Write disk speed"
+		N_( "Average disk speed" ),
+		N_( "Read disk speed" ),
+		N_( "Write disk speed" )
 	};
 
 	class SysInfo::DiskStat::Agent : public Abstract::Agent {
@@ -98,18 +94,20 @@
 		}
 
 	public:
-		Agent(const xml_node &node) : Abstract::Agent("diskstat"), type(Attribute(node,"stat-type").select("average","read","write",nullptr)) {
+		Agent(const xml_node &node) : Abstract::Agent(node), type(Attribute(node,"stat-type").select("average","read","write",nullptr)) {
 
-			this->icon = "utilities-system-monitor";
+			Object::properties.icon = "utilities-system-monitor";
 			this->unit = Udjat::Disk::Unit::get(node);
 
-			Abstract::Agent::load(node);
-
-			if(!(this->label && *this->label)) {
-				this->label = Quark(string{labels[type]} + " in " + unit->speed).c_str();
+			if(!(Object::properties.label && *Object::properties.label)) {
+#ifdef GETTEXT_PACKAGE
+				Object::properties.label = Quark(string{dgettext(GETTEXT_PACKAGE,labels[type])} + _( " in " ) + unit->speed).c_str();
+#else
+				Object::properties.label = Quark(string{labels[type]} + " in " + unit->speed).c_str();
+#endif // GETTEXT_PACKAGE
 			}
 
-			if(!getUpdateInterval()) {
+			if(!timer()) {
 				throw runtime_error("Disk stats requires an update timer");
 			}
 
@@ -129,7 +127,7 @@
 		virtual ~Agent() {
 		}
 
-		Udjat::Value &get(Udjat::Value &value) override {
+		Udjat::Value & get(Udjat::Value &value) const override {
 			value = getValueByType();
 			return value;
 		}
@@ -152,7 +150,7 @@
 			return true;
 		}
 
-		std::string to_string() const override {
+		std::string to_string() const noexcept override {
 			std::stringstream out;
 			out << std::fixed << std::setprecision(2) << getValueByType() << " " << unit->speed;
 			return out.str();
@@ -160,15 +158,14 @@
 
 	};
 
-	SysInfo::DiskStat::DiskStat() : Udjat::Factory("system-diskstat",&moduleinfo) {
+	SysInfo::DiskStat::DiskStat() : Udjat::Factory("system-diskstat",moduleinfo) {
 	}
 
 	SysInfo::DiskStat::~DiskStat() {
 	}
 
-	bool SysInfo::DiskStat::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::DiskStat::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node) const {
+		return make_shared<Agent>(node);
 	}
 
  }

@@ -20,6 +20,7 @@
  #include <config.h>
  #include "private.h"
  #include <udjat/tools/sysconfig.h>
+ #include <udjat/tools/intl.h>
  #include <sstream>
  #include <iomanip>
 
@@ -54,38 +55,34 @@
  *
  */
 
+ #include <config.h>
  #include "private.h"
+ #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get memory use", 											// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get memory use"};
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
 		{
 			0.8,
 			"low",
 			Udjat::ready,
-			"Memory usage is lower than 80%",
+			N_( "Memory usage is lower than 80%" ),
 			""
 		},
 		{
 			0.9,
 			"medium",
 			Udjat::warning,
-			"Memory usage is lower than 90%",
+			N_( "Memory usage is lower than 90%" ),
 			""
 		},
 		{
 			1.0,
 			"high",
 			Udjat::error,
-			"Memory usage is higher than 90%",
+			N_( "Memory usage is higher than 90%" ),
 			""
 		}
 	};
@@ -166,10 +163,7 @@
 		};
 
 	public:
-		Agent(const xml_node &node) : Percent("memory") {
-			this->icon = "utilities-system-monitor";
-			this->label = "Used Memory Percentage";
-			Abstract::Agent::load(node);
+		Agent(const xml_node &node) : Percent(node, _( "Used Memory Percentage" )) {
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 		}
 
@@ -178,15 +172,14 @@
 
 	};
 
-	SysInfo::MemUsed::MemUsed() : Udjat::Factory("mem-used",&moduleinfo) {
+	SysInfo::MemUsed::MemUsed() : Udjat::Factory("mem-used",moduleinfo) {
 	}
 
 	SysInfo::MemUsed::~MemUsed() {
 	}
 
-	bool SysInfo::MemUsed::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::MemUsed::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const {
+		return make_shared<Agent>(node);
 	}
 
  }

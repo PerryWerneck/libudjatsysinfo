@@ -58,16 +58,16 @@ namespace Udjat {
 
 		public:
 
-			Percent(const char *name);
+			Percent(const pugi::xml_node &node, const char *label, const char *summary = "");
 			virtual ~Percent();
 
 			bool refresh() override;
 
-			Udjat::Value & get(Udjat::Value &value) override;
+			Udjat::Value & get(Udjat::Value &value) const override;
 
-			std::string to_string() const override;
+			std::string to_string() const noexcept override;
 
-			void append_state(const pugi::xml_node &node) override;
+			std::shared_ptr<Abstract::State> StateFactory(const pugi::xml_node &node) override;
 
 		};
 
@@ -79,7 +79,7 @@ namespace Udjat {
 			SwapUsed();
 			virtual ~SwapUsed();
 
-			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -91,7 +91,7 @@ namespace Udjat {
 			LoadAverage();
 			virtual ~LoadAverage();
 
-			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -103,7 +103,7 @@ namespace Udjat {
 			MemUsed();
 			virtual ~MemUsed();
 
-			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -115,7 +115,7 @@ namespace Udjat {
 			UpTime();
 			virtual ~UpTime();
 
-			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -127,7 +127,7 @@ namespace Udjat {
 			SysTime();
 			virtual ~SysTime();
 
-			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -140,7 +140,7 @@ namespace Udjat {
 			DiskStat();
 			virtual ~DiskStat();
 
-			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -152,7 +152,7 @@ namespace Udjat {
 			SysStat();
 			virtual ~SysStat();
 
-			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
 
 		};
 

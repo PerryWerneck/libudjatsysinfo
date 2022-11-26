@@ -20,48 +20,44 @@
  #include <config.h>
  #include "private.h"
  #include <udjat/tools/sysconfig.h>
+ #include <udjat/tools/intl.h>
  #include <sstream>
  #include <iomanip>
+ #include <udjat/moduleinfo.h>
 
  #include "private.h"
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get swap use", 											// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get swap use"};
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
 		{
 			0.1,
 			"low",
 			Udjat::ready,
-			"Swap usage is lower than 10%",
+			N_( "Swap usage is lower than 10%" ),
 			""
 		},
 		{
 			0.8,
 			"low",
 			Udjat::ready,
-			"Swap usage is lower than 80%",
+			N_( "Swap usage is lower than 80%" ),
 			""
 		},
 		{
 			0.9,
 			"medium",
 			Udjat::warning,
-			"Swap usage is lower than 90%",
+			N_( "Swap usage is lower than 90%" ),
 			""
 		},
 		{
 			1.0,
 			"high",
 			Udjat::error,
-			"Swap usage is higher than 90%",
+			N_( "Swap usage is higher than 90%" ),
 			""
 		}
 	};
@@ -75,7 +71,7 @@
 			memset(&info,0,sizeof(info));
 
 			if(sysinfo(&info) < 0) {
-				throw system_error(errno,system_category(),"Cant get system information");
+				throw system_error(errno,system_category(),_("Can't get system information"));
 			}
 
 			float free = (float) info.freeswap;
@@ -87,10 +83,8 @@
 		};
 
 	public:
-		Agent(const xml_node &node) : Percent("swap") {
-			this->icon = "utilities-system-monitor";
-			this->label = "Used Swap Percentage";
-			Abstract::Agent::load(node);
+		Agent(const xml_node &node) : Percent(node, _( "Used Swap Percentage" )) {
+			Object::properties.icon = "utilities-system-monitor";
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 		}
 
@@ -99,15 +93,15 @@
 
 	};
 
-	SysInfo::SwapUsed::SwapUsed() : Udjat::Factory("swap-used",&moduleinfo) {
+	SysInfo::SwapUsed::SwapUsed() : Udjat::Factory("swap-used",moduleinfo) {
 	}
 
 	SysInfo::SwapUsed::~SwapUsed() {
 	}
 
-	bool SysInfo::SwapUsed::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::SwapUsed::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node)  const {
+		return make_shared<Agent>(node);
 	}
+
 
  }

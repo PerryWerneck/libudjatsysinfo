@@ -20,52 +20,46 @@
  #include <config.h>
  #include "private.h"
  #include <udjat/tools/timestamp.h>
+ #include <udjat/tools/intl.h>
  #include <sstream>
  #include <iomanip>
  #include <sstream>
 
  #include "private.h"
+ #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,												// The module name.
-		"Get system time", 											// The module description.
-		PACKAGE_VERSION, 											// The module version.
-		PACKAGE_URL, 												// The package URL.
-		PACKAGE_BUGREPORT 											// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Get system time"};
 
 	class SysInfo::SysTime::Agent : public Abstract::Agent {
 	public:
 		Agent(const xml_node &node) : Abstract::Agent("systime") {
-			this->icon = "utilities-system-monitor";
-			this->label = "System Time";
-			Abstract::Agent::load(node);
+			Object::properties.icon = "utilities-system-monitor";
+			Object::properties.label = _( "System Time" );
 		}
 
 		virtual ~Agent() {
 		}
 
-		Udjat::Value &get(Udjat::Value &value) override {
+		Udjat::Value &get(Udjat::Value &value) const override {
 			value = TimeStamp();
 			return value;
 		}
 
-		std::string to_string() const override {
+		std::string to_string() const noexcept override {
 			return TimeStamp().to_string();
 		}
 	};
 
-	SysInfo::SysTime::SysTime() : Udjat::Factory("system-systime",&moduleinfo) {
+	SysInfo::SysTime::SysTime() : Udjat::Factory("system-systime",moduleinfo) {
 	}
 
 	SysInfo::SysTime::~SysTime() {
 	}
 
-	bool SysInfo::SysTime::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::SysTime::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node)  const {
+		return make_shared<Agent>(node);
 	}
 
  }

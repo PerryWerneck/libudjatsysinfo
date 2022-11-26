@@ -34,46 +34,43 @@
  #include <udjat/tools/file.h>
  #include <sstream>
  #include <iomanip>
+ #include <udjat/tools/intl.h>
 
  #include "private.h"
+ #include <udjat/moduleinfo.h>
+ #include <udjat/tools/logger.h>
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo {
-		PACKAGE_NAME,														// The module name.
-		"Get system load average use in the latest 1, 5 or 15 minutes", 	// The module description.
-		PACKAGE_VERSION, 													// The module version.
-		PACKAGE_URL, 														// The package URL.
-		PACKAGE_BUGREPORT 													// The bug report address.
-	};
+	static const Udjat::ModuleInfo moduleinfo {"Get system load average use in the latest 1, 5 or 15 minutes"};
 
 	static const SysInfo::Percent::StateDescription internal_states[] = {
 		{
 			0.5,
 			"good",
 			Udjat::ready,
-			"System load is lower than 50%",
+			N_( "System load is lower than 50%" ),
 			""
 		},
 		{
 			0.8,
 			"gt50",
 			Udjat::warning,
-			"System load is higher than 50%",
+			N_( "System load is higher than 50%" ),
 			""
 		},
 		{
 			0.95,
 			"gt90",
 			Udjat::error,
-			"System load is higher than 80%",
+			N_( "System load is higher than 80%" ),
 			""
 		},
 		{
 			1.0,
 			"full",
 			Udjat::critical,
-			"System load is too high",
+			N_( "System load is too high" ),
 			""
 		}
 	};
@@ -96,22 +93,22 @@
 				// 0 = 1 minute average.
 				{
 					1,
-					"System load in the last minute",
-					"Average system load in the last minute"
+					N_( "System load in the last minute" ),
+					N_( "Average system load in the last minute" )
 				},
 
 				// 1 = 5 minutes average.
 				{
 					5,
-					"System load in the last 5 minutes",
-					"Average system load in the last five minutes"
+					N_( "System load in the last 5 minutes" ),
+					N_( "Average system load in the last five minutes" )
 				},
 
 				// 2 = 15 minutes average.
 				{
 					15,
-					"System load in the last 15 minutes",
-					"Average system load in the last fifteen minutes"
+					N_( "System load in the last 15 minutes" ),
+					N_( "Average system load in the last fifteen minutes" )
 				}
 
 			};
@@ -120,8 +117,13 @@
 			for(size_t type = 0; type < (sizeof(types)/sizeof(types[0])); type++) {
 				if(minutes == types[type].minutes) {
 					this->type = type;
-					this->label = types[type].label;
-					this->summary = types[type].summary;
+#ifdef GETTEXT_PACKAGE
+					Object::properties.label = dgettext(GETTEXT_PACKAGE,types[type].label);
+					Object::properties.summary = dgettext(GETTEXT_PACKAGE,types[type].summary);
+#else
+					Object::properties.label = types[type].label;
+					Object::properties.summary = types[type].summary;
+#endif // GETTEXT_PACKAGE
 					return;
 				}
 			}
@@ -138,7 +140,7 @@
 			double loadavg[3];
 
 			if(getloadavg(loadavg,3) < 0) {
-				throw system_error(EINVAL,system_category(),"Can't get system load average");
+				throw system_error(EINVAL,system_category(),_("Can't get system load average"));
 			}
 
 			float rc = loadavg[this->type] / ((double) this->cores);
@@ -151,7 +153,7 @@
 		};
 
 	public:
-		Agent(const xml_node &node) : Percent("loadavg") {
+		Agent(const xml_node &node) : Percent(node,"","") {
 
 			//
 			// Identify the number of cores.
@@ -164,28 +166,23 @@
 						cores++;
 					}
 				}
-				cout << getName() << "\tNumber of CPU cores: " << cores << endl;
+				info() << "Number of CPU cores: " << cores << endl;
 			}
 
 			//
 			// Setup agent
 			//
-			this->icon = "utilities-system-monitor";
+			Object::properties.icon = "utilities-system-monitor";
 
-			Abstract::Agent::load(node);
+			time_t update_timer = timer();
 
-			time_t timer = getUpdateInterval();
+			debug("Agent update timer set to ",update_timer," seconds");
 
-#ifdef DEBUG
-			cout << "Update timer: " << timer << endl;
-#endif // DEBUG
-
-			if(!timer) {
-				throw runtime_error("Update interval is required");
+			if(!update_timer) {
+				throw runtime_error("Missing required attribute update-timer");
 			}
 
-			setup(timer/60);
-			Abstract::Agent::load(node);
+			setup(update_timer/60);
 			load(internal_states,sizeof(internal_states)/sizeof(internal_states[0]));
 
 		}
@@ -195,15 +192,14 @@
 
 	};
 
-	SysInfo::LoadAverage::LoadAverage() : Udjat::Factory("load-average",&moduleinfo) {
+	SysInfo::LoadAverage::LoadAverage() : Udjat::Factory("load-average",moduleinfo) {
 	}
 
 	SysInfo::LoadAverage::~LoadAverage() {
 	}
 
-	bool SysInfo::LoadAverage::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-		parent.insert(make_shared<Agent>(node));
-		return true;
+	std::shared_ptr<Abstract::Agent> SysInfo::LoadAverage::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node) const {
+		return make_shared<Agent>(node);
 	}
 
  }
