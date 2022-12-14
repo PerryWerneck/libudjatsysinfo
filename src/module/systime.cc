@@ -34,7 +34,7 @@
 
 	class SysInfo::SysTime::Agent : public Abstract::Agent {
 	public:
-		Agent(const xml_node &node) : Abstract::Agent("systime") {
+		Agent(const xml_node UDJAT_UNUSED(&node)) : Abstract::Agent("systime") {
 			Object::properties.icon = "utilities-system-monitor";
 			Object::properties.label = _( "System Time" );
 		}
@@ -58,7 +58,7 @@
 	SysInfo::SysTime::~SysTime() {
 	}
 
-	std::shared_ptr<Abstract::Agent> SysInfo::SysTime::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node)  const {
+	std::shared_ptr<Abstract::Agent> SysInfo::SysTime::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node)  const {
 		return make_shared<Agent>(node);
 	}
 
