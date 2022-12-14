@@ -16,7 +16,10 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-Summary:		System information module for udjat
+%define product_name %(pkg-config --variable=product_name libudjat)
+%define module_path %(pkg-config --variable=module_path libudjat)
+
+Summary:		System information module for %{product_name}
 Name:			udjat-module-sysinfo
 Version:		1.0
 Release:		0
@@ -44,17 +47,17 @@ BuildRequires:	pkgconfig(libudjat)
 Requires:		libudjatsysinfo%{_libvrs} = %{version}
 
 %description
-System information module for udjat
+System information module for %{product_name}
 
 #---[ Library ]-------------------------------------------------------------------------------------------------------
 
 %package -n libudjatsysinfo%{_libvrs}
-Summary:	UDJat core library
+Summary:	System information library for %{product_name}
 
 %description -n libudjatsysinfo%{_libvrs}
-UDJat user/session library
+%{product_name} system information library
 
-System information library for udjat
+System information library for %{product_name}
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
@@ -64,9 +67,9 @@ Requires: libudjatsysinfo%{_libvrs} = %{version}
 
 %description -n udjat-sysinfo-devel
 
-Development files for Udjat system information library.
+Development files for %{product_name} system information library.
 
-%lang_package
+%lang_package -n libudjatsysinfo%{_libvrs}
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
@@ -86,13 +89,13 @@ make all
 %find_lang libudjatsysinfo-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
 %files
-%{_libdir}/udjat-modules/*/*.so
+%{module_path}/*.so
 
 %files -n libudjatsysinfo%{_libvrs}
 %defattr(-,root,root)
 %{_libdir}/libudjatsysinfo.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%files lang -f langfiles
+%files -n libudjatsysinfo%{_libvrs}-lang -f langfiles
 
 %files -n udjat-sysinfo-devel
 %defattr(-,root,root)
