@@ -23,8 +23,8 @@ Package: libudjatsysinfo-dev
 Architecture: any
 Provides: libudjatsysinfo-dev (= ${binary:Version})
 Section: libdevel
-Depends: ${misc:Depends}, pkg-config, libudjatsysinfo (= ${binary:Version})
-Description: libudjat development files.
+Depends: ${misc:Depends}, pkg-config, libudjat-dev, libpugixml-dev, libudjatsysinfo (= ${binary:Version})
+Description: UDJAT sysinfo development files.
  Development files for udjat system information library
 
 Package: libudjatsysinfo-dbg
