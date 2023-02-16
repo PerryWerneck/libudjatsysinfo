@@ -63,8 +63,8 @@ CFLAGS="$CFLAGS -I$ac_pwd/src/include"
 
 case "$host" in
 	*-mingw32|*-pc-msys)
-		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
-		CXXFLAGS="$CXXFLAGS -pthread -D_WIN32_WINNT=0x0600"
+		CFLAGS="$CFLAGS -pthread "
+		CXXFLAGS="$CXXFLAGS -pthread "
 		LDFLAGS="$LDFLAGS -pthread"
 		DLL_LDFLAGS="-shared -Wl,--output-def,\$(@D)/udjat${app_libname}.def"
 		LIBS="$LIBS -lwtsapi32"
