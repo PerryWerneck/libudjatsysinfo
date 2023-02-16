@@ -18,11 +18,14 @@
  */
 
  #include <config.h>
+ #include <udjat/defs.h>
+
  #include <iostream>
  #include <sstream>
  #include <fstream>
  #include <iomanip>
  #include <udjat/tools/system/stat.h>
+ #include <udjat/agent/abstract.h>
  #include <udjat/moduleinfo.h>
 
  #include "private.h"
@@ -118,20 +121,28 @@
 			return value;
 		}
 
-		void get(const Request &request, Response &response) override {
 
-			Abstract::Agent::get(request,response);
+		Udjat::Value & getProperties(Udjat::Value &value) const noexcept override {
 
-			auto &cpu = response["details"];
+			super::getProperties(value);
+
+			auto &cpu = value["cpu"];
 			for(size_t ix = 0; ix < N_ELEMENTS(values); ix++) {
 				(cpu[std::to_string((System::Stat::Type) ix)]).setFraction(values[ix]);
 			}
 
+			return value;
 		}
 
-		void get(const Request &request, Report &report) override {
+		bool getProperties(const char *path, Report &report) const override {
 
-			Abstract::Agent::get(request,report);
+			if(super::getProperties(path,report)) {
+				return true;
+			}
+
+			if(*path) {
+				return false;
+			}
 
 			report.start("name","label","summary","value",nullptr);
 
@@ -142,6 +153,8 @@
 						<< std::to_string((values[ix] * 100));
 
 			}
+
+			return true;
 		}
 
 		std::string to_string() const noexcept override {
