@@ -134,7 +134,7 @@
 			return value;
 		}
 
-		bool getProperties(const char *path, Report &report) const override {
+		bool getProperties(const char *path, Response::Table &report) const override {
 
 			if(super::getProperties(path,report)) {
 				return true;
