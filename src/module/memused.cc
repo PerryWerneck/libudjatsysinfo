@@ -19,7 +19,7 @@
 
  #include <config.h>
  #include "private.h"
- #include <udjat/tools/sysconfig.h>
+ #include <udjat/tools/system.h>
  #include <udjat/tools/intl.h>
  #include <sstream>
  #include <iomanip>
@@ -57,7 +57,7 @@
 
  #include <config.h>
  #include "private.h"
- #include <udjat/moduleinfo.h>
+ #include <udjat/module/info.h>
 
  namespace Udjat {
 
@@ -87,7 +87,7 @@
 		}
 	};
 
-	double get_scaled(const Udjat::SysConfig::Value &v) {
+	static double get_scaled(const Udjat::System::Config::File::Value &v) {
 
 		// https://github.com/GNOME/libgtop/blob/master/sysdeps/linux/glibtop_private.c
 
@@ -146,7 +146,7 @@
 			// https://github.com/GNOME/libgtop/blob/master/sysdeps/linux/mem.c
 			// https://www.thegeekdiary.com/understanding-proc-meminfo-file-analyzing-memory-utilization-in-linux/
 
-			Udjat::SysConfig::File meminfo("/proc/meminfo",":");
+			Udjat::System::Config::File meminfo("/proc/meminfo",":");
 
 			auto total  = get_scaled(meminfo["MemTotal"]);
 			auto user	= total - get_scaled(meminfo["MemAvailable"]);
