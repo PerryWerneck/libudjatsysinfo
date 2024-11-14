@@ -1,8 +1,7 @@
 #
-# spec file for package udjat-module-sysinfo
+# spec file for package libudjatsysinfo
 #
-# Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
-# Copyright (C) <2008> <Banco do Brasil S.A.>
+# Copyright (c) <2024> Perry Werneck <perry.werneck@gmail.com>.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -13,105 +12,128 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
+# Please submit bugfixes or comments via https://github.com/PerryWerneck/libudjatsysinfo/issues
 #
 
+%define module_name sysinfo
+
 %define product_name %(pkg-config --variable=product_name libudjat)
+%define product_version %(pkg-config --variable=product_version libudjat)
 %define module_path %(pkg-config --variable=module_path libudjat)
 
-Summary:		System information module for %{product_name}
-Name:			udjat-module-sysinfo
-Version: 1.0.0
+Summary:		System information library for %{product_name}  
+Name:			libudjat%{module_name}
+Version: 1.2.1
 Release:		0
 License:		LGPL-3.0
 Source:			%{name}-%{version}.tar.xz
 
-URL:			https://github.com/PerryWerneck/udjat-module-sysinfo
+URL:			https://github.com/PerryWerneck/libudjat%{module_name}
 
 Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
 
-BuildRequires:	autoconf >= 2.61
-BuildRequires:	automake
-BuildRequires:	libtool
 BuildRequires:	binutils
 BuildRequires:	coreutils
-BuildRequires:	gcc-c++
 
+%if "%{_vendor}" == "debbuild"
+BuildRequires:  meson-deb-macros
+BuildRequires:	libudjat-dev
+%else
+BuildRequires:	gcc-c++ >= 5
 BuildRequires:	pkgconfig(libudjat)
+%endif
+
+%if 0%{?suse_version} == 01500
+BuildRequires:  meson = 0.61.4
+%else
+BuildRequires:  meson
+%endif
+
+%description
+System information library for %{product_name}
+
+C++ System information classes for use with lib%{product_name}
+
+#---[ Library ]-------------------------------------------------------------------------------------------------------
 
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2 | cut -d+ -f1)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
-Requires:		libudjatsysinfo%{_libvrs} = %{version}
+%package -n %{name}%{_libvrs}
+Summary: System information library for %{product_name}
 
-%description
-System information module for %{product_name}
-
-#---[ Library ]-------------------------------------------------------------------------------------------------------
-
-%package -n libudjatsysinfo%{_libvrs}
-Summary:	System information library for %{product_name}
-
-%description -n libudjatsysinfo%{_libvrs}
-%{product_name} system information library
-
+%description -n %{name}%{_libvrs}
 System information library for %{product_name}
+
+C++ System information classes for use with lib%{product_name}
+
+%lang_package -n %{name}%{_libvrs}
+
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
-%package -n udjat-sysinfo-devel
+%package devel
 Summary: Development files for %{name}
-Requires: libudjatsysinfo%{_libvrs} = %{version}
+Requires: %{name}%{_libvrs} = %{version}
 
-%description -n udjat-sysinfo-devel
+%if "%{_vendor}" == "debbuild"
+Provides:	%{name}-dev
+Provides:	pkgconfig(%{name})
+Provides:	pkgconfig(%{name}-static)
+%endif
 
-Development files for %{product_name} system information library.
+%description devel
+System information library for %{product_name}
 
-%lang_package -n libudjatsysinfo%{_libvrs}
+C++ System information classes for use with lib%{product_name}
+
+#---[ Module ]--------------------------------------------------------------------------------------------------------
+
+%package -n %{product_name}-module-%{module_name}
+Summary: HTTP module for %{name}
+
+%description -n %{product_name}-module-%{module_name}
+%{product_name} module enabling system information agents.
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup
-
-NOCONFIGURE=1 \
-	./autogen.sh
-
-%configure 
+%autosetup
+%meson
 
 %build
-make all
+%meson_build
 
 %install
-%makeinstall
-%find_lang libudjatsysinfo-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
+%meson_install
+%find_lang %{name}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
-%files
+%files -n %{name}%{_libvrs}
+%defattr(-,root,root)
+%{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
+
+%files -n %{name}%{_libvrs}-lang -f langfiles
+
+%files -n %{product_name}-module-%{module_name}
 %{module_path}/*.so
 
-%files -n libudjatsysinfo%{_libvrs}
+%files devel
 %defattr(-,root,root)
-%{_libdir}/libudjatsysinfo.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%files -n libudjatsysinfo%{_libvrs}-lang -f langfiles
-
-%files -n udjat-sysinfo-devel
-%defattr(-,root,root)
-%dir %{_includedir}/udjat/tools/system
-%{_includedir}/udjat/tools/system/*.h
-%dir %{_includedir}/udjat/tools/disk
-%{_includedir}/udjat/tools/disk/*.h
 %{_libdir}/*.so
 %{_libdir}/*.a
 %{_libdir}/pkgconfig/*.pc
 
-%pre -n libudjatsysinfo%{_libvrs} -p /sbin/ldconfig
+%dir %{_includedir}/udjat/tools/system
+%{_includedir}/udjat/tools/system/*.h
+%dir %{_includedir}/udjat/tools/disk
+%{_includedir}/udjat/tools/disk/*.h
 
-%post -n libudjatsysinfo%{_libvrs} -p /sbin/ldconfig
+%post -n %{name}%{_libvrs} -p /sbin/ldconfig
 
-%postun -n libudjatsysinfo%{_libvrs} -p /sbin/ldconfig
+%postun -n %{name}%{_libvrs} -p /sbin/ldconfig
 
 %changelog
 
