@@ -134,6 +134,7 @@
 			return value;
 		}
 
+		/*
 		bool getProperties(const char *path, Response::Table &report) const override {
 
 			if(super::getProperties(path,report)) {
@@ -156,6 +157,7 @@
 
 			return true;
 		}
+		*/
 
 		std::string to_string() const noexcept override {
 			std::stringstream out;
