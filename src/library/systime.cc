@@ -18,48 +18,39 @@
  */
 
  #include <config.h>
- #include "private.h"
+ #include <udjat/defs.h>
  #include <udjat/tools/timestamp.h>
  #include <udjat/tools/intl.h>
- #include <sstream>
- #include <iomanip>
- #include <sstream>
-
- #include "private.h"
+ #include <udjat/agent.h>
+ #include <udjat/agent/systime.h>
  #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{"Get system time"};
-
-	class SysInfo::SysTime::Agent : public Abstract::Agent {
-	public:
-		Agent(const xml_node UDJAT_UNUSED(&node)) : Abstract::Agent("systime") {
-			Object::properties.icon = "utilities-system-monitor";
-			Object::properties.label = _( "System Time" );
-		}
-
-		virtual ~Agent() {
-		}
-
-		Udjat::Value &get(Udjat::Value &value) const override {
-			value = TimeStamp();
-			return value;
-		}
-
-		std::string to_string() const noexcept override {
-			return TimeStamp().to_string();
-		}
-	};
-
-	SysInfo::SysTime::SysTime() : Udjat::Factory("system-systime",moduleinfo) {
+	std::shared_ptr<Abstract::Agent> System::Time::Factory::AgentFactory(const Abstract::Object &, const XML::Node &node) const {
+		return std::make_shared<Time>(node);
 	}
 
-	SysInfo::SysTime::~SysTime() {
+	System::Time::Time(const char *name) : Abstract::Agent{name} {
+
+		// https://specifications.freedesktop.org/icon-naming-spec/latest/
+		Object::properties.icon = "utilities-system-monitor";
+		Object::properties.label = _( "System Time" );
 	}
 
-	std::shared_ptr<Abstract::Agent> SysInfo::SysTime::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node)  const {
-		return make_shared<Agent>(node);
+	System::Time::Time(const XML::Node &node) : Abstract::Agent{node} {
+	}
+
+	System::Time::~Time() {
+	}
+
+	Udjat::Value & System::Time::get(Udjat::Value &value) const {
+		value.set(TimeStamp());
+		return value;
+	}
+
+	std::string System::Time::to_string() const noexcept {
+		return TimeStamp().to_string();
 	}
 
  }

@@ -19,6 +19,7 @@
 
 #pragma once
 
+/*
 #include <config.h>
 #include <udjat/defs.h>
 #include <udjat/agent.h>
@@ -60,6 +61,11 @@ namespace Udjat {
 
 			Percent(const pugi::xml_node &node, const char *label, const char *summary = "");
 			virtual ~Percent();
+			0.5,
+			"good",
+			Udjat::ready,
+			N_( "System load is lower than 50%" ),
+			""
 
 			bool refresh() override;
 
@@ -160,5 +166,6 @@ namespace Udjat {
 	}
 
 }
+*/
 
 

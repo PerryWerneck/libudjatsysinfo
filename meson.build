@@ -108,17 +108,17 @@ includes_dir = include_directories('src/include')
 #
 lib_src = [
   'src/library/diskstat.cc',
+  'src/library/systime.cc',
+  'src/library/loadavg.cc',
 ]
 
 module_src = [
   'src/module/diskstat.cc',
   'src/module/init.cc',
-  'src/module/loadavg.cc',
   'src/module/memused.cc',
   'src/module/percent.cc',
   'src/module/swapused.cc',
   'src/module/sysstat.cc',
-  'src/module/systime.cc',
   'src/module/uptime.cc',
 ]
 
@@ -138,11 +138,10 @@ pkg = import('pkgconfig')
 #
 if host_machine.system() == 'windows'
 
-  app_conf.set('HAVE_WINHTTP', 1)
-
   pkg.generate(
     name: 'lib' + meson.project_name(),
     description: project_description,
+    requires: [ 'libudjat' ],
     libraries: [ '-l' + meson.project_name() + '.dll' ]
   )
 
@@ -151,6 +150,7 @@ if host_machine.system() == 'windows'
     description: project_description,
     libraries: [ 
       '-l' + meson.project_name(),
+      '-lws2_32',
     ]
   )
 
@@ -162,6 +162,7 @@ else
   pkg.generate(
     name: 'lib' + meson.project_name(),
     description: project_description,
+    requires: [ 'libudjat' ],
     libraries: [ '-l' + meson.project_name() ]
   )
 
@@ -175,6 +176,7 @@ else
     'src/library/os/linux/diskstats.cc',
     'src/library/os/linux/sysinfo.cc',
     'src/library/os/linux/sysstats.cc',
+    'src/library/systime.cc',
   ]
 
 endif
@@ -211,7 +213,6 @@ if host_machine.system() == 'windows'
     dependencies: lib_deps,
     link_args: [ 
       '-lws2_32',
-      '-lwinhttp',
     ],
     include_directories: includes_dir
   )
