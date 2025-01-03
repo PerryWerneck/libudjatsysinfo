@@ -31,14 +31,29 @@
 		return std::make_shared<Time>(node);
 	}
 
-	System::Time::Time(const char *name) : Abstract::Agent{name} {
+	System::Time::Time(const char *nm) : Abstract::Agent{nm} {
 
 		// https://specifications.freedesktop.org/icon-naming-spec/latest/
 		Object::properties.icon = "utilities-system-monitor";
 		Object::properties.label = _( "System Time" );
 	}
 
+	static inline bool is_empty(const char *str) noexcept {
+		return !(str && *str);
+	}
+
 	System::Time::Time(const XML::Node &node) : Abstract::Agent{node} {
+		
+#ifdef DEBUG
+		Logger::String{"Building system time agent"}.info(name());
+#endif
+
+		if(is_empty(Object::properties.icon))
+			Object::properties.icon = "utilities-system-monitor";
+
+		if(is_empty(Object::properties.label))
+			Object::properties.label = _( "System Time" );
+
 	}
 
 	System::Time::~Time() {

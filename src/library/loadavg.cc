@@ -47,6 +47,7 @@
  namespace Udjat {
 
 	std::shared_ptr<Abstract::Agent> System::LoadAverage::Factory::AgentFactory(const Abstract::Object &, const XML::Node &node) const {
+		debug("--- Building Load Average agent");
 		return std::make_shared<LoadAverage>(node);
 	}
 
@@ -78,6 +79,10 @@
 
 		return Agent<Percentage>::set((float) (rc/100));
 
+	}
+
+	static inline bool is_empty(const char *str) noexcept {
+		return !(str && *str);
 	}
 
 	void System::LoadAverage::setup(uint8_t minutes) {
@@ -135,13 +140,23 @@
 		for(size_t type = 0; type < (sizeof(types)/sizeof(types[0])); type++) {
 			if(minutes == types[type].minutes) {
 				type = type;
+
+				if(is_empty(Object::properties.label)) {
 #ifdef GETTEXT_PACKAGE
-				Object::properties.label = dgettext(GETTEXT_PACKAGE,types[type].label);
-				Object::properties.summary = dgettext(GETTEXT_PACKAGE,types[type].summary);
+					Object::properties.label = dgettext(GETTEXT_PACKAGE,types[type].label);
 #else
-				Object::properties.label = types[type].label;
-				Object::properties.summary = types[type].summary;
-#endif // GETTEXT_PACKAGE
+					Object::properties.label = types[type].label;
+#endif				
+				}
+
+				if(is_empty(Object::properties.summary)) {
+#ifdef GETTEXT_PACKAGE
+					Object::properties.summary = dgettext(GETTEXT_PACKAGE,types[type].summary);
+#else
+					Object::properties.summary = types[type].summary;
+#endif				
+				}
+
 				return;
 			}
 		}
@@ -198,14 +213,12 @@
 		for(const auto &state : default_states) {
 			if(current < state.value) {
 				return make_shared<Abstract::State>(
-#ifdef GETTEXT_PACKAGE
 							state.name,
 							state.level,
+#ifdef GETTEXT_PACKAGE
 							dgettext(GETTEXT_PACKAGE,state.summary),
 							dgettext(GETTEXT_PACKAGE,state.body)
 #else
-							state.name,
-							state.level,
 							state.summary,
 							state.body
 #endif // GETTEXT_PACKAGE

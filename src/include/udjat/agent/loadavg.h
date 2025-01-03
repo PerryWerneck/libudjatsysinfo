@@ -39,7 +39,8 @@
 		public:
 
 			class Factory : public Abstract::Agent::Factory {
-				Factory(const char *name = "SysLoad") : Udjat::Abstract::Agent::Factory{name} {
+			public:
+				Factory(const char *name = "load-average") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
 				std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const XML::Node &node) const override;

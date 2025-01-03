@@ -113,13 +113,7 @@ lib_src = [
 ]
 
 module_src = [
-  'src/module/diskstat.cc',
   'src/module/init.cc',
-  'src/module/memused.cc',
-  'src/module/percent.cc',
-  'src/module/swapused.cc',
-  'src/module/sysstat.cc',
-  'src/module/uptime.cc',
 ]
 
 test_src = [
@@ -268,10 +262,11 @@ static_library(
 )
 
 executable(
-  'sysinfotest',
+  'udjat',
   config_src + test_src,
   install: false,
   link_with : [ dynamic, module ],
+  link_args: [ '-l:libudjat-testing.a' ],
   dependencies: [ libudjat ],
   include_directories: includes_dir
 )

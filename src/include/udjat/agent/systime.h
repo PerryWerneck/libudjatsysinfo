@@ -33,6 +33,7 @@
 		public:
 
 			class Factory : public Abstract::Agent::Factory {
+			public:
 				Factory(const char *name = "SysTime") : Udjat::Abstract::Agent::Factory{name} {
 				}
 

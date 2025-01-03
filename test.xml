@@ -5,6 +5,9 @@
 	<module name='civetweb' required='no' />
 	<module name='information' required='no' />
 
+	<agent name='systime' type='systime' />
+	<agent name='load-average' type='load-average' />
+
 	<!-- update-timer cant be only 60, 300 or 900 -->
 	<load-average update-timer='60' />
 	
