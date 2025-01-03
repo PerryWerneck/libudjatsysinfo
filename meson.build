@@ -110,6 +110,7 @@ lib_src = [
   'src/library/diskstat.cc',
   'src/library/systime.cc',
   'src/library/loadavg.cc',
+  'src/library/swapusage.cc',
 ]
 
 module_src = [

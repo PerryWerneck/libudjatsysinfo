@@ -26,6 +26,7 @@
  // Agent types
  #include <udjat/agent/systime.h>
  #include <udjat/agent/loadavg.h>
+ #include <udjat/agent/swapusage.h>
  
  using namespace std;
  using namespace Udjat;
@@ -39,6 +40,7 @@
 	 	// udjat_module_init();
 		static System::Time::Factory systimefactory;
 		static System::LoadAverage::Factory loadavgfactory;
+		static System::SwapUsage::Factory swapusagefactory;
 
 	});
 

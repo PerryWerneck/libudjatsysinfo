@@ -17,11 +17,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- /// @brief Declares system time agent.
+ /// @brief Declares swap use agent.
  
  #include <udjat/defs.h>
  #include <udjat/agent/percentage.h>
- #include <udjat/tools/timestamp.h>
  #include <udjat/agent.h>
  #include <udjat/tools/xml.h>
  
@@ -29,26 +28,20 @@
 
 	namespace System {
 
-		class UDJAT_API LoadAverage : public Agent<Percentage> {
-		private:
-			size_t cores = 0;
-			uint8_t type = 0;
-
-			void setup(uint8_t minutes = 5);
-
+		class UDJAT_API SwapUsage : public Agent<Percentage> {
 		public:
 
 			class Factory : public Abstract::Agent::Factory {
 			public:
-				Factory(const char *name = "LoadAverage") : Udjat::Abstract::Agent::Factory{name} {
+				Factory(const char *name = "SwapUsage") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
 				std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const XML::Node &node) const override;
 			};
 
-			LoadAverage(const char *name = "LoadAverage");
-			LoadAverage(const XML::Node &node);
-			virtual ~LoadAverage();
+			SwapUsage(const char *name = "SwapUsage");
+			SwapUsage(const XML::Node &node);
+			virtual ~SwapUsage();
 
 			bool refresh() override;
 

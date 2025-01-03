@@ -5,17 +5,9 @@
 	<module name='civetweb' required='no' />
 	<module name='information' required='no' />
 
-	<agent name='systime' type='systime' />
-	<agent name='load-average' type='load-average' />
-
-	<!-- update-timer cant be only 60, 300 or 900 -->
-	<load-average update-timer='60' />
-	
-	<mem-used />
-	<swap-used />
-	<system-uptime />
-	<system-systime />
-	<system-diskstat update-timer='30' />
+	<agent name='SysTime' type='SysTime' />
+	<agent name='LoadAverage' type='LoadAverage' />
+	<agent name='SwapUsage' type='SwapUsage' />
 	
 	<!-- 
 	
