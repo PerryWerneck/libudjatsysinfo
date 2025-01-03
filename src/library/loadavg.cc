@@ -63,6 +63,11 @@
 
 	}
 
+	void System::LoadAverage::start() {
+		refresh();
+		Abstract::Agent::start();
+	}
+
 	bool System::LoadAverage::refresh() {
 
 		double loadavg[3];

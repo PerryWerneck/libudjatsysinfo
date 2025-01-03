@@ -50,6 +50,7 @@
 			LoadAverage(const XML::Node &node);
 			virtual ~LoadAverage();
 
+			void start() override;
 			bool refresh() override;
 
 			std::shared_ptr<Abstract::State> computeState() override;
