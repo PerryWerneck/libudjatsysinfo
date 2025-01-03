@@ -111,6 +111,7 @@ lib_src = [
   'src/library/systime.cc',
   'src/library/loadavg.cc',
   'src/library/swapusage.cc',
+  'src/library/memoryusage.cc',
 ]
 
 module_src = [

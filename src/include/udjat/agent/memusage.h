@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- /// @brief Declares swap use agent.
+ /// @brief Declares memory usage agent.
  
  #include <udjat/defs.h>
  #include <udjat/agent/percentage.h>
@@ -28,20 +28,20 @@
 
 	namespace System {
 
-		class UDJAT_API SwapUsage : public Agent<Percentage> {
+		class UDJAT_API MemoryUsage : public Agent<Percentage> {
 		public:
 
 			class Factory : public Abstract::Agent::Factory {
 			public:
-				Factory(const char *name = "SwapUsage") : Udjat::Abstract::Agent::Factory{name} {
+				Factory(const char *name = "MemoryUsage") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
 				std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const XML::Node &node) const override;
 			};
 
-			SwapUsage(const char *name = "SwapUsage");
-			SwapUsage(const XML::Node &node);
-			virtual ~SwapUsage();
+			MemoryUsage(const char *name = "MemoryUsage");
+			MemoryUsage(const XML::Node &node);
+			virtual ~MemoryUsage();
 
 			void start() override;
 			bool refresh() override;

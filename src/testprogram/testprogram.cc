@@ -27,6 +27,7 @@
  #include <udjat/agent/systime.h>
  #include <udjat/agent/loadavg.h>
  #include <udjat/agent/swapusage.h>
+ #include <udjat/agent/memusage.h>
  
  using namespace std;
  using namespace Udjat;
@@ -41,6 +42,7 @@
 		static System::Time::Factory systimefactory;
 		static System::LoadAverage::Factory loadavgfactory;
 		static System::SwapUsage::Factory swapusagefactory;
+		static System::MemoryUsage::Factory memusagefactory;
 
 	});
 

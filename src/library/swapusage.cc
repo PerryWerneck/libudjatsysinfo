@@ -21,6 +21,7 @@
  #include <config.h>
  #include <udjat/defs.h>
 
+ #include <udjat/agent/abstract.h>
  #include <udjat/agent/swapusage.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/agent.h>
@@ -49,6 +50,11 @@
 
 	}
 
+	void System::SwapUsage::start() {
+		refresh();
+		Abstract::Agent::start();
+	}
+
 	bool System::SwapUsage::refresh() {
 
 		struct sysinfo info;
@@ -61,6 +67,8 @@
 		float free = (float) info.freeswap;
 		float total = (float) info.totalswap;
 		float usage = (total-free) / total;
+
+		debug("Swap usage -----------> ",usage);
 
 		return set(usage);
 	}
