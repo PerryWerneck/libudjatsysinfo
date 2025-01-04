@@ -112,6 +112,7 @@ lib_src = [
   'src/library/loadavg.cc',
   'src/library/swapusage.cc',
   'src/library/memoryusage.cc',
+  'src/library/uptime.cc',
 ]
 
 module_src = [

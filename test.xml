@@ -9,6 +9,7 @@
 	<agent name='LoadAverage' type='LoadAverage' />
 	<agent name='SwapUsage' type='SwapUsage' />
 	<agent name='MemoryUsage' type='MemoryUsage' />
+	<agent name='SystemUpTime' type='SystemUpTime' />
 	
 	<!-- 
 	

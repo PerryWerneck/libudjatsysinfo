@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
  #include <config.h>
  #include "private.h"
  #include <udjat/tools/disk/stat.h>
@@ -46,23 +47,6 @@
 		const Disk::Unit *unit= nullptr;
 
 		Disk::Stat::Data diskstat;
-
-		/// @brief Get stats from all physical disks.
-		/*
-		static Disk::Stat & load(Disk::Stat &stat) {
-
-			for(Disk::Stat &disk : Disk::Stat::get()) {
-
-				if(disk.physical()) {
-					stat += disk;
-				}
-
-			}
-
-			return stat;
-
-		}
-		*/
 
 		float getAverage() const {
 			return ((diskstat.read + diskstat.write) / 2) / unit->value;
@@ -117,11 +101,6 @@
 				}
 			}
 
-			/*
-			load(st);
-			st.reset(diskstat);
-			*/
-
 		}
 
 		virtual ~Agent() {
@@ -169,3 +148,5 @@
 	}
 
  }
+
+*/
