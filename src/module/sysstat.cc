@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
  #include <config.h>
  #include <udjat/defs.h>
 
@@ -134,31 +135,6 @@
 			return value;
 		}
 
-		/*
-		bool getProperties(const char *path, Response::Table &report) const override {
-
-			if(super::getProperties(path,report)) {
-				return true;
-			}
-
-			if(*path) {
-				return false;
-			}
-
-			report.start("name","label","summary","value",nullptr);
-
-			for(size_t ix = 0; ix < N_ELEMENTS(values); ix++) {
-				report 	<< string{std::to_string((System::Stat::Type) ix)}
-						<< string{System::Stat::getLabel((System::Stat::Type) ix)}
-						<< string{System::Stat::getSummary((System::Stat::Type) ix)}
-						<< std::to_string((values[ix] * 100));
-
-			}
-
-			return true;
-		}
-		*/
-
 		std::string to_string() const noexcept override {
 			std::stringstream out;
 			out << std::fixed << std::setprecision(2) << (getValue(this->type) * 100) << "%";
@@ -204,3 +180,4 @@
 	}
 
  }
+*/
