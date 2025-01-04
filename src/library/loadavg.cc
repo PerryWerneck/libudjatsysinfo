@@ -70,6 +70,8 @@
 
 	bool System::LoadAverage::refresh() {
 
+#ifdef HAS_GETLOADAVG
+
 		double loadavg[3];
 
 		if(getloadavg(loadavg,3) < 0) {
@@ -83,6 +85,12 @@
 		}
 
 		return Agent<Percentage>::set((float) (rc/100));
+#else
+
+		logger::String{"No support for getloadavg() function"}.error(name());
+		return Agent<Percentage>::set(0);
+
+#endif // HAS_GETLOADAVG
 
 	}
 

@@ -97,8 +97,16 @@ app_conf.set('PACKAGE_VERSION_MICRO', pkg_micro_version)
 app_conf.set('PRODUCT_NAME', libudjat.get_variable('product_name'))
 app_conf.set('PRODUCT_VERSION', libudjat.version())
 
+if cxx.compiles('#include <sys/sysinfo.h>', name : 'sysinfo.h')
+  app_conf.set('HAVE_SYS_SYSINFO_H', 1)
+endif
+
 if cxx.compiles('#include <unistd.h>', name : 'unistd.h')
   app_conf.set('HAVE_UNISTD_H', 1)
+endif
+
+if cxx.has_function('getloadavg')
+  app_conf.set('HAS_GETLOADAVG', 1)
 endif
 
 includes_dir = include_directories('src/include')
@@ -107,12 +115,14 @@ includes_dir = include_directories('src/include')
 # Sources
 #
 lib_src = [
-  'src/library/diskstat.cc',
+  'src/library/module.cc',
   'src/library/systime.cc',
   'src/library/loadavg.cc',
+  'src/library/diskstat.cc',
   'src/library/swapusage.cc',
-  'src/library/memoryusage.cc',
   'src/library/uptime.cc',
+  'src/library/systime.cc',
+  'src/library/sysstat.cc', 
 ]
 
 module_src = [
@@ -173,8 +183,8 @@ else
     'src/library/os/linux/diskstats.cc',
     'src/library/os/linux/sysinfo.cc',
     'src/library/os/linux/sysstats.cc',
-    'src/library/systime.cc',
-  ]
+    'src/library/os/linux/memoryusage.cc',
+ ]
 
 endif
 
@@ -277,6 +287,11 @@ executable(
 install_headers(
   'src/include/udjat/tools/disk/stat.h',
   subdir: 'udjat/tools/disk'  
+)
+
+install_headers(
+  'src/include/udjat/module/sysinfo.h',
+  subdir: 'udjat/module'  
 )
 
 install_headers(

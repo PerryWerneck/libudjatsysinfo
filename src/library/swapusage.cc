@@ -29,7 +29,10 @@
  #include <udjat/tools/intl.h>
 
  #include <memory>
- #include <sys/sysinfo.h>
+
+ #ifdef HAVE_SYS_SYSINFO_H
+ 	#include <sys/sysinfo.h>
+ #endif // HAVE_SYS_SYSINFO_H
 
  using namespace std;
 
@@ -57,6 +60,8 @@
 
 	bool System::SwapUsage::refresh() {
 
+#ifdef HAVE_SYS_SYSINFO_H
+
 		struct sysinfo info;
 		memset(&info,0,sizeof(info));
 
@@ -71,6 +76,13 @@
 		debug("Swap usage -----------> ",usage);
 
 		return set(usage);
+		
+#else
+
+		logger::String{"No support for sysinfo() function"}.error(name());
+		return set(0.0);
+
+#endif // HAVE_SYS_SYSINFO_H
 	}
 
 	static inline bool is_empty(const char *str) noexcept {

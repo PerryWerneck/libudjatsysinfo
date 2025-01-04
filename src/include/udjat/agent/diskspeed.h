@@ -20,42 +20,47 @@
  /// @brief Declares system time agent.
  
  #include <udjat/defs.h>
- #include <udjat/agent/percentage.h>
- #include <udjat/tools/timestamp.h>
- #include <udjat/agent.h>
+ #include <udjat/agent/abstract.h>
  #include <udjat/tools/xml.h>
- #include <cstdlib>
  
  namespace Udjat {
 
-	namespace System {
+	namespace Disk {
 
-		class UDJAT_API LoadAverage : public Agent<Percentage> {
+		class UDJAT_API SpeedMonitor : public Abstract::Agent {
 		private:
-			size_t cores = 0;
-			uint8_t type = 0;
 
-			void setup(uint8_t minutes = 5);
+			/// @brief The type of speed to monitor.
+			enum Type : uint8_t {
+				AVERAGE,
+				READ,
+				WRITE
+			} type = AVERAGE;
+
+			static Type TypeFactory(const XML::Node &node);
+
+			/// @brief The disk name to monitor (nullptr to monitor all disks).
+			const char *diskname = nullptr;
 
 		public:
 
 			class Factory : public Abstract::Agent::Factory {
 			public:
-				Factory(const char *name = "LoadAverage") : Udjat::Abstract::Agent::Factory{name} {
+				Factory(const char *name = "DiskSpeed") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
 				std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const XML::Node &node) const override;
 			};
 
-			LoadAverage(const char *name = "LoadAverage");
-			LoadAverage(const XML::Node &node);
-			virtual ~LoadAverage();
+			SpeedMonitor(const char *name = "DiskSpeed");
+			SpeedMonitor(const XML::Node &node);
+			virtual ~SpeedMonitor();
 
-			void start() override;
-			bool refresh() override;
+			static time_t get(); 
 
-			std::shared_ptr<Abstract::State> computeState() override;
-
+			Udjat::Value &get(Udjat::Value &value) const override;
+			std::string to_string() const noexcept override;
+			std::shared_ptr<Abstract::Agent> find(const char *path, bool required, bool autoins);
 
 		};
 

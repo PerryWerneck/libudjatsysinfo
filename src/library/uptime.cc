@@ -24,7 +24,10 @@
  #include <udjat/agent.h>
  #include <udjat/agent/uptime.h>
  #include <udjat/moduleinfo.h>
- #include <sys/sysinfo.h>
+
+ #ifdef HAVE_SYS_SYSINFO_H
+ 	#include <sys/sysinfo.h>
+ #endif // HAVE_SYS_SYSINFO_H
 
  namespace Udjat {
 
@@ -61,12 +64,29 @@
 	}
 
 	time_t System::UpTime::get() {
-		struct sysinfo info;
-		memset(&info,0,sizeof(info));
-		if(sysinfo(&info) < 0) {
-			throw std::system_error(errno,std::system_category(),_("Can't get system information"));
-		}
-		return info.uptime;
+
+#if defined(HAVE_SYS_SYSINFO_H)
+
+	struct sysinfo info;
+	memset(&info,0,sizeof(info));
+	if(sysinfo(&info) < 0) {
+		throw std::system_error(errno,std::system_category(),_("Can't get system information"));
+	}
+	return info.uptime;
+
+#elif defined(_WIN32)
+
+	// https://learn.microsoft.com/pt-br/windows/win32/api/sysinfoapi/nf-sysinfoapi-gettickcount64
+	unsigned long long ticks = GetTickCount64();
+	return (time_t) (ticks / 1000);
+
+#else
+
+	logger::String{"No support for sysinfo() function"}.error(name());
+	return 0;
+
+#endif // HAVE_SYS_SYSINFO_H
+
 	}
 
 	Udjat::Value & System::UpTime::get(Udjat::Value &value) const {

@@ -20,17 +20,8 @@
  #include <config.h>
  #include <udjat/defs.h>
  #include <udjat/tests.h>
- #include <udjat/moduleinfo.h>
- #include <udjat/tools/application.h>
+ #include <udjat/module.h>
 
- // Agent types
- #include <udjat/agent/systime.h>
- #include <udjat/agent/loadavg.h>
- #include <udjat/agent/swapusage.h>
- #include <udjat/agent/memusage.h>
- #include <udjat/agent/uptime.h>
- 
- using namespace std;
  using namespace Udjat;
 
  int main(int argc, char **argv) {
@@ -39,12 +30,7 @@
 	
 	return Testing::run(argc,argv,info,[](Application &){
 
-	 	// udjat_module_init();
-		static System::Time::Factory systimefactory;
-		static System::LoadAverage::Factory loadavgfactory;
-		static System::SwapUsage::Factory swapusagefactory;
-		static System::MemoryUsage::Factory memusagefactory;
-		static System::UpTime::Factory uptimefactory;
+	 	udjat_module_init();
 
 	});
 

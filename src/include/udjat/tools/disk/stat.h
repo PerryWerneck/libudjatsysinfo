@@ -75,9 +75,13 @@
 				unsigned long time = 0;			///< @brief The number of milliseconds spent discarding.
 			} discards;
 
-			/// @brief Create an empty device.
+			/// @brief Build an empty device.
 			Stat() {
 			}
+
+			/// @brief Build device by name.
+			/// @param name Device name (ex: sda) or empty to all disks.
+			Stat(const char *name);
 
 			/// @brief Is a physical disk?
 			inline bool physical() const noexcept {
@@ -88,10 +92,6 @@
 			inline bool logical() const noexcept {
 				return major != 0 && minor != 0;
 			}
-
-			/// @brief Get from device name.
-			/// @param name Device name (ex: sda) or empty to all disks.
-			Stat(const char *name);
 
 			/// @brief Load /proc/diskstats.
 			static std::list<Stat> get();

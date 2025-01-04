@@ -19,168 +19,134 @@
 
 /*
  #include <config.h>
- #include <udjat/defs.h>
- #include <udjat/tools/xml.h>
- #include <string>
+ #include "private.h"
  #include <udjat/tools/disk/stat.h>
-
- using namespace std;
+ #include <udjat/tools/intl.h>
+ #include <sstream>
+ #include <iomanip>
+ #include <sstream>
+ #include <udjat/tools/xml.h>
+ #include <sys/time.h>
+ #include <sstream>
+ #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	static const Disk::Unit units[] = {
-		{          1.0,  "B",  "B/s" },
-		{       1024.0, "KB", "KB/s" },
-		{    1048576.0, "MB", "MB/s" },
-		{ 1073741824.0, "GB", "GB/s" }
+	static const Udjat::ModuleInfo moduleinfo{"Get Disk Read/Write speed average"};
+
+	static const char *labels[] = {
+		N_( "Average disk speed" ),
+		N_( "Read disk speed" ),
+		N_( "Write disk speed" )
 	};
 
-	const Disk::Unit * Disk::Unit::get(const pugi::xml_node &node, const char *attr, const char *def) {
-		return get(Attribute(node,attr).as_string(def));
-	}
+	class SysInfo::DiskStat::Agent : public Abstract::Agent {
+	private:
+		unsigned short type;
 
-	const Disk::Unit * Disk::Unit::get(const char *name) {
+		const Disk::Unit *unit= nullptr;
 
-		for(size_t ix = 0; ix < ((sizeof(units)/sizeof(units[0]))); ix++) {
-			if(name[0] == units[ix].id[0]) {
-				return &units[ix];
+		Disk::Stat::Data diskstat;
+
+		float getAverage() const {
+			return ((diskstat.read + diskstat.write) / 2) / unit->value;
+		}
+
+		float getRead() const {
+			return diskstat.read / unit->value;
+		}
+
+		float getWrite() const {
+			return diskstat.write / unit->value;
+		}
+
+		float getValueByType() const {
+
+			switch(type) {
+			case 0: // Average disk speed
+				return getAverage();
+
+			case 1: // Read disk speed
+				return getRead();
+
+			case 2: // Write disk speed
+				return getWrite();
 			}
+
+			return 0;
+
 		}
 
-		throw runtime_error(string{"Invalid unit '"} + name + "'");
+	public:
+		Agent(const xml_node &node) : Abstract::Agent(node), type(Attribute(node,"stat-type").select("average","read","write",nullptr)) {
 
-	}
+			Object::properties.icon = "utilities-system-monitor";
+			this->unit = Udjat::Disk::Unit::get(node);
 
-	Disk::Stat::Data & Disk::Stat::reset(Disk::Stat::Data &data) const {
-		data.read = data.write = 0;
-
-		float blocksize = getBlockSize();
-
-		data.saved.read.bytes = ((float) read.blocks) * blocksize;
-		data.saved.read.time = read.time;
-
-		data.saved.write.bytes = ((float) write.blocks) * blocksize;
-		data.saved.write.time = write.time;
-
-		return data;
-	}
-
-	Disk::Stat::Data & Disk::Stat::compute(Disk::Stat::Data &data) const {
-
-		// Get blocksize
-		float blocksize = getBlockSize();
-
-		// Get this cicle values.
-		float bytes_read = (read.blocks * blocksize) - data.saved.read.bytes;
-		float bytes_write = (write.blocks * blocksize) - data.saved.write.bytes;
-		float time_read = read.time - data.saved.read.time;
-		float time_write = write.time - data.saved.write.time;
-
-		// Reset for next cicle.
-		{
-			data.read = data.write = 0;
-
-			data.saved.read.bytes = ((float) read.blocks) * blocksize;
-			data.saved.read.time = read.time;
-
-			data.saved.write.bytes = ((float) write.blocks) * blocksize;
-			data.saved.write.time = write.time;
-		}
-
-		if(bytes_read > 0 && time_read > 0) {
-			data.read = bytes_read / (time_read/1000.0);
-		} else {
-			data.read = 0;
-		}
-
-		if(bytes_write > 0 && time_write > 0) {
-			data.write = bytes_write / (time_write/1000.0);
-		} else {
-			data.write = 0;
-		}
-
-		return data;
-	}
-
-	Disk::Stat::Data::Data(const Disk::Stat &stat) : Data() {
-
-		float blocksize = (float) stat.getBlockSize();
-
-		saved.read.bytes = ((float) stat.read.blocks) * blocksize;
-		saved.read.time = stat.read.time;
-
-		saved.write.bytes = ((float) stat.write.blocks) * blocksize;
-		saved.write.time = stat.write.time;
-
-	}
-
-	Disk::Stat::Data & Disk::Stat::Data::operator+=(const Disk::Stat &stat) {
-
-		Disk::Stat::Data data(stat);
-
-		read += data.read;
-		write += data.write;
-
-		saved.read.bytes += data.saved.read.bytes;
-		saved.read.time += data.saved.read.time;
-
-		saved.write.bytes += data.saved.write.bytes;
-		saved.write.time += data.saved.write.time;
-
-		return *this;
-
-	}
-
-	Disk::Stat::Data & Disk::Stat::Data::operator+=(const Disk::Stat::Data &data) {
-
-		read += data.read;
-		write += data.write;
-
-		saved.read.bytes += data.saved.read.bytes;
-		saved.read.time += data.saved.read.time;
-
-		saved.write.bytes += data.saved.write.bytes;
-		saved.write.time += data.saved.write.time;
-
-		return *this;
-
-	}
-
-	Disk::Stat::Data & Disk::Stat::Data::update(const Disk::Stat::Data &data) {
-
-		// Get disk read info.
-		{
-			float bytes_read = data.saved.read.bytes - saved.read.bytes;
-			float time_read = data.saved.read.time - saved.read.time;
-
-			if(bytes_read > 0 && time_read > 0) {
-				read = bytes_read / (time_read/1000.0);
-			} else {
-				read = 0;
+			if(!(Object::properties.label && *Object::properties.label)) {
+#ifdef GETTEXT_PACKAGE
+				Object::properties.label = Quark(string{dgettext(GETTEXT_PACKAGE,labels[type])} + _( " in " ) + unit->speed).c_str();
+#else
+				Object::properties.label = Quark(string{labels[type]} + " in " + unit->speed).c_str();
+#endif // GETTEXT_PACKAGE
 			}
-		}
 
-		// Get disk write info.
-		{
-			float bytes_write = data.saved.write.bytes - saved.write.bytes;
-			float time_write = data.saved.write.time - saved.write.time;
-
-			if(bytes_write > 0 && time_write > 0) {
-				write = bytes_write / (time_write/1000.0);
-			} else {
-				write = 0;
+			if(!timer()) {
+				throw runtime_error("Disk stats requires an update timer");
 			}
+
+			for(Disk::Stat &disk : Disk::Stat::get()) {
+				if(disk.physical()) {
+					diskstat += Disk::Stat::Data(disk);
+				}
+			}
+
 		}
 
-		// Store for next cicle.
-		saved.read.bytes = data.saved.read.bytes;
-		saved.read.time = data.saved.read.time;
+		virtual ~Agent() {
+		}
 
-		saved.write.bytes = data.saved.write.bytes;
-		saved.write.time = data.saved.write.time;
+		Udjat::Value & get(Udjat::Value &value) const override {
+			value = getValueByType();
+			return value;
+		}
 
-		return *this;
+		bool refresh() override {
+
+			Disk::Stat::Data current;
+			for(Disk::Stat &disk : Disk::Stat::get()) {
+				if(disk.physical()) {
+					current += Disk::Stat::Data(disk);
+				}
+			}
+
+			diskstat.update(current);
+
+#ifdef DEBUG
+			cout << "Read: " << this->diskstat.read << " Write: " << this->diskstat.write << endl;
+#endif // DEBUG
+
+			return true;
+		}
+
+		std::string to_string() const noexcept override {
+			std::stringstream out;
+			out << std::fixed << std::setprecision(2) << getValueByType() << " " << unit->speed;
+			return out.str();
+		}
+
+	};
+
+	SysInfo::DiskStat::DiskStat() : Udjat::Factory("system-diskstat",moduleinfo) {
+	}
+
+	SysInfo::DiskStat::~DiskStat() {
+	}
+
+	std::shared_ptr<Abstract::Agent> SysInfo::DiskStat::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node) const {
+		return make_shared<Agent>(node);
 	}
 
  }
+
 */
