@@ -226,7 +226,7 @@ if host_machine.system() == 'windows'
 
   # https://mesonbuild.com/Reference-manual_functions.html#shared_library
   module = shared_library(
-    'http', 
+    'sysinfo', 
     config_src + module_src + resources,
     name_prefix: 'udjat-module-',
     install: true,
@@ -252,7 +252,7 @@ else
 
   # https://mesonbuild.com/Reference-manual_functions.html#shared_library
   module = shared_library(
-    'http', 
+    'sysinfo', 
     config_src + module_src,
     name_prefix: 'udjat-module-',
     install: true,
