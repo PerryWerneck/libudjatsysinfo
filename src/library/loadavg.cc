@@ -33,6 +33,7 @@
  #include <udjat/defs.h>
 
  #include <udjat/agent/abstract.h>
+ #include <udjat/agent/percentage.h>
  #include <udjat/agent/loadavg.h>
  #include <udjat/tools/file.h>
  #include <udjat/tools/intl.h>
@@ -196,46 +197,55 @@
 				0.5,
 				"good",
 				Udjat::ready,
-				N_( "System load is lower than 50%" ),
+				N_( "System load is ${value}" ),
 				""
 			},
 			{
 				0.8,
 				"gt50",
 				Udjat::warning,
-				N_( "System load is higher than 50%" ),
+				N_( "System load is ${value}" ),
 				""
 			},
 			{
 				0.95,
 				"gt90",
 				Udjat::error,
-				N_( "System load is higher than 80%" ),
+				N_( "System load is ${value}" ),
 				""
 			},
 			{
 				1.0,
 				"full",
 				Udjat::critical,
-				N_( "System load is too high" ),
+				N_( "System load is ${value}" ),
 				""
 			}
 		};	
 
 		float current = (float) this->get();
+
+#ifdef DEBUG
+		{
+			string str;
+			getProperty("value",str);
+			debug(name()," --------------------------> ",str.c_str());
+		}
+#endif
+
 		for(const auto &state : default_states) {
 			if(current < state.value) {
-				return make_shared<Abstract::State>(
-							state.name,
-							state.level,
+				return Abstract::Agent::StateFactory(
+					state.name,
+					state.level,
 #ifdef GETTEXT_PACKAGE
-							dgettext(GETTEXT_PACKAGE,state.summary),
-							dgettext(GETTEXT_PACKAGE,state.body)
+					dgettext(GETTEXT_PACKAGE,state.summary),
+					dgettext(GETTEXT_PACKAGE,state.body)
 #else
-							state.summary,
-							state.body
+					state.summary,
+					state.body
 #endif // GETTEXT_PACKAGE
-						);
+				);
 			}
 		}
 		

@@ -180,31 +180,34 @@
 				0.8,
 				"low",
 				Udjat::ready,
-				N_( "Memory usage is lower than 80%" ),
+				N_( "${value} of total memory in use" ),
 				""
 			},
 			{
 				0.9,
 				"medium",
 				Udjat::warning,
-				N_( "Memory usage is lower than 90%" ),
+				N_( "${value} of total memory in use" ),
 				""
 			},
 			{
 				1.0,
 				"high",
 				Udjat::error,
-				N_( "Memory usage is higher than 90%" ),
+				N_( "${value} of total memory in use" ),
 				""
 			}
 		};	
 
+		debug("Expanding(",name(),")----> '",String{"The memory usage is ${value}"}.expand(*this).c_str(),"'");
+
 		float current = (float) this->get();
 		for(const auto &state : default_states) {
 			if(current < state.value) {
-				return make_shared<Abstract::State>(
-							state.name,
-							state.level,
+
+				return Abstract::Agent::StateFactory(
+					state.name,
+					state.level,
 #ifdef GETTEXT_PACKAGE
 							dgettext(GETTEXT_PACKAGE,state.summary),
 							dgettext(GETTEXT_PACKAGE,state.body)
@@ -212,7 +215,7 @@
 							state.summary,
 							state.body
 #endif // GETTEXT_PACKAGE
-						);
+				);
 			}
 		}
 

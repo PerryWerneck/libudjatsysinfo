@@ -21,6 +21,8 @@
  #include <udjat/defs.h>
  #include <udjat/tests.h>
  #include <udjat/module.h>
+ #include <udjat/agent/percentage.h>
+ #include <udjat/agent/loadavg.h>
 
  using namespace Udjat;
 
@@ -29,6 +31,12 @@
 	static const ModuleInfo info{"sysinfo-tester"};
 	
 	return Testing::run(argc,argv,info,[](Application &){
+
+		{
+			Agent<Percentage> percent{"test-percent",0.1};
+			debug("Expanding----> '",String{"The percent value is ${value}"}.expand(percent).c_str(),"'");
+
+		}
 
 	 	udjat_module_init();
 

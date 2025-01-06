@@ -33,22 +33,9 @@ URL:			https://github.com/PerryWerneck/libudjat%{module_name}
 Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
 
-BuildRequires:	binutils
-BuildRequires:	coreutils
-
-%if "%{_vendor}" == "debbuild"
-BuildRequires:  meson-deb-macros
-BuildRequires:	libudjat-dev
-%else
 BuildRequires:	gcc-c++ >= 5
-BuildRequires:	pkgconfig(libudjat)
-%endif
-
-%if 0%{?suse_version} == 01500
-BuildRequires:  meson = 0.61.4
-%else
-BuildRequires:  meson
-%endif
+BuildRequires:	pkgconfig(libudjat) >= 2.0.0
+BuildRequires:	meson >= 0.61.4
 
 %description
 System information library for %{product_name}
@@ -63,6 +50,7 @@ C++ System information classes for use with lib%{product_name}
 
 %package -n %{name}%{_libvrs}
 Summary: System information library for %{product_name}
+Provides: libudjat%{module_name}%{MAJOR_VERSION} = %{version}
 
 %description -n %{name}%{_libvrs}
 System information library for %{product_name}
@@ -71,18 +59,12 @@ C++ System information classes for use with lib%{product_name}
 
 %lang_package -n %{name}%{_libvrs}
 
-
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
 %package devel
 Summary: Development files for %{name}
+Provides: libudjat%{module_name}%{MAJOR_VERSION}-devel = %{version}
 Requires: %{name}%{_libvrs} = %{version}
-
-%if "%{_vendor}" == "debbuild"
-Provides:	%{name}-dev
-Provides:	pkgconfig(%{name})
-Provides:	pkgconfig(%{name}-static)
-%endif
 
 %description devel
 System information library for %{product_name}
@@ -130,6 +112,8 @@ Summary: HTTP module for %{name}
 %{_includedir}/udjat/tools/system/*.h
 %dir %{_includedir}/udjat/tools/disk
 %{_includedir}/udjat/tools/disk/*.h
+%dir %{_includedir}/udjat/module
+%{_includedir}/udjat/module/*.h
 
 %post -n %{name}%{_libvrs} -p /sbin/ldconfig
 

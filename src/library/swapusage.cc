@@ -106,35 +106,35 @@
 				0.1,
 				"low",
 				Udjat::ready,
-				N_( "Swap usage is lower than 10%" ),
+				N_( "Swap usage is ${value}" ),
 				""
 			},
 			{
 				0.5,
 				"low",
 				Udjat::ready,
-				N_( "Swap usage is lower than 50%" ),
+				N_( "Swap usage is ${value}" ),
 				""
 			},
 			{
 				0.8,
 				"medium",
 				Udjat::warning,
-				N_( "Swap usage is lower than 80%" ),
+				N_( "Swap usage is ${value}" ),
 				""
 			},
 			{
 				0.9,
 				"high",
 				Udjat::error,
-				N_( "Swap usage is lower than 90%" ),
+				N_( "Swap usage is ${value}" ),
 				""
 			},
 			{
 				1.0,
 				"critical",
 				Udjat::critical,
-				N_( "Swap usage is higher than 90%" ),
+				N_( "Swap usage is ${value}" ),
 				""
 			}
 		};	
@@ -142,17 +142,17 @@
 		float current = (float) this->get();
 		for(const auto &state : default_states) {
 			if(current < state.value) {
-				return make_shared<Abstract::State>(
-							state.name,
-							state.level,
+				return Abstract::Agent::StateFactory(
+					state.name,
+					state.level,
 #ifdef GETTEXT_PACKAGE
-							dgettext(GETTEXT_PACKAGE,state.summary),
-							dgettext(GETTEXT_PACKAGE,state.body)
+					dgettext(GETTEXT_PACKAGE,state.summary),
+					dgettext(GETTEXT_PACKAGE,state.body)
 #else
-							state.summary,
-							state.body
+					state.summary,
+					state.body
 #endif // GETTEXT_PACKAGE
-						);
+				);
 			}
 		}
 
