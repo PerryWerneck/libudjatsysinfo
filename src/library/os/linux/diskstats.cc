@@ -26,6 +26,8 @@
  #include <sys/stat.h>
  #include <fcntl.h>
  #include <unistd.h>
+ #include <linux/major.h>
+ #include <udjat/tools/logger.h>
 
  using namespace std;
 
@@ -103,17 +105,30 @@
 
 	std::list<Disk::Stat> Disk::Stat::get() {
 
-		// https://www.kernel.org/doc/Documentation/iostats.txt
-		File::Text proc("/proc/diskstats");
-
 		std::list<Disk::Stat> stats;
-		for(auto it = proc.begin(); it != proc.end(); it++) {
+
+		// https://www.kernel.org/doc/Documentation/iostats.txt
+		// https://mirrors.mit.edu/kernel/linux/docs/lanana/device-list/devices-2.6.txt
+
+		File::Text{"/proc/diskstats"}.for_each([&stats](const std::string &line){
+
+			if(!line.empty()) {
+				Stat st;
+				parse(st,line.c_str());
+				stats.push_back(st);
+			}
+
+		});
+
+		/*
+		for(const auto line : File::Text{"/proc/diskstats"}) {
 
 			Stat st;
-			parse(st,it->c_str());
+			parse(st,line->c_str());
 			stats.push_back(st);
 
 		}
+		*/
 
 		return stats;
 
@@ -124,7 +139,7 @@
 		if(!name.empty()) {
 
 			// https://www.kernel.org/doc/Documentation/block/stat.txt
-			File::Text proc( (string{"/sys/block/"} + name + "/stat").c_str() );
+			File::Text proc( String{"/sys/block/",name.c_str(),"/stat"}.c_str() );
 
 			auto sz = sscanf(
 				next(proc.c_str()),
@@ -155,6 +170,19 @@
 
 		} else {
 
+			File::Text{"/proc/diskstats"}.for_each([&](const std::string &line){
+
+				if(!line.empty()) {
+					Stat st;
+					parse(st,line.c_str());
+					if(st.major == BLOCK_EXT_MAJOR) {
+						*this += st;
+					}
+				}
+
+			});
+
+			/*
 			File::Text proc("/proc/diskstats");
 
 			for(auto it = proc.begin(); it != proc.end(); it++) {
@@ -166,6 +194,7 @@
 				}
 
 			}
+			*/
 
 		}
 
@@ -196,6 +225,26 @@
 		discards.time += s.discards.time;
 
 		return *this;
+	}
+
+	bool Disk::Stat::physical() const {
+
+		File::Path path{String{"/sys/block/",name.c_str()}.c_str()};
+		if(access(path.c_str(),F_OK)) {
+			// No block device, return false.
+			return false;
+		}
+
+		// Get real device path.
+		path.realpath();
+
+		debug(path.c_str());
+		if(strstr(path.c_str(),"virtual")) {
+			// Device path contains virtual, return false
+			return false;
+		}
+
+		return true;
 	}
 
 	size_t Disk::Stat::getBlockSize() const {

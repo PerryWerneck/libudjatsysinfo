@@ -90,15 +90,13 @@
 			/// @param name Device name (ex: sda) or empty to all disks.
 			Stat(const char *name);
 
-			/// @brief Is a physical disk?
-			inline bool physical() const noexcept {
-				return major != 0 && minor == 0;
-			}
-
 			/// @brief Is a logical disk?
 			inline bool logical() const noexcept {
 				return major != 0 && minor != 0;
 			}
+
+			/// @brief Is a physical device?
+			bool physical() const;
 
 			/// @brief Load /proc/diskstats.
 			static std::list<Stat> get();
