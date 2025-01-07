@@ -165,8 +165,10 @@
 
 	std::shared_ptr<Abstract::State> System::MemoryUsage::computeState() {
 
-		if(!states.empty()) {
-			return super::computeState();
+		float current = (float) this->get();
+		for(auto state : states) {
+			if(state->compare(current))
+				return state;
 		}
 
 		static const struct  {
@@ -201,7 +203,6 @@
 
 		debug("Expanding(",name(),")----> '",String{"The memory usage is ${value}"}.expand(*this).c_str(),"'");
 
-		float current = (float) this->get();
 		for(const auto &state : default_states) {
 			if(current < state.value) {
 

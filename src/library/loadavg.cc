@@ -181,8 +181,10 @@
 
 	std::shared_ptr<Abstract::State> System::LoadAverage::computeState() {
 
-		if(!states.empty()) {
-			return super::computeState();
+		float current = (float) this->get();
+		for(auto state : states) {
+			if(state->compare(current))
+				return state;
 		}
 
 		// No States, use the defaults.
@@ -222,8 +224,6 @@
 				""
 			}
 		};	
-
-		float current = (float) this->get();
 
 #ifdef DEBUG
 		{

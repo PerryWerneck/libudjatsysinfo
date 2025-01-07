@@ -184,7 +184,8 @@ else
     'src/library/os/linux/sysinfo.cc',
     'src/library/os/linux/sysstats.cc',
     'src/library/os/linux/memoryusage.cc',
- ]
+    'src/library/os/linux/namefactories.cc',
+]
 
 endif
 

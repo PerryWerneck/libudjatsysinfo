@@ -24,10 +24,17 @@
  #include <pugixml.hpp>
  #include <string>
  #include <list>
+ #include <udjat/tools/string.h>
 
  namespace Udjat {
 
 	namespace Disk {
+
+		UDJAT_API String NameFactory(const char * devname, bool required = true);
+		UDJAT_API String NameFactory(const XML::Node &node, bool required = true);
+
+		UDJAT_API String DeviceNameFactory(const char * devname, bool required = true);
+		UDJAT_API String DeviceNameFactory(const XML::Node &node, bool required = true);
 
 		/// @brief Disk length unity.
 		struct UDJAT_API Unit {

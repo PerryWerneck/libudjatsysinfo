@@ -119,15 +119,9 @@
 
 	}
 
-	Disk::Stat::Stat(const char *name) : Stat() {
+	Disk::Stat::Stat(const char *n) : name{NameFactory(n,false)} {
 
-		if(name && *name) {
-
-			if(!strncasecmp(name,"/dev/",5)) {
-				name += 5;
-			}
-
-			this->name = name;
+		if(!name.empty()) {
 
 			// https://www.kernel.org/doc/Documentation/block/stat.txt
 			File::Text proc( (string{"/sys/block/"} + name + "/stat").c_str() );
@@ -211,7 +205,7 @@
 
 #ifdef BLKSSZGET
 
-		int fd = open((string{"/dev/"} + name).c_str(),O_RDONLY);
+		int fd = open(String{"/dev/",name.c_str()}.c_str(),O_RDONLY);
 		if(fd < 0) {
 			throw system_error(errno, system_category(),string{"Cant open '/dev/"} + name + "'");
 		}

@@ -91,8 +91,10 @@
 
 	std::shared_ptr<Abstract::State> System::SwapUsage::computeState() {
 
-		if(!states.empty()) {
-			return super::computeState();
+		float current = (float) this->get();
+		for(auto state : states) {
+			if(state->compare(current))
+				return state;
 		}
 
 		static const struct  {
@@ -139,7 +141,6 @@
 			}
 		};	
 
-		float current = (float) this->get();
 		for(const auto &state : default_states) {
 			if(current < state.value) {
 				return Abstract::Agent::StateFactory(
