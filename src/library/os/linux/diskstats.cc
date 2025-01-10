@@ -134,39 +134,49 @@
 
 	}
 
+	void Disk::Stat::load() {
+
+		if(name.empty()) {
+			throw system_error(EINVAL, system_category(),"Invalid disk name");
+		}
+
+		// https://www.kernel.org/doc/Documentation/block/stat.txt
+		File::Text proc( String{"/sys/block/",name.c_str(),"/stat"}.c_str() );
+
+		auto sz = sscanf(
+			next(proc.c_str()),
+			"%lu %lu %lu %u %lu %lu %lu %u %u %u %u %lu %lu %lu %lu",
+			&read.count,		// read I/Os       requests      number of read I/Os processed
+			&read.merged,		// read merges     requests      number of read I/Os merged with in-queue I/O
+			&read.blocks,		// read sectors    sectors       number of sectors read
+			&read.time,			// read ticks      milliseconds  total wait time for read requests
+
+			&write.count,		// write I/Os      requests      number of write I/Os processed
+			&write.merged,		// write merges    requests      number of write I/Os merged with in-queue I/O
+			&write.blocks,		// write sectors   sectors       number of sectors written
+			&write.time,		// write ticks     milliseconds  total wait time for write requests
+
+			&io.inprogress,		// in_flight       requests      number of I/Os currently in flight
+			&io.time,			// io_ticks        milliseconds  total time this block device has been active
+			&io.weighted,		// time_in_queue   milliseconds  total wait time for all requests
+
+			&discards.count,	// discard I/Os    requests      number of discard I/Os processed
+			&discards.merged,	// discard merges  requests      number of discard I/Os merged with in-queue I/O
+			&discards.blocks,	// discard sectors sectors       number of sectors discarded
+			&discards.time		// discard ticks   milliseconds  total wait time for discard requests
+		);
+
+		if(sz != 15) {
+			throw system_error(EINVAL, system_category(),string{"Unexpected format in /sys/block/"} + name + "/stat");
+		}
+
+	}
+
 	Disk::Stat::Stat(const char *n) : name{NameFactory(n,false)} {
 
 		if(!name.empty()) {
 
-			// https://www.kernel.org/doc/Documentation/block/stat.txt
-			File::Text proc( String{"/sys/block/",name.c_str(),"/stat"}.c_str() );
-
-			auto sz = sscanf(
-				next(proc.c_str()),
-				"%lu %lu %lu %u %lu %lu %lu %u %u %u %u %lu %lu %lu %lu",
-				&read.count,		// read I/Os       requests      number of read I/Os processed
-				&read.merged,		// read merges     requests      number of read I/Os merged with in-queue I/O
-				&read.blocks,		// read sectors    sectors       number of sectors read
-				&read.time,			// read ticks      milliseconds  total wait time for read requests
-
-				&write.count,		// write I/Os      requests      number of write I/Os processed
-				&write.merged,		// write merges    requests      number of write I/Os merged with in-queue I/O
-				&write.blocks,		// write sectors   sectors       number of sectors written
-				&write.time,		// write ticks     milliseconds  total wait time for write requests
-
-				&io.inprogress,		// in_flight       requests      number of I/Os currently in flight
-				&io.time,			// io_ticks        milliseconds  total time this block device has been active
-				&io.weighted,		// time_in_queue   milliseconds  total wait time for all requests
-
-				&discards.count,	// discard I/Os    requests      number of discard I/Os processed
-				&discards.merged,	// discard merges  requests      number of discard I/Os merged with in-queue I/O
-				&discards.blocks,	// discard sectors sectors       number of sectors discarded
-				&discards.time		// discard ticks   milliseconds  total wait time for discard requests
-			);
-
-			if(sz != 15) {
-				throw system_error(EINVAL, system_category(),string{"Unexpected format in /sys/block/"} + name + "/stat");
-			}
+			load();
 
 		} else {
 
@@ -181,20 +191,6 @@
 				}
 
 			});
-
-			/*
-			File::Text proc("/proc/diskstats");
-
-			for(auto it = proc.begin(); it != proc.end(); it++) {
-
-				Stat st;
-				parse(st,it->c_str());
-				if(st.major != 0 && st.minor == 0) {
-					*this += st;
-				}
-
-			}
-			*/
 
 		}
 

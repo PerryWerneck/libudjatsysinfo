@@ -50,10 +50,10 @@
 		/// @brief Disk stats from /proc/diskstats.
 		struct UDJAT_API Stat {
 
+			std::string name;					///< @brief Device name.
+
 			unsigned short major = 0;			///< @brief The major number of the disk.
 			unsigned short minor = 0;			///< @brief The minor number of the disk.
-
-			std::string name;					///< @brief Device name.
 
 			struct {
 				unsigned long count = 0;		///< @brief The total number of reads completed successfully.
@@ -90,6 +90,9 @@
 			/// @param name Device name (ex: sda) or empty to all disks.
 			Stat(const char *name);
 
+			/// @brief Load device stats from system.
+			void load();
+
 			/// @brief Is a logical disk?
 			inline bool logical() const noexcept {
 				return major != 0 && minor != 0;
@@ -106,41 +109,13 @@
 
 			Stat & operator+=(const Stat &s);
 
-			/// @brief Convenience data for disk read/write speed computation.
-			struct Data {
+			inline bool operator==(const Stat &s) const {
+				return major == s.major && minor == s.minor;
+			}	
 
-				float read = 0;						///< @brief The read speed in bytes/second.
-				float write = 0;					///< @brief The write speed in bytes/second.
-
-				/// @brief Values from last cycle.
-				struct {
-
-					struct {
-						float bytes = 0;				///< @brief The total number of bytes read successfully.
-						unsigned int time = 0;			///< @brief The total number of milliseconds spent by all reads.
-					} read;
-
-					struct {
-						float bytes = 0;				///< @brief The total number of bytes written successfully.
-						unsigned int time = 0;			///< @brief The total number of milliseconds spent by all writes.
-					} write;
-
-				} saved;
-
-				Data & operator+=(const Disk::Stat &stat);
-				Data() = default;
-				Data(const Disk::Stat &stat);
-
-				Data & operator+=(const Data &data);
-				Data & update(const Data &data);
-
-			};
-
-			/// @brief Reset values for computation on next cycle.
-			Data & reset(Data &data) const;
-
-			/// @brief Compute read/write speed based on saved data.
-			Data & compute(Data &data) const;
+			inline bool operator==(const char *n) const {
+				return strcasecmp(name.c_str(),n) == 0;
+			}	
 
 		};
 
