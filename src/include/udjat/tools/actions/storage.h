@@ -21,13 +21,17 @@
 
  #include <udjat/defs.h>
  #include <udjat/tools/actions/abstract.h>
+ #include <udjat/tools/disk/stat.h>
+ #include <string>
 
  namespace Udjat {
 
 	namespace Storage {
 
 		class UDJAT_API Action : public Udjat::Action {
-		protected:
+		private:
+			Disk::Unit unit;
+
 		public:
 
 			class Factory : public Udjat::Action::Factory {

@@ -83,7 +83,14 @@
 			/// @return true if the disk was inserted, false if it was already present.
 			bool push_back(const Disk::Stat &stat);
 
+			auto begin() const {
+				return std::vector<Data>::begin();
+			}
 
+			auto end() const {
+				return std::vector<Data>::end();
+			}
+			
 		};
 
 

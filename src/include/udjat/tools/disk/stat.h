@@ -37,15 +37,16 @@
 		UDJAT_API String DeviceNameFactory(const XML::Node &node, bool required = true);
 
 		/// @brief Disk length unity.
-		struct UDJAT_API Unit {
-			float value;						///< @brief Conversion from bytes.
-			const char *id;						///< @brief Unity APU.
-			const char *speed;					///< @brief Label for 'speed' values.
-
-			static const Unit * get(const pugi::xml_node &node, const char *attr = "size-unit", const char *def="M");
-			static const Unit * get(const char *str = "MB");
-
+		enum Unit : uint8_t {
+			Byte,
+			Kilobyte,
+			Megabyte,
+			Gigabyte,
+			Terabyte
 		};
+
+		Unit UnitFactory(const XML::Node &node);
+		const char * to_string(const float value, const Unit unit);
 
 		/// @brief Disk stats from /proc/diskstats.
 		struct UDJAT_API Stat {

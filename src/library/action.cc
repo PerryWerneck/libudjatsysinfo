@@ -24,6 +24,8 @@
  #include <udjat/tools/response.h>
  #include <udjat/tools/report.h>
  #include <udjat/tools/disk/stat.h>
+ #include <private/diskcontroller.h>
+ #include <udjat/tools/string.h>
  #include <memory>
  
  using namespace std;
@@ -34,7 +36,15 @@
 		return make_shared<Storage::Action>(node);	
 	}
 
-	Storage::Action::Action(const XML::Node &node) : Udjat::Action{node} {
+	Storage::Action::Action(const XML::Node &node) : Udjat::Action{node}, unit{Disk::UnitFactory(node)} {
+		
+		auto &controller = Disk::Controller::getInstance();
+		for(const auto &unit : Disk::Stat::get()) {
+			if(unit.physical()) {
+				controller.push_back(unit);
+			}
+		}
+
 	}
 
 	Storage::Action::~Action() {
@@ -46,22 +56,20 @@
 
 			auto &report = response.ReportFactory(
 				"name",
+				"read",
+				"write",
 
 				nullptr
 			);
 
-			for(const auto &unit : Disk::Stat::get()) {
-
-				if(!unit.physical()) {
-					continue;
-				}
-
-				Disk::Stat::Data data{unit};
-
-				report	<< unit.name;
+			for(const auto &unit : Disk::Controller::getInstance()) {
+			
+				report	<< unit.devname
+						<< to_string(unit.read,this->unit)
+						<< to_string(unit.write,this->unit);
 
 			}
-
+		
 		});
 
 	}
