@@ -21,9 +21,9 @@
  #include <udjat/defs.h>
  #include <udjat/tools/xml.h>
  #include <string>
- #include <udjat/tools/disk/stat.h>
+ #include <udjat/tools/storage/stat.h>
 
- #include <private/diskcontroller.h>
+ #include <private/storagecontroller.h>
 
  using namespace std;
 

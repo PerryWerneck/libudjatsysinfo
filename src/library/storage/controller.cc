@@ -21,19 +21,19 @@
  #include <udjat/defs.h>
  #include <udjat/tools/xml.h>
  #include <udjat/tools/container.h>
- #include <udjat/tools/disk/stat.h>
+ #include <udjat/tools/storage/stat.h>
  #include <udjat/tools/logger.h>
 
- #include <private/diskcontroller.h>
+ #include <private/storagecontroller.h>
  
  namespace Udjat {
 
-	Disk::Controller & Disk::Controller::getInstance() {
-		static Disk::Controller instance;
+	Storage::Controller & Storage::Controller::getInstance() {
+		static Storage::Controller instance;
 		return instance;
 	}
 
-	bool Disk::Controller::push_back(const Disk::Stat &stat) {
+	bool Storage::Controller::push_back(const Storage::Stat &stat) {
 
 		for(const auto &st : *this) {
 			if(st == stat) {
@@ -48,7 +48,7 @@
 
 	}
 
-	void Disk::Controller::on_timer() {
+	void Storage::Controller::on_timer() {
 
 		try {
 

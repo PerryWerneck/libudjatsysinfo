@@ -20,7 +20,7 @@
  #pragma once
 
  #include <udjat/defs.h>
- #include <udjat/tools/disk/stat.h>
+ #include <udjat/tools/storage/stat.h>
  #include <pugixml.hpp>
  #include <string>
  #include <vector>
@@ -30,7 +30,7 @@
 
  namespace Udjat {
 
-	namespace Disk {
+	namespace Storage {
 
 		/// @brief Convenience data for disk read/write speed computation.
 		struct Data {
@@ -56,7 +56,7 @@
 
 			} saved;
 
-			Data(const Disk::Stat &stat, float bsize = 512.0) : devname{stat.name}, blocksize(bsize) {
+			Data(const Storage::Stat &stat, float bsize = 512.0) : devname{stat.name}, blocksize(bsize) {
 			}
 
 			inline bool operator==(const Stat &stat) const {
@@ -81,7 +81,7 @@
 			/// @brief Insert disk into controller.
 			/// @param stat The disk to insert.
 			/// @return true if the disk was inserted, false if it was already present.
-			bool push_back(const Disk::Stat &stat);
+			bool push_back(const Storage::Stat &stat);
 
 			auto begin() const {
 				return std::vector<Data>::begin();

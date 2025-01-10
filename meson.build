@@ -123,10 +123,10 @@ lib_src = [
   'src/library/systime.cc',
   'src/library/sysstat.cc', 
   'src/library/action.cc', 
-  'src/library/disk/unit.cc', 
-  'src/library/disk/stat.cc',
-  'src/library/disk/controller.cc',
-  'src/library/disk/data.cc',
+  'src/library/storage/unit.cc', 
+  'src/library/storage/stat.cc',
+  'src/library/storage/controller.cc',
+  'src/library/storage/data.cc',
 ]
 
 module_src = [
@@ -290,8 +290,8 @@ executable(
 )
 
 install_headers(
-  'src/include/udjat/tools/disk/stat.h',
-  subdir: 'udjat/tools/disk'  
+  'src/include/udjat/tools/storage/stat.h',
+  subdir: 'udjat/tools/storage'  
 )
 
 install_headers(

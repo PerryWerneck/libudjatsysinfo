@@ -17,41 +17,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <config.h>
- #include <udjat/defs.h>
- #include <cstring>
- #include <udjat/tools/disk/unit.h>
- #include <udjat/tools/xml.h>
- #include <udjat/tools/string.h>
+ #pragma once
 
- using namespace std;
+ #include <udjat/defs.h>
+ #include <string>
 
  namespace Udjat {
 
-	static const struct {
-		float value;
-		const char *str;
-	} units[] = {
-		{             1.0, 	 "B" },
-		{          1024.0, 	"KB" },
-		{       1048576.0, 	"MB" },
-		{    1073741824.0, 	"GB" },
-		{ 1099511627776.0,	"TB" }
-	};
+	namespace Storage {
 
-	Storage::Unit Storage::UnitFactory(const XML::Node &node) {
+		/// @brief Disk length unity.
+		enum Unit : uint8_t {
+			Byte,
+			Kilobyte,
+			Megabyte,
+			Gigabyte,
+			Terabyte
+		};
 
-		String attr{node,"size-unit","KB"};
-		
-		for(size_t ix = 0; ix < ((sizeof(units)/sizeof(units[0]))); ix++) {
-			if(!strcasecmp(attr.c_str(),units[ix].str)) {
-				return (Storage::Unit) ix;
-			}
-		}
+		Unit UnitFactory(const XML::Node &node);
+		const std::string to_string(const float value, const Unit unit);
 
-		throw runtime_error(String{"Invalid value for size-unit: '",attr.c_str(),"'"});
-
-	}
-
+	} // Storage
  }
 

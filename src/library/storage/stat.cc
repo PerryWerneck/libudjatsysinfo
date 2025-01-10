@@ -21,30 +21,13 @@
  #include <udjat/defs.h>
  #include <udjat/tools/xml.h>
  #include <string>
- #include <udjat/tools/disk/stat.h>
+ #include <udjat/tools/storage/stat.h>
 
  using namespace std;
 
  namespace Udjat {
 
-	/*
-	const Disk::Unit * Disk::Unit::get(const pugi::xml_node &node, const char *attr, const char *def) {
-		return get(Attribute(node,attr).as_string(def));
-	}
-
-	const Disk::Unit * Disk::Unit::get(const char *name) {
-
-		for(size_t ix = 0; ix < ((sizeof(units)/sizeof(units[0]))); ix++) {
-			if(name[0] == units[ix].id[0]) {
-				return &units[ix];
-			}
-		}
-
-		throw runtime_error(string{"Invalid unit '"} + name + "'");
-
-	}
-	*/
-
+/*
 	Disk::Stat::Data & Disk::Stat::reset(Disk::Stat::Data &data) const {
 		data.read = data.write = 0;
 
@@ -177,3 +160,4 @@
 	}
 
  }
+*/

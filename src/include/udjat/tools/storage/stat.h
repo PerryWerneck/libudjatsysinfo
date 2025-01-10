@@ -20,7 +20,7 @@
  #pragma once
 
  #include <udjat/defs.h>
- #include <udjat/tools/disk/stat.h>
+ #include <udjat/tools/storage/stat.h>
  #include <pugixml.hpp>
  #include <string>
  #include <list>
@@ -28,7 +28,7 @@
 
  namespace Udjat {
 
-	namespace Disk {
+	namespace Storage {
 
 		UDJAT_API String NameFactory(const char * devname, bool required = true);
 		UDJAT_API String NameFactory(const XML::Node &node, bool required = true);
@@ -119,7 +119,7 @@
 		return st.name;
 	}
 
-	inline ostream& operator<< (ostream& os, const Udjat::Disk::Stat &st) {
+	inline ostream& operator<< (ostream& os, const Udjat::Storage::Stat &st) {
 		return os << st.name;
 	}
 
