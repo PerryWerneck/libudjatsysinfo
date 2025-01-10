@@ -20,37 +20,23 @@
  #pragma once
 
  #include <udjat/defs.h>
- #include <udjat/tools/actions/abstract.h>
- #include <udjat/tools/disk/unit.h>
- #include <string>
 
  namespace Udjat {
 
 	namespace Storage {
 
-		class UDJAT_API Action : public Udjat::Action {
-		private:
-			Unit unit;
-
-		public:
-
-			class Factory : public Udjat::Action::Factory {
-			public:
-				Factory(const char *name = "storage") : Udjat::Action::Factory{name} {
-				}
-
-				std::shared_ptr<Udjat::Action> ActionFactory(const XML::Node &node) const override;
-
-			};
-
-			Action(const XML::Node &node);
-
-			int call(Udjat::Request &request, Udjat::Response &response, bool except) override;
-
+		/// @brief Disk length unity.
+		enum Unit : uint8_t {
+			Byte,
+			Kilobyte,
+			Megabyte,
+			Gigabyte,
+			Terabyte
 		};
 
+		Unit UnitFactory(const XML::Node &node);
+		const char * to_string(const float value, const Unit unit);
 
-	}
-
+	} // Storage
  }
 

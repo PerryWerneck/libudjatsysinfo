@@ -27,31 +27,6 @@
 
  namespace Udjat {
 
-	static const struct {
-		float value;
-		Disk::Unit unit;
-	} units[] = {
-		{             1.0, 	 "B" },
-		{          1024.0, 	"KB" },
-		{       1048576.0, 	"MB" },
-		{    1073741824.0, 	"GB" },
-		{ 1099511627776.0,	"TB" }
-	}
-
-	Unit UnitFactory(const XML::Node &node) {
-
-		String attr{node,"size-unit","KB"};
-		
-		for(size_t ix = 0; ix < ((sizeof(units)/sizeof(units[0]))); ix++) {
-			if(!strcasecmp(attr.c_str(),units[ix].id)) {
-				return (Disk::Unit) ix;
-			}
-		}
-
-		throw runtime_error(String{"Invalid value for size-unit: '",attr.c_str(),"'"});
-
-	}
-
 	/*
 	const Disk::Unit * Disk::Unit::get(const pugi::xml_node &node, const char *attr, const char *def) {
 		return get(Attribute(node,attr).as_string(def));

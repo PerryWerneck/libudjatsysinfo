@@ -36,17 +36,6 @@
 		UDJAT_API String DeviceNameFactory(const char * devname, bool required = true);
 		UDJAT_API String DeviceNameFactory(const XML::Node &node, bool required = true);
 
-		/// @brief Disk length unity.
-		enum Unit : uint8_t {
-			Byte,
-			Kilobyte,
-			Megabyte,
-			Gigabyte,
-			Terabyte
-		};
-
-		Unit UnitFactory(const XML::Node &node);
-		const char * to_string(const float value, const Unit unit);
 
 		/// @brief Disk stats from /proc/diskstats.
 		struct UDJAT_API Stat {

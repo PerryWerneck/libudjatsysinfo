@@ -123,6 +123,7 @@ lib_src = [
   'src/library/systime.cc',
   'src/library/sysstat.cc', 
   'src/library/action.cc', 
+  'src/library/disk/unit.cc', 
   'src/library/disk/stat.cc',
   'src/library/disk/controller.cc',
   'src/library/disk/data.cc',

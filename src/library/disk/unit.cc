@@ -17,38 +17,39 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #pragma once
-
+ #include <config.h>
  #include <udjat/defs.h>
- #include <udjat/tools/actions/abstract.h>
+ #include <cstring>
  #include <udjat/tools/disk/unit.h>
- #include <string>
+ #include <udjat/tools/xml.h>
+ #include <udjat/tools/string.h>
+
+ using namespace std;
 
  namespace Udjat {
 
-	namespace Storage {
+	static const struct {
+		float value;
+		const char *str;
+	} units[] = {
+		{             1.0, 	 "B" },
+		{          1024.0, 	"KB" },
+		{       1048576.0, 	"MB" },
+		{    1073741824.0, 	"GB" },
+		{ 1099511627776.0,	"TB" }
+	};
 
-		class UDJAT_API Action : public Udjat::Action {
-		private:
-			Unit unit;
+	Storage::Unit Storage::UnitFactory(const XML::Node &node) {
 
-		public:
+		String attr{node,"size-unit","KB"};
+		
+		for(size_t ix = 0; ix < ((sizeof(units)/sizeof(units[0]))); ix++) {
+			if(!strcasecmp(attr.c_str(),units[ix].str)) {
+				return (Storage::Unit) ix;
+			}
+		}
 
-			class Factory : public Udjat::Action::Factory {
-			public:
-				Factory(const char *name = "storage") : Udjat::Action::Factory{name} {
-				}
-
-				std::shared_ptr<Udjat::Action> ActionFactory(const XML::Node &node) const override;
-
-			};
-
-			Action(const XML::Node &node);
-
-			int call(Udjat::Request &request, Udjat::Response &response, bool except) override;
-
-		};
-
+		throw runtime_error(String{"Invalid value for size-unit: '",attr.c_str(),"'"});
 
 	}
 
