@@ -17,7 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <udjat/tools/disk/stat.h>
+ #include <udjat/tools/storage/stat.h>
  #include <udjat/tools/file.h>
  #include <iostream>
  #include <linux/fs.h>
@@ -57,7 +57,7 @@
 
 	}
 
-	static void parse(Disk::Stat &st, const char *ptr) {
+	static void parse(Storage::Stat &st, const char *ptr) {
 
 		// https://www.kernel.org/doc/Documentation/iostats.txt
 
@@ -103,9 +103,9 @@
 
 	}
 
-	std::list<Disk::Stat> Disk::Stat::get() {
+	std::list<Storage::Stat> Storage::Stat::get() {
 
-		std::list<Disk::Stat> stats;
+		std::list<Storage::Stat> stats;
 
 		// https://www.kernel.org/doc/Documentation/iostats.txt
 		// https://mirrors.mit.edu/kernel/linux/docs/lanana/device-list/devices-2.6.txt
@@ -120,21 +120,11 @@
 
 		});
 
-		/*
-		for(const auto line : File::Text{"/proc/diskstats"}) {
-
-			Stat st;
-			parse(st,line->c_str());
-			stats.push_back(st);
-
-		}
-		*/
-
 		return stats;
 
 	}
 
-	void Disk::Stat::load() {
+	void Storage::Stat::load() {
 
 		if(name.empty()) {
 			throw system_error(EINVAL, system_category(),"Invalid disk name");
@@ -172,7 +162,7 @@
 
 	}
 
-	Disk::Stat::Stat(const char *n) : name{NameFactory(n,false)} {
+	Storage::Stat::Stat(const char *n) : name{NameFactory(n,false)} {
 
 		if(!name.empty()) {
 
@@ -196,7 +186,7 @@
 
 	}
 
-	Disk::Stat & Disk::Stat::operator+=(const Disk::Stat &s) {
+	Storage::Stat & Storage::Stat::operator+=(const Storage::Stat &s) {
 
 		major = minor = 0;
 		name.clear();
@@ -223,7 +213,7 @@
 		return *this;
 	}
 
-	bool Disk::Stat::physical() const {
+	bool Storage::Stat::physical() const {
 
 		File::Path path{String{"/sys/block/",name.c_str()}.c_str()};
 		if(access(path.c_str(),F_OK)) {
@@ -243,7 +233,7 @@
 		return true;
 	}
 
-	size_t Disk::Stat::getBlockSize() const {
+	size_t Storage::Stat::blocksize() const {
 
 		// Reference:
 		// https://stackoverflow.com/questions/40068904/portable-way-to-determine-sector-size-in-linux

@@ -52,10 +52,26 @@
 
 		try {
 
-			for(auto &stat : *this) {
+			for(Data &stat : (std::vector<Data>) *this) {
 
 				debug("Updating ",stat.devname.c_str());
 
+				try {
+
+					// Load disk status.
+					Stat disk{stat.devname.c_str()};
+
+
+
+					// Complete, reset error.
+					stat.error.clear();
+
+				} catch(const std::exception &e) {
+
+					stat.error = e.what();
+					Logger::String{"Error updating disk status: ",e.what()}.error();
+
+				}
 
 			}
 

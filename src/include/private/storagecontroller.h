@@ -36,6 +36,7 @@
 		struct Data {
 
 			const std::string devname;
+			std::string error;						///< @brief Non empty if update failed.
 
 			float blocksize;					///< @brief The disk block size in bytes.
 			float read = 0;						///< @brief The read speed in bytes/second.
@@ -56,7 +57,7 @@
 
 			} saved;
 
-			Data(const Storage::Stat &stat, float bsize = 512.0) : devname{stat.name}, blocksize(bsize) {
+			Data(const Storage::Stat &stat) : devname{stat.name}, blocksize{(float) stat.blocksize()} {
 			}
 
 			inline bool operator==(const Stat &stat) const {

@@ -17,6 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
  #include <config.h>
  #include <udjat/defs.h>
  #include <udjat/tools/xml.h>
@@ -27,7 +28,6 @@
 
  namespace Udjat {
 
-/*
 	Disk::Stat::Data & Disk::Stat::reset(Disk::Stat::Data &data) const {
 		data.read = data.write = 0;
 

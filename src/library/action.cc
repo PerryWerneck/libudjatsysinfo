@@ -27,6 +27,7 @@
  #include <udjat/tools/storage/unit.h>
  #include <private/storagecontroller.h>
  #include <udjat/tools/string.h>
+ #include <udjat/tools/intl.h>
  #include <memory>
  
  using namespace std;
@@ -63,14 +64,17 @@
 				nullptr
 			);
 
+			report.caption(_("Physical storage devices"));
 			for(const auto &unit : Storage::Controller::getInstance()) {
 			
-				report	<< unit.devname
+				report	<< unit.devname.c_str()
 						<< to_string(unit.read,this->unit)
 						<< to_string(unit.write,this->unit);
 
 			}
 		
+			return 0;
+
 		});
 
 	}

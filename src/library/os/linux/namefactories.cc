@@ -19,7 +19,7 @@
 
  #include <config.h>
  #include <udjat/defs.h>
- #include <udjat/tools/disk/stat.h>
+ #include <udjat/tools/storage/stat.h>
  #include <udjat/tools/string.h>
  #include <cstring>
  #include <stdexcept>
@@ -29,7 +29,7 @@
 
  namespace Udjat {
 
-	String Disk::NameFactory(const char * devname, bool required) {
+	String Storage::NameFactory(const char * devname, bool required) {
 
 		if(!(devname && *devname)) {
 			if(required) {
@@ -50,7 +50,7 @@
 
 	}
 
-	String Disk::NameFactory(const XML::Node &node, bool required) {
+	String Storage::NameFactory(const XML::Node &node, bool required) {
 
 		String devname{node,"name"};
 		if(!devname.empty()) {
@@ -60,7 +60,7 @@
 		return NameFactory(String{node,"device-name"}.c_str(),required);
 	}
 
-	String Disk::DeviceNameFactory(const char * devname, bool required) {
+	String Storage::DeviceNameFactory(const char * devname, bool required) {
 
 		if(!(devname && *devname)) {
 			if(required) {
@@ -79,7 +79,7 @@
 
 	}
 
-	String Disk::DeviceNameFactory(const XML::Node &node, bool required) {
+	String Storage::DeviceNameFactory(const XML::Node &node, bool required) {
 
 		String devname{node,"device-name"};
 		if(!devname.empty()) {

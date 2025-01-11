@@ -95,7 +95,7 @@
 			static std::list<Stat> get();
 
 			/// @brief Get device sector size (in bytes).
-			size_t getBlockSize() const;
+			size_t blocksize() const;
 
 			Stat & operator+=(const Stat &s);
 
@@ -115,7 +115,7 @@
 
  namespace std {
 
-	inline string to_string(const Udjat::Disk::Stat &st) {
+	inline string to_string(const Udjat::Storage::Stat &st) {
 		return st.name;
 	}
 

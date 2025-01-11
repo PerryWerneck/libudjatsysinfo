@@ -29,12 +29,13 @@
  #include <udjat/agent/swapusage.h>
  #include <udjat/agent/memusage.h>
  #include <udjat/agent/uptime.h>
+ #include <udjat/tools/actions/storage.h>
 
  namespace Udjat {
 
 	namespace SysInfo {
 
-		/// @brief Generic http module.
+		/// @brief Generic system information module.
 		class UDJAT_API Module : public Udjat::Module {
 		private:
 			System::Time::Factory			systimefactory;
@@ -42,6 +43,7 @@
 			System::SwapUsage::Factory		swapusagefactory;
 			System::MemoryUsage::Factory	memusagefactory;
 			System::UpTime::Factory			uptimefactory;
+			Storage::Action::Factory		storagefactory;	
 
 		public:
 

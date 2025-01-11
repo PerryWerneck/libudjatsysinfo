@@ -44,6 +44,7 @@
 			};
 
 			Action(const XML::Node &node);
+			virtual ~Action();
 
 			int call(Udjat::Request &request, Udjat::Response &response, bool except) override;
 

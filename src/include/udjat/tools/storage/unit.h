@@ -19,15 +19,17 @@
 
  #pragma once
 
+ #include <config.h>
  #include <udjat/defs.h>
  #include <string>
+ #include <udjat/tools/xml.h>
 
  namespace Udjat {
 
 	namespace Storage {
 
 		/// @brief Disk length unity.
-		enum Unit : uint8_t {
+		enum Unit : unsigned char {
 			Byte,
 			Kilobyte,
 			Megabyte,
@@ -35,9 +37,14 @@
 			Terabyte
 		};
 
-		Unit UnitFactory(const XML::Node &node);
-		const std::string to_string(const float value, const Unit unit);
+		Unit UDJAT_API UnitFactory(const XML::Node &node);
 
 	} // Storage
+ }
+
+ namespace std {
+
+	std::string UDJAT_API to_string(const float value, const Udjat::Storage::Unit unit);
+
  }
 

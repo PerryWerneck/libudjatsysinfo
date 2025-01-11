@@ -29,18 +29,18 @@
 
  using namespace std;
 
- namespace Udjat {
+ static const struct {
+	float value;
+	const char *str;
+ } units[] = {
+	{             1.0, 	 "B" },
+	{          1024.0, 	"KB" },
+	{       1048576.0, 	"MB" },
+	{    1073741824.0, 	"GB" },
+	{ 1099511627776.0,	"TB" }
+ };
 
-	static const struct {
-		float value;
-		const char *str;
-	} units[] = {
-		{             1.0, 	 "B" },
-		{          1024.0, 	"KB" },
-		{       1048576.0, 	"MB" },
-		{    1073741824.0, 	"GB" },
-		{ 1099511627776.0,	"TB" }
-	};
+ namespace Udjat {
 
 	Storage::Unit Storage::UnitFactory(const XML::Node &node) {
 
@@ -56,12 +56,17 @@
 
 	}
 
-	const string to_string(const float value, const Storage::Unit unit) {
-      std::stringstream out;
-        out	<< std::fixed << std::setprecision(2) << (value / units[unit].value) 
+ }
+
+ namespace std {
+
+	string UDJAT_API to_string(const float value, const Udjat::Storage::Unit unit) {
+    	std::stringstream out;
+		out	<< std::fixed << std::setprecision(2) << (value / units[unit].value) 
 			<< " " << units[unit].str << "/s";
-      	return out.str();
+		return out.str();
 	}
 
  }
+
 

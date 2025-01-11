@@ -39,7 +39,7 @@
 
 		// https://specifications.freedesktop.org/icon-naming-spec/latest/
 		Object::properties.icon = "utilities-system-monitor";
-		Object::properties.label = _( "System Up Time" );
+		Object::properties.label = _( "System up Time" );
 	}
 
 	static inline bool is_empty(const char *str) noexcept {
@@ -56,7 +56,7 @@
 			Object::properties.icon = "utilities-system-monitor";
 
 		if(is_empty(Object::properties.label))
-			Object::properties.label = _( "System UP Time" );
+			Object::properties.label = _( "System up Time" );
 
 	}
 

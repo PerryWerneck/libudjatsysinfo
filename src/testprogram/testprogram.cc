@@ -23,7 +23,7 @@
  #include <udjat/module.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/agent/loadavg.h>
- #include <udjat/tools/disk/stat.h>
+ #include <udjat/tools/storage/stat.h>
 
  using namespace Udjat;
 
@@ -39,7 +39,7 @@
 
 		}
 
-		for(const auto &disk : Disk::Stat::get()) {
+		for(const auto &disk : Storage::Stat::get()) {
 			debug("----> Disk '",disk.name,"' is ",(disk.physical() ? "Physical" : "Not physical"));
 		}
 
