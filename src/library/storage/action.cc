@@ -28,6 +28,8 @@
  #include <private/storagecontroller.h>
  #include <udjat/tools/string.h>
  #include <udjat/tools/intl.h>
+ #include <udjat/tools/timer.h>
+ #include <udjat/tools/value.h>
  #include <memory>
  
  using namespace std;
@@ -47,30 +49,43 @@
 			}
 		}
 
+		controller.setup(node);
+
 	}
 
 	Storage::Action::~Action() {
+	}
+
+	void Storage::Action::getValues(const char *devname, Udjat::Value &value) {
+		// Do nothing, it's just a placeholder.
 	}
 
 	int Storage::Action::call(Udjat::Request &request, Udjat::Response &response, bool except) {
 
 		return exec(response,except,[&]() -> int {
 
-			auto &report = response.ReportFactory(
-				"name",
-				"read",
-				"write",
+			auto cntrl = Storage::Controller::getInstance();
+			auto it = cntrl.begin();
+			if(it == cntrl.end()) {
+				throw system_error(ENODATA,system_category());
+			}
 
-				nullptr
-			);
+			// Get first line.
+			Value value;
+			value["device"] = it->devname;
+			value["read"] = to_string(it->read,this->unit);
+			value["write"] = to_string(it->write,this->unit);
+			getValues(it->devname.c_str(),value);
 
-			report.caption(_("Physical storage devices"));
-			for(const auto &unit : Storage::Controller::getInstance()) {
-			
-				report	<< unit.devname.c_str()
-						<< to_string(unit.read,this->unit)
-						<< to_string(unit.write,this->unit);
+			auto &report = response.ReportFactory(value);
 
+			while(++it != cntrl.end()) {
+				value.clear();
+				value["device"] = it->devname;
+				value["read"] = to_string(it->read,this->unit);
+				value["write"] = to_string(it->write,this->unit);
+				getValues(it->devname.c_str(),value);
+				report << value;
 			}
 		
 			return 0;

@@ -22,6 +22,7 @@
  #include <udjat/defs.h>
  #include <udjat/tools/actions/abstract.h>
  #include <udjat/tools/storage/unit.h>
+ #include <udjat/tools/value.h>
  #include <string>
 
  namespace Udjat {
@@ -31,6 +32,13 @@
 		class UDJAT_API Action : public Udjat::Action {
 		private:
 			Unit unit;
+
+		protected:
+
+			/// @brief Extend response item with more information about the device.
+			/// @param devname The device name.
+			/// @param value The value to be extended.
+			virtual void getValues(const char *devname, Udjat::Value &value);
 
 		public:
 

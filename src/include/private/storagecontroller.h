@@ -79,6 +79,9 @@
 		public:
 			static Controller & getInstance();
 
+			/// @brief Setup from XML node.
+			void setup(const XML::Node &node);
+
 			/// @brief Insert disk into controller.
 			/// @param stat The disk to insert.
 			/// @return true if the disk was inserted, false if it was already present.

@@ -11,7 +11,7 @@
 	<agent name='MemoryUsage' type='MemoryUsage' />
 	<agent name='SystemUpTime' type='SystemUpTime' />
 	
-	<interface type='web' action-name='storage' />
+	<interface type='web' action-name='storage' timer-interval='1' />
 
 	<!-- 
 	

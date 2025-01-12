@@ -22,6 +22,11 @@
  #include <udjat/tools/xml.h>
  #include <udjat/tools/container.h>
  #include <udjat/tools/storage/stat.h>
+
+ #ifdef LOG_DOMAIN
+	#undef LOG_DOMAIN
+ #endif
+ #define LOG_DOMAIN "storage"
  #include <udjat/tools/logger.h>
 
  #include <private/storagecontroller.h>
@@ -45,6 +50,34 @@
 		emplace_back(stat);
 
 		return true;
+
+	}
+
+	void Storage::Controller::setup(const XML::Node &node) {
+		
+		debug("Setting up controller from <",node.name(),"> node (timer-interval=",node.attribute("timer-interval").as_uint(0),")");
+
+		const char *domain = node.attribute("name").as_string(LOG_DOMAIN);
+
+		auto saved_interval = interval();
+		if(!saved_interval) {
+			saved_interval = 60000L;
+		}
+		debug("---------------------> ",saved_interval);
+
+		Timer::set(node);
+		debug("Set to ",interval()," from xml");
+
+		if(saved_interval < interval() || interval() == 0) {
+			Timer::set(saved_interval);
+			Logger::String{"Keeping original timer of ",Timer::interval(),"ms"}.trace(domain);
+		} else {
+			Logger::String{"Update timer set to ",Timer::interval(),"ms"}.trace(domain);
+		}
+
+		if(Timer::enable()) {
+			Logger::String{"Auto update was enabled"}.trace(domain);
+		}
 
 	}
 

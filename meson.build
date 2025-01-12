@@ -69,6 +69,7 @@ compiler_flags = [
   '-fPIC',
   '-DHAVE_CONFIG_H=1',
   '-DBUILD_DATE='+time_epoch,
+  '-DLOG_DOMAIN="sysinfo"',
 ]
 
 if enable_debug
@@ -122,7 +123,7 @@ lib_src = [
   'src/library/uptime.cc',
   'src/library/systime.cc',
   'src/library/sysstat.cc', 
-  'src/library/action.cc', 
+  'src/library/storage/action.cc', 
   'src/library/storage/unit.cc', 
   'src/library/storage/stat.cc',
   'src/library/storage/controller.cc',
