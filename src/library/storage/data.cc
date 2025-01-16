@@ -29,6 +29,40 @@
 
  namespace Udjat {
 
+	void Storage::Data::refresh() {
+
+		Storage::Stat stat{name()};
+
+		// Get this cicle values.
+		float bytes_read = (stat.read.blocks * blocksize) - saved.read.bytes;
+		float bytes_write = (stat.write.blocks * blocksize) - saved.write.bytes;
+		float time_read = stat.read.time - saved.read.time;
+		float time_write = stat.write.time - saved.write.time;
+
+		// Reset for next cicle.
+		{
+			read = write = 0;
+
+			saved.read.bytes = ((float) stat.read.blocks) * blocksize;
+			saved.read.time = stat.read.time;
+
+			saved.write.bytes = ((float) stat.write.blocks) * blocksize;
+			saved.write.time = stat.write.time;
+		}
+
+		if(bytes_read > 0 && time_read > 0) {
+			read = bytes_read / (time_read/1000.0);
+		} else {
+			read = 0;
+		}
+
+		if(bytes_write > 0 && time_write > 0) {
+			write = bytes_write / (time_write/1000.0);
+		} else {
+			write = 0;
+		}
+
+	}
 
  }
  

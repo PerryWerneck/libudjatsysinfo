@@ -70,7 +70,7 @@
 		{
 			const char *from = next(ptr);
 			ptr = next(from);
-			st.name = string{from,((size_t) (ptr-from)) - 1};
+			st.device.assign(string{from,((size_t) (ptr-from)) - 1});
 		}
 
 
@@ -126,12 +126,12 @@
 
 	void Storage::Stat::load() {
 
-		if(name.empty()) {
+		if(device.empty()) {
 			throw system_error(EINVAL, system_category(),"Invalid disk name");
 		}
 
 		// https://www.kernel.org/doc/Documentation/block/stat.txt
-		File::Text proc( String{"/sys/block/",name.c_str(),"/stat"}.c_str() );
+		File::Text proc{String{"/sys/block/",name(),"/stat"}.c_str()};
 
 		auto sz = sscanf(
 			next(proc.c_str()),
@@ -157,14 +157,14 @@
 		);
 
 		if(sz != 15) {
-			throw system_error(EINVAL, system_category(),string{"Unexpected format in /sys/block/"} + name + "/stat");
+			throw system_error(EINVAL, system_category(),String{"Unexpected format in /sys/block/",name(),"/stat"});
 		}
 
 	}
 
-	Storage::Stat::Stat(const char *n) : name{NameFactory(n,false)} {
+	Storage::Stat::Stat(const char *n) : device{n,false} {
 
-		if(!name.empty()) {
+		if(!device.empty()) {
 
 			load();
 
@@ -189,7 +189,7 @@
 	Storage::Stat & Storage::Stat::operator+=(const Storage::Stat &s) {
 
 		major = minor = 0;
-		name.clear();
+		device.clear();
 
 		read.count += s.read.count;
 		read.merged += s.read.merged;
@@ -215,7 +215,7 @@
 
 	bool Storage::Stat::physical() const {
 
-		File::Path path{String{"/sys/block/",name.c_str()}.c_str()};
+		File::Path path{String{"/sys/block/",device.c_str()}.c_str()};
 		if(access(path.c_str(),F_OK)) {
 			// No block device, return false.
 			return false;
@@ -240,15 +240,15 @@
 
 #ifdef BLKSSZGET
 
-		int fd = open(String{"/dev/",name.c_str()}.c_str(),O_RDONLY);
+		int fd = open(String{"/dev/",device.c_str()}.c_str(),O_RDONLY);
 		if(fd < 0) {
-			throw system_error(errno, system_category(),string{"Cant open '/dev/"} + name + "'");
+			throw system_error(errno, system_category(),String{"Cant open '/dev/",name(),"'"});
 		}
 		size_t blockSize = 0;
 		if(ioctl(fd, BLKSSZGET, &blockSize)) {
 			int rc = errno;
 			close(fd);
-			throw system_error(rc, system_category(),string{"Cant get '/dev/"} + name + "' block size");
+			throw system_error(rc, system_category(),String{"Cant get '/dev/",name(),"' block size"});
 		}
 		close(fd);
 

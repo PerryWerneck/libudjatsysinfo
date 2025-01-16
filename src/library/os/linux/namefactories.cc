@@ -29,7 +29,7 @@
 
  namespace Udjat {
 
-	String Storage::NameFactory(const char * devname, bool required) {
+	String Storage::Stat::Device::NameFactory(const char * devname, bool required) {
 
 		if(!(devname && *devname)) {
 			if(required) {
@@ -50,7 +50,7 @@
 
 	}
 
-	String Storage::NameFactory(const XML::Node &node, bool required) {
+	String Storage::Stat::Device::NameFactory(const XML::Node &node, bool required) {
 
 		String devname{node,"name"};
 		if(!devname.empty()) {
@@ -59,6 +59,8 @@
 
 		return NameFactory(String{node,"device-name"}.c_str(),required);
 	}
+
+/*
 
 	String Storage::DeviceNameFactory(const char * devname, bool required) {
 
@@ -88,6 +90,7 @@
 
 		return DeviceNameFactory(String{node,"name"}.c_str(),required);
 	}
+*/
 
  }
 

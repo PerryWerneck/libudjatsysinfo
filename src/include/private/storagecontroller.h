@@ -33,10 +33,10 @@
 	namespace Storage {
 
 		/// @brief Convenience data for disk read/write speed computation.
-		struct Data {
+		class Data : public Stat::Device {
+		public:
 
-			const std::string devname;
-			std::string error;						///< @brief Non empty if update failed.
+			std::string error;					///< @brief Non empty if update failed.
 
 			float blocksize;					///< @brief The disk block size in bytes.
 			float read = 0;						///< @brief The read speed in bytes/second.
@@ -46,23 +46,26 @@
 			struct {
 
 				struct {
-					float bytes = 0;				///< @brief The total number of bytes read successfully.
-					unsigned int time = 0;			///< @brief The total number of milliseconds spent by all reads.
+					float bytes = 0;			///< @brief The total number of bytes read successfully.
+					unsigned int time = 0;		///< @brief The total number of milliseconds spent by all reads.
 				} read;
 
 				struct {
-					float bytes = 0;				///< @brief The total number of bytes written successfully.
-					unsigned int time = 0;			///< @brief The total number of milliseconds spent by all writes.
+					float bytes = 0;			///< @brief The total number of bytes written successfully.
+					unsigned int time = 0;		///< @brief The total number of milliseconds spent by all writes.
 				} write;
 
 			} saved;
 
-			Data(const Storage::Stat &stat) : devname{stat.name}, blocksize{(float) stat.blocksize()} {
+			Data(const Storage::Stat &stat) : Stat::Device{stat.device}, blocksize{(float) stat.blocksize()} {
 			}
 
 			inline bool operator==(const Stat &stat) const {
-				return strcmp(devname.c_str(),stat.name.c_str()) == 0;
+				return *this == stat.device;
 			}	
+
+			/// @brief Update disk speed.
+			void refresh();
 
 		};
 

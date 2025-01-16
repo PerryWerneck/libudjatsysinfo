@@ -22,6 +22,7 @@
  #include <udjat/defs.h>
  #include <udjat/tools/actions/abstract.h>
  #include <udjat/tools/storage/unit.h>
+ #include <udjat/tools/storage/stat.h>
  #include <udjat/tools/value.h>
  #include <string>
 
@@ -38,7 +39,7 @@
 			/// @brief Extend response item with more information about the device.
 			/// @param devname The device name.
 			/// @param value The value to be extended.
-			virtual void getValues(const char *devname, Udjat::Value &value);
+			virtual void getValues(const Stat::Device &device, Udjat::Value &value);
 
 		public:
 

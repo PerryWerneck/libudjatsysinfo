@@ -56,7 +56,7 @@
 	Storage::Action::~Action() {
 	}
 
-	void Storage::Action::getValues(const char *devname, Udjat::Value &value) {
+	void Storage::Action::getValues(const Stat::Device &device, Udjat::Value &value) {
 		// Do nothing, it's just a placeholder.
 	}
 
@@ -72,19 +72,19 @@
 
 			// Get first line.
 			Value value;
-			value["device"] = it->devname;
+			value["device"] = it->c_str();
 			value["read"] = to_string(it->read,this->unit);
 			value["write"] = to_string(it->write,this->unit);
-			getValues(it->devname.c_str(),value);
+			getValues(*it,value);
 
 			auto &report = response.ReportFactory(value);
 
 			while(++it != cntrl.end()) {
 				value.clear();
-				value["device"] = it->devname;
+				value["device"] = it->c_str();
 				value["read"] = to_string(it->read,this->unit);
 				value["write"] = to_string(it->write,this->unit);
-				getValues(it->devname.c_str(),value);
+				getValues(*it,value);
 				report << value;
 			}
 		

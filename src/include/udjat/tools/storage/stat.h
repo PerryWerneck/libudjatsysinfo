@@ -30,17 +30,40 @@
 
 	namespace Storage {
 
-		UDJAT_API String NameFactory(const char * devname, bool required = true);
-		UDJAT_API String NameFactory(const XML::Node &node, bool required = true);
-
-		UDJAT_API String DeviceNameFactory(const char * devname, bool required = true);
-		UDJAT_API String DeviceNameFactory(const XML::Node &node, bool required = true);
-
-
 		/// @brief Disk stats from /proc/diskstats.
-		struct UDJAT_API Stat {
+		class UDJAT_API Stat {
+		public:
 
-			std::string name;					///< @brief Device name.
+			class Device : public String {
+			public:
+			
+				static String NameFactory(const char * devname, bool required = true);
+				static String NameFactory(const XML::Node &node, bool required = true);
+
+				Device() : String{} {
+				}
+
+				Device(const char *name, bool required = true) : String{NameFactory(name,required)} {
+				}
+
+				Device(const XML::Node &node, bool required = true) : String{NameFactory(node,required)} {
+				}
+
+				inline const char *name() const {
+					return c_str();
+				}
+
+				inline bool operator==(const char *n) const {
+					return strcasecmp(c_str(),n) == 0;
+				}	
+
+				inline bool operator==(const Device &d) const {
+					return strcasecmp(c_str(),d.c_str()) == 0;
+				}	
+
+			};
+
+			Device device;
 
 			unsigned short major = 0;			///< @brief The major number of the disk.
 			unsigned short minor = 0;			///< @brief The minor number of the disk.
@@ -103,9 +126,13 @@
 				return major == s.major && minor == s.minor;
 			}	
 
-			inline bool operator==(const char *n) const {
-				return strcasecmp(name.c_str(),n) == 0;
+			inline bool operator==(const char *name) const {
+				return device == name;
 			}	
+
+			inline const char *name() const {
+				return device.c_str();
+			}
 
 		};
 
@@ -116,11 +143,11 @@
  namespace std {
 
 	inline string to_string(const Udjat::Storage::Stat &st) {
-		return st.name;
+		return st.device;
 	}
 
 	inline ostream& operator<< (ostream& os, const Udjat::Storage::Stat &st) {
-		return os << st.name;
+		return os << st.device;
 	}
 
  }

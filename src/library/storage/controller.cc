@@ -46,7 +46,7 @@
 			}
 		}
 
-		Logger::String{"Watching ",stat.name.c_str()}.trace();
+		Logger::String{"Watching ",stat.name()}.trace();
 		emplace_back(stat);
 
 		return true;
@@ -87,14 +87,12 @@
 
 			for(Data &stat : (std::vector<Data>) *this) {
 
-				debug("Updating ",stat.devname.c_str());
+				debug("Updating ",stat.name());
 
 				try {
 
-					// Load disk status.
-					Stat disk{stat.devname.c_str()};
-
-
+					// Update disk speed.
+					stat.refresh();
 
 					// Complete, reset error.
 					stat.error.clear();

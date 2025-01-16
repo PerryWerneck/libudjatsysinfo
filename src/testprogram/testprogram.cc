@@ -40,11 +40,11 @@
 		}
 
 		for(const auto &disk : Storage::Stat::get()) {
-			debug("----> Disk '",disk.name,"' is ",(disk.physical() ? "Physical" : "Not physical"));
+			debug("----> Disk '",disk.name(),"' is ",(disk.physical() ? "Physical" : "Not physical"));
 		}
 
 	 	udjat_module_init();
 
-	});
+	});	
 
  }
