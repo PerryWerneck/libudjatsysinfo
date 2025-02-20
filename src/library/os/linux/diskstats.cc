@@ -18,7 +18,7 @@
  */
 
  #include <udjat/tools/storage/stat.h>
- #include <udjat/tools/file.h>
+ #include <udjat/tools/file/text.h>
  #include <iostream>
  #include <linux/fs.h>
  #include <sys/ioctl.h>

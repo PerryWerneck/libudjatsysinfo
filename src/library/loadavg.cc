@@ -35,7 +35,7 @@
  #include <udjat/agent/abstract.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/agent/loadavg.h>
- #include <udjat/tools/file.h>
+ #include <udjat/tools/file/text.h>
  #include <udjat/tools/intl.h>
  #include <udjat/tools/logger.h>
  #include <udjat/tools/xml.h>
