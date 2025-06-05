@@ -110,10 +110,14 @@ Summary: HTTP module for %{name}
 
 %dir %{_includedir}/udjat/tools/system
 %{_includedir}/udjat/tools/system/*.h
-%dir %{_includedir}/udjat/tools/disk
-%{_includedir}/udjat/tools/disk/*.h
 %dir %{_includedir}/udjat/module
 %{_includedir}/udjat/module/*.h
+
+%dir %{_includedir}/udjat/tools/actions
+%{_includedir}/udjat/tools/actions/*.h
+
+%dir %{_includedir}/udjat/tools/storage
+%{_includedir}/udjat/tools/storage/*.h
 
 %post -n %{name}%{_libvrs} -p /sbin/ldconfig
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjat-module-sysinfo 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-04 11:06-0300\n"
+"POT-Creation-Date: 2025-06-05 07:52-0300\n"
 "PO-Revision-Date: 2025-01-10 15:05-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -20,97 +20,63 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 3.5\n"
 
-#: src/library/os/linux/memoryusage.cc:183
-msgid "Memory usage is lower than 80%"
-msgstr ""
-
-#: src/library/os/linux/memoryusage.cc:190
-msgid "Memory usage is lower than 90%"
-msgstr ""
-
-#: src/library/os/linux/memoryusage.cc:197
-msgid "Memory usage is higher than 90%"
+#: src/library/os/linux/memoryusage.cc:185
+#: src/library/os/linux/memoryusage.cc:192
+#: src/library/os/linux/memoryusage.cc:199
+msgid "${value} of total memory in use"
 msgstr ""
 
 #: src/library/systime.cc:38 src/library/systime.cc:55
 msgid "System Time"
 msgstr "Horário do sistema"
 
-#: src/library/loadavg.cc:78
+#: src/library/loadavg.cc:79
 msgid "Can't get system load average"
 msgstr ""
 
-#: src/library/loadavg.cc:133
+#: src/library/loadavg.cc:134
 msgid "System load in the last minute"
 msgstr ""
 
-#: src/library/loadavg.cc:134
+#: src/library/loadavg.cc:135
 msgid "Average system load in the last minute"
 msgstr "Média de carga do sistema no último mínuto"
 
-#: src/library/loadavg.cc:140
+#: src/library/loadavg.cc:141
 msgid "System load in the last 5 minutes"
 msgstr ""
 
-#: src/library/loadavg.cc:141
+#: src/library/loadavg.cc:142
 msgid "Average system load in the last five minutes"
 msgstr "Média de carga do sistema nos últimos cinco minutos"
 
-#: src/library/loadavg.cc:147
+#: src/library/loadavg.cc:148
 msgid "System load in the last 15 minutes"
 msgstr ""
 
-#: src/library/loadavg.cc:148
+#: src/library/loadavg.cc:149
 msgid "Average system load in the last fifteen minutes"
 msgstr "Média de carga do sistema nos últimos quinze minutos."
 
-#: src/library/loadavg.cc:199
-msgid "System load is lower than 50%"
-msgstr ""
-
-#: src/library/loadavg.cc:206
-msgid "System load is higher than 50%"
-msgstr ""
-
-#: src/library/loadavg.cc:213
-msgid "System load is higher than 80%"
-msgstr ""
-
-#: src/library/loadavg.cc:220
-msgid "System load is too high"
+#: src/library/loadavg.cc:202 src/library/loadavg.cc:209
+#: src/library/loadavg.cc:216 src/library/loadavg.cc:223
+msgid "System load is ${value}"
 msgstr ""
 
 #: src/library/swapusage.cc:69 src/library/uptime.cc:73
 msgid "Can't get system information"
 msgstr ""
 
-#: src/library/swapusage.cc:109
-msgid "Swap usage is lower than 10%"
+#: src/library/swapusage.cc:111 src/library/swapusage.cc:118
+#: src/library/swapusage.cc:125 src/library/swapusage.cc:132
+#: src/library/swapusage.cc:139
+msgid "Swap usage is ${value}"
 msgstr ""
 
-#: src/library/swapusage.cc:116
-msgid "Swap usage is lower than 50%"
-msgstr ""
-
-#: src/library/swapusage.cc:123
-msgid "Swap usage is lower than 80%"
-msgstr ""
-
-#: src/library/swapusage.cc:130
-msgid "Swap usage is lower than 90%"
-msgstr ""
-
-#: src/library/swapusage.cc:137
-msgid "Swap usage is higher than 90%"
-msgstr ""
-
-#: src/library/uptime.cc:42
-msgid "System Up Time"
-msgstr ""
-
-#: src/library/uptime.cc:59
-msgid "System UP Time"
-msgstr ""
+#: src/library/uptime.cc:42 src/library/uptime.cc:59
+#, fuzzy
+msgid "System up Time"
+msgstr "Horário do sistema"
 
 #~ msgid "Average disk speed"
 #~ msgstr "Velocidade média do disco"

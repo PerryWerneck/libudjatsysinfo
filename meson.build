@@ -64,7 +64,6 @@ endif
 
 compiler_flags = [
   '-ggdb3',
-  '-ffat-lto-objects',
   '-fvisibility=hidden',
   '-fPIC',
   '-DHAVE_CONFIG_H=1',
@@ -251,6 +250,7 @@ else
     install: true,
     version : libversion,
     soversion : libversion,
+    cpp_args: [ '-ffat-lto-objects' ],
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps,
     include_directories: includes_dir
@@ -263,6 +263,7 @@ else
     name_prefix: 'udjat-module-',
     install: true,
     install_tag: 'module',
+    cpp_args: [ '-ffat-lto-objects' ],
     link_with: dynamic,
     install_dir: libudjat.get_variable('module_path'),
     gnu_symbol_visibility: 'hidden',
@@ -276,6 +277,7 @@ static_library(
   meson.project_name(), 
   config_src + lib_src,
   install: true,
+  cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
   dependencies: lib_deps,
   include_directories: includes_dir
 )
