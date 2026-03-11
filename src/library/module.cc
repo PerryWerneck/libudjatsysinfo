@@ -23,9 +23,7 @@
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{"System information module for udjat"};
-
-	SysInfo::Module::Module(const char *name) : Udjat::Module(name,moduleinfo) {
+	SysInfo::Module::Module(const char *name) : Udjat::Module(name) {
 	}
 
 	SysInfo::Module::~Module() {	

@@ -19,19 +19,18 @@
 
  #include <config.h>
  #include <udjat/defs.h>
- #include <udjat/tests.h>
+ #include <udjat/loader.h>
  #include <udjat/module.h>
  #include <udjat/agent/percentage.h>
- #include <udjat/agent/loadavg.h>
  #include <udjat/tools/storage/stat.h>
 
+ #include <iostream>
+
  using namespace Udjat;
-
+ using namespace std;
+ 
  int main(int argc, char **argv) {
-
-	static const ModuleInfo info{"sysinfo-tester"};
-	
-	return Testing::run(argc,argv,info,[](Application &){
+	return loader(argc,argv,[](Application &app) -> int {
 
 		{
 			Agent<Percentage> percent{"test-percent",0.1};
@@ -43,8 +42,11 @@
 			debug("----> Disk '",disk.name(),"' is ",(disk.physical() ? "Physical" : "Not physical"));
 		}
 
-	 	udjat_module_init();
+		udjat_module_init();
 
-	});	
+		return 0;
+
+	});
 
  }
+

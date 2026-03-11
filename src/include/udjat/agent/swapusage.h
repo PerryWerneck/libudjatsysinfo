@@ -22,6 +22,7 @@
  #include <udjat/defs.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/agent.h>
+ #include <udjat/agent/abstract.h>
  #include <udjat/tools/xml.h>
  
  namespace Udjat {
@@ -36,7 +37,7 @@
 				Factory(const char *name = "SwapUsage") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
-				std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const XML::Node &node) const override;
+				std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
 			};
 
 			SwapUsage(const char *name = "SwapUsage");

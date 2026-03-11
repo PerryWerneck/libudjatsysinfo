@@ -20,7 +20,7 @@
  #pragma once
 
  #include <udjat/defs.h>
- #include <udjat/tools/actions/abstract.h>
+ #include <udjat/action.h>
  #include <udjat/tools/storage/unit.h>
  #include <udjat/tools/storage/stat.h>
  #include <udjat/tools/value.h>

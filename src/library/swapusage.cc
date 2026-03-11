@@ -38,7 +38,7 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::SwapUsage::Factory::AgentFactory(const Abstract::Object &, const XML::Node &node) const {
+	std::shared_ptr<Abstract::Agent> System::SwapUsage::Factory::AgentFactory(const XML::Node &node) const {
 		debug("--- Building Swap Usage agent");
 		return std::make_shared<SwapUsage>(node);
 	}

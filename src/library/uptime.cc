@@ -23,7 +23,6 @@
  #include <udjat/tools/intl.h>
  #include <udjat/agent.h>
  #include <udjat/agent/uptime.h>
- #include <udjat/moduleinfo.h>
 
  #ifdef HAVE_SYS_SYSINFO_H
  	#include <sys/sysinfo.h>
@@ -31,7 +30,7 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::UpTime::Factory::AgentFactory(const Abstract::Object &, const XML::Node &node) const {
+	std::shared_ptr<Abstract::Agent> System::UpTime::Factory::AgentFactory(const XML::Node &node) const {
 		return std::make_shared<UpTime>(node);
 	}
 

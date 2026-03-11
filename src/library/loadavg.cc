@@ -47,7 +47,7 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::LoadAverage::Factory::AgentFactory(const Abstract::Object &, const XML::Node &node) const {
+	std::shared_ptr<Abstract::Agent> System::LoadAverage::Factory::AgentFactory(const XML::Node &node) const {
 		debug("--- Building Load Average agent");
 		return std::make_shared<LoadAverage>(node);
 	}

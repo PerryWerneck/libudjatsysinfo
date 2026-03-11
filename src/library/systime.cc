@@ -23,11 +23,10 @@
  #include <udjat/tools/intl.h>
  #include <udjat/agent.h>
  #include <udjat/agent/systime.h>
- #include <udjat/moduleinfo.h>
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::Time::Factory::AgentFactory(const Abstract::Object &, const XML::Node &node) const {
+	std::shared_ptr<Abstract::Agent> System::Time::Factory::AgentFactory(const XML::Node &node) const {
 		return std::make_shared<Time>(node);
 	}
 

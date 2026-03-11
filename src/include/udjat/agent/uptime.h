@@ -22,6 +22,7 @@
  #include <udjat/defs.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/tools/timestamp.h>
+ #include <udjat/agent/abstract.h>
  #include <udjat/agent.h>
  #include <udjat/tools/xml.h>
  
@@ -37,7 +38,7 @@
 				Factory(const char *name = "SystemUpTime") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
-				std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const XML::Node &node) const override;
+				std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
 			};
 
 			UpTime(const char *name = "SystemUpTime");

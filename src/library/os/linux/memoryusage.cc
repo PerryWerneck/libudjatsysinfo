@@ -65,7 +65,7 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::MemoryUsage::Factory::AgentFactory(const Abstract::Object &, const XML::Node &node) const {
+	std::shared_ptr<Abstract::Agent> System::MemoryUsage::Factory::AgentFactory(const XML::Node &node) const {
 		debug("--- Building Memory Usage agent");
 		return std::make_shared<MemoryUsage>(node);
 	}

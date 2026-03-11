@@ -41,7 +41,7 @@
 				Factory(const char *name = "LogicalDisk") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
-				std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const XML::Node &node) const override;
+				std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
 			};
 
 			static String NameFactory(const char * devname, bool required = true);
