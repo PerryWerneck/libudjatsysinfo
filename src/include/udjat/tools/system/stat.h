@@ -27,8 +27,9 @@
 	namespace System {
 
 		/// @brief Disk stats from /proc/stat.
-		struct UDJAT_API Stat {
-
+		class UDJAT_API Stat {
+		public:
+		
 			enum Type : unsigned short {
 				USER,
 				NICE,

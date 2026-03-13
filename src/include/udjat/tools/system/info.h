@@ -26,7 +26,8 @@
 	namespace System {
 
 		/// @brief System info (wrapper for sysinfo()).
-		struct UDJAT_API Info {
+		class UDJAT_API Info {
+		public:
 
 			long uptime;       				///< @brief Seconds since boot.
 			unsigned long loads[3];			///< @brief 1, 5, and 15 minute load averages.
