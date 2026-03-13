@@ -18,29 +18,35 @@
  */
 
  #include <config.h>
-
- #include <udjat/tools/application.h>
- #include <udjat/tools/http/client.h>
- #include <udjat/tools/logger.h>
- #include <udjat/agent.h>
- #include <udjat/factory.h>
+ #include <udjat/defs.h>
+ #include <udjat/loader.h>
  #include <udjat/module.h>
+ #include <udjat/agent/percentage.h>
+ #include <udjat/tools/storage/stat.h>
+
  #include <iostream>
- #include <memory>
 
- using namespace std;
  using namespace Udjat;
+ using namespace std;
+ 
+ int main(int argc, char **argv) {
+	return loader(argc,argv,[](Application &app) -> int {
 
-//---[ Implement ]------------------------------------------------------------------------------------------
+		{
+			Agent<Percentage> percent{"test-percent",0.1};
+			debug("Expanding----> '",String{"The percent value is ${value}"}.expand(percent).c_str(),"'");
 
-int main(int argc, char **argv) {
+		}
 
-	Logger::verbosity(9);
-	Logger::console(true);
-	Logger::redirect();
+		for(const auto &disk : Storage::Stat::get()) {
+			debug("----> Disk '",disk.name(),"' is ",(disk.physical() ? "Physical" : "Not physical"));
+		}
 
-	udjat_module_init();
+		udjat_module_init();
 
-	return Application{}.run(argc,argv,"./test.xml");
+		return 0;
 
-}
+	});
+
+ }
+

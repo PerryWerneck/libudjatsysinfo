@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
- * Copyright (C) 2021 Perry Werneck <perry.werneck@gmail.com>
+ * Copyright (C) 2025 Perry Werneck <perry.werneck@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,11 +17,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <config.h>
- #include <udjat/module/sysinfo.h>
+ #pragma once
 
- /// @brief Register udjat module.
- Udjat::Module * udjat_module_init() {
-	return new Udjat::SysInfo::Module();
+ #include <config.h>
+ #include <udjat/defs.h>
+ #include <string>
+ #include <udjat/tools/xml.h>
+
+ namespace Udjat {
+
+	namespace Storage {
+
+		/// @brief Disk length unity.
+		enum Unit : unsigned char {
+			Byte,
+			Kilobyte,
+			Megabyte,
+			Gigabyte,
+			Terabyte
+		};
+
+		Unit UDJAT_API UnitFactory(const XML::Node &node);
+
+	} // Storage
+ }
+
+ namespace std {
+
+	std::string UDJAT_API to_string(const float value, const Udjat::Storage::Unit unit);
+
  }
 

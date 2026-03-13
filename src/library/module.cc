@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
- * Copyright (C) 2021 Perry Werneck <perry.werneck@gmail.com>
+ * Copyright (C) 2025 Perry Werneck <perry.werneck@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -18,10 +18,15 @@
  */
 
  #include <config.h>
+ #include <udjat/defs.h>
  #include <udjat/module/sysinfo.h>
 
- /// @brief Register udjat module.
- Udjat::Module * udjat_module_init() {
-	return new Udjat::SysInfo::Module();
- }
+ namespace Udjat {
 
+	SysInfo::Module::Module(const char *name) : Udjat::Module(name) {
+	}
+
+	SysInfo::Module::~Module() {	
+	}
+
+ }

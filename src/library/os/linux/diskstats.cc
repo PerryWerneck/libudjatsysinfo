@@ -17,8 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <udjat/tools/disk/stat.h>
- #include <udjat/tools/file.h>
+ #include <udjat/tools/storage/stat.h>
+ #include <udjat/tools/file/text.h>
  #include <iostream>
  #include <linux/fs.h>
  #include <sys/ioctl.h>
@@ -26,6 +26,8 @@
  #include <sys/stat.h>
  #include <fcntl.h>
  #include <unistd.h>
+ #include <linux/major.h>
+ #include <udjat/tools/logger.h>
 
  using namespace std;
 
@@ -55,7 +57,7 @@
 
 	}
 
-	static void parse(Disk::Stat &st, const char *ptr) {
+	static void parse(Storage::Stat &st, const char *ptr) {
 
 		// https://www.kernel.org/doc/Documentation/iostats.txt
 
@@ -68,7 +70,7 @@
 		{
 			const char *from = next(ptr);
 			ptr = next(from);
-			st.name = string{from,((size_t) (ptr-from)) - 1};
+			st.device.assign(string{from,((size_t) (ptr-from)) - 1});
 		}
 
 
@@ -101,86 +103,93 @@
 
 	}
 
-	std::list<Disk::Stat> Disk::Stat::get() {
+	std::list<Storage::Stat> Storage::Stat::get() {
+
+		std::list<Storage::Stat> stats;
 
 		// https://www.kernel.org/doc/Documentation/iostats.txt
-		File::Text proc("/proc/diskstats");
+		// https://mirrors.mit.edu/kernel/linux/docs/lanana/device-list/devices-2.6.txt
 
-		std::list<Disk::Stat> stats;
-		for(auto it = proc.begin(); it != proc.end(); it++) {
+		File::Text{"/proc/diskstats"}.for_each([&stats](const std::string &line){
 
-			Stat st;
-			parse(st,it->c_str());
-			stats.push_back(st);
+			if(!line.empty()) {
+				Stat st;
+				parse(st,line.c_str());
+				stats.push_back(st);
+			}
 
-		}
+		});
 
 		return stats;
 
 	}
 
-	Disk::Stat::Stat(const char *name) : Stat() {
+	void Storage::Stat::load() {
 
-		if(name && *name) {
+		if(device.empty()) {
+			throw system_error(EINVAL, system_category(),"Invalid disk name");
+		}
 
-			if(!strncasecmp(name,"/dev/",5)) {
-				name += 5;
-			}
+		// https://www.kernel.org/doc/Documentation/block/stat.txt
+		File::Text proc{String{"/sys/block/",name(),"/stat"}.c_str()};
 
-			this->name = name;
+		auto sz = sscanf(
+			next(proc.c_str()),
+			"%lu %lu %lu %u %lu %lu %lu %u %u %u %u %lu %lu %lu %lu",
+			&read.count,		// read I/Os       requests      number of read I/Os processed
+			&read.merged,		// read merges     requests      number of read I/Os merged with in-queue I/O
+			&read.blocks,		// read sectors    sectors       number of sectors read
+			&read.time,			// read ticks      milliseconds  total wait time for read requests
 
-			// https://www.kernel.org/doc/Documentation/block/stat.txt
-			File::Text proc( (string{"/sys/block/"} + name + "/stat").c_str() );
+			&write.count,		// write I/Os      requests      number of write I/Os processed
+			&write.merged,		// write merges    requests      number of write I/Os merged with in-queue I/O
+			&write.blocks,		// write sectors   sectors       number of sectors written
+			&write.time,		// write ticks     milliseconds  total wait time for write requests
 
-			auto sz = sscanf(
-				next(proc.c_str()),
-				"%lu %lu %lu %u %lu %lu %lu %u %u %u %u %lu %lu %lu %lu",
-				&read.count,		// read I/Os       requests      number of read I/Os processed
-				&read.merged,		// read merges     requests      number of read I/Os merged with in-queue I/O
-				&read.blocks,		// read sectors    sectors       number of sectors read
-				&read.time,			// read ticks      milliseconds  total wait time for read requests
+			&io.inprogress,		// in_flight       requests      number of I/Os currently in flight
+			&io.time,			// io_ticks        milliseconds  total time this block device has been active
+			&io.weighted,		// time_in_queue   milliseconds  total wait time for all requests
 
-				&write.count,		// write I/Os      requests      number of write I/Os processed
-				&write.merged,		// write merges    requests      number of write I/Os merged with in-queue I/O
-				&write.blocks,		// write sectors   sectors       number of sectors written
-				&write.time,		// write ticks     milliseconds  total wait time for write requests
+			&discards.count,	// discard I/Os    requests      number of discard I/Os processed
+			&discards.merged,	// discard merges  requests      number of discard I/Os merged with in-queue I/O
+			&discards.blocks,	// discard sectors sectors       number of sectors discarded
+			&discards.time		// discard ticks   milliseconds  total wait time for discard requests
+		);
 
-				&io.inprogress,		// in_flight       requests      number of I/Os currently in flight
-				&io.time,			// io_ticks        milliseconds  total time this block device has been active
-				&io.weighted,		// time_in_queue   milliseconds  total wait time for all requests
+		if(sz != 15) {
+			throw system_error(EINVAL, system_category(),String{"Unexpected format in /sys/block/",name(),"/stat"});
+		}
 
-				&discards.count,	// discard I/Os    requests      number of discard I/Os processed
-				&discards.merged,	// discard merges  requests      number of discard I/Os merged with in-queue I/O
-				&discards.blocks,	// discard sectors sectors       number of sectors discarded
-				&discards.time		// discard ticks   milliseconds  total wait time for discard requests
-			);
+	}
 
-			if(sz != 15) {
-				throw system_error(EINVAL, system_category(),string{"Unexpected format in /sys/block/"} + name + "/stat");
-			}
+	Storage::Stat::Stat(const char *n) : device{n,false} {
+
+		if(!device.empty()) {
+
+			load();
 
 		} else {
 
-			File::Text proc("/proc/diskstats");
+			File::Text{"/proc/diskstats"}.for_each([&](const std::string &line){
 
-			for(auto it = proc.begin(); it != proc.end(); it++) {
-
-				Stat st;
-				parse(st,it->c_str());
-				if(st.major != 0 && st.minor == 0) {
-					*this += st;
+				if(!line.empty()) {
+					Stat st;
+					parse(st,line.c_str());
+					if(st.major == BLOCK_EXT_MAJOR) {
+						*this += st;
+					}
 				}
 
-			}
+			});
 
 		}
 
 	}
 
-	Disk::Stat & Disk::Stat::operator+=(const Disk::Stat &s) {
+	Storage::Stat & Storage::Stat::operator+=(const Storage::Stat &s) {
 
 		major = minor = 0;
-		name.clear();
+		device.clear();
 
 		read.count += s.read.count;
 		read.merged += s.read.merged;
@@ -204,22 +213,42 @@
 		return *this;
 	}
 
-	size_t Disk::Stat::getBlockSize() const {
+	bool Storage::Stat::physical() const {
+
+		File::Path path{String{"/sys/block/",device.c_str()}.c_str()};
+		if(access(path.c_str(),F_OK)) {
+			// No block device, return false.
+			return false;
+		}
+
+		// Get real device path.
+		path.realpath();
+
+		debug(path.c_str());
+		if(strstr(path.c_str(),"virtual")) {
+			// Device path contains virtual, return false
+			return false;
+		}
+
+		return true;
+	}
+
+	size_t Storage::Stat::blocksize() const {
 
 		// Reference:
 		// https://stackoverflow.com/questions/40068904/portable-way-to-determine-sector-size-in-linux
 
 #ifdef BLKSSZGET
 
-		int fd = open((string{"/dev/"} + name).c_str(),O_RDONLY);
+		int fd = open(String{"/dev/",device.c_str()}.c_str(),O_RDONLY);
 		if(fd < 0) {
-			throw system_error(errno, system_category(),string{"Cant open '/dev/"} + name + "'");
+			throw system_error(errno, system_category(),String{"Cant open '/dev/",name(),"'"});
 		}
 		size_t blockSize = 0;
 		if(ioctl(fd, BLKSSZGET, &blockSize)) {
 			int rc = errno;
 			close(fd);
-			throw system_error(rc, system_category(),string{"Cant get '/dev/"} + name + "' block size");
+			throw system_error(rc, system_category(),String{"Cant get '/dev/",name(),"' block size"});
 		}
 		close(fd);
 

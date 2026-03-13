@@ -5,15 +5,14 @@
 	<module name='civetweb' required='no' />
 	<module name='information' required='no' />
 
-	<!-- update-timer cant be only 60, 300 or 900 -->
-	<load-average update-timer='60' />
+	<agent name='SysTime' type='SysTime' />
+	<agent name='LoadAverage' type='LoadAverage' />
+	<agent name='SwapUsage' type='SwapUsage' />
+	<agent name='MemoryUsage' type='MemoryUsage' />
+	<agent name='SystemUpTime' type='SystemUpTime' />
 	
-	<mem-used />
-	<swap-used />
-	<system-uptime />
-	<system-systime />
-	<system-diskstat update-timer='30' />
-	
+	<interface type='web' action-name='storage' timer-interval='1' />
+
 	<!-- 
 	
 		Information from /proc/stat 
@@ -29,13 +28,13 @@
 			softirq	CPU used when servicing softirqs
 	
 	-->
-	<system-stat field-name='total' update-timer='2' >
+	<!-- system-stat field-name='total' update-timer='2' >
 
 		<state name='iowait' field-name='iowait' from-value='1' level='warning' summary='I/O wait is greater than 1%' />	
 		<state name='user' field-name='user' from-value='10' level='ready' summary='User CPU use is greater than 10%' />	
 		<state name='idle' field-name='idle' from-value='70' level='ready' summary='System is IDLE' />
 	
-	</system-stat>
+	</system-stat -->
 	
 </config>
 
