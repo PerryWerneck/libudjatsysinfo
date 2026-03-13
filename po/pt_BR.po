@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjat-module-sysinfo 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-05 07:52-0300\n"
-"PO-Revision-Date: 2025-01-10 15:05-0300\n"
+"POT-Creation-Date: 2026-03-10 23:23-0300\n"
+"PO-Revision-Date: 2026-03-13 09:10-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
 "Language: pt_BR\n"
@@ -18,25 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.8\n"
 
 #: src/library/os/linux/memoryusage.cc:185
 #: src/library/os/linux/memoryusage.cc:192
 #: src/library/os/linux/memoryusage.cc:199
 msgid "${value} of total memory in use"
-msgstr ""
+msgstr "Memória total em uso é ${value}"
 
-#: src/library/systime.cc:38 src/library/systime.cc:55
+#: src/library/systime.cc:37 src/library/systime.cc:54
 msgid "System Time"
 msgstr "Horário do sistema"
 
 #: src/library/loadavg.cc:79
 msgid "Can't get system load average"
-msgstr ""
+msgstr "Não foi possível obter a média de uso do sistema"
 
 #: src/library/loadavg.cc:134
 msgid "System load in the last minute"
-msgstr ""
+msgstr "Carga do sistema no último minuto"
 
 #: src/library/loadavg.cc:135
 msgid "Average system load in the last minute"
@@ -44,7 +44,7 @@ msgstr "Média de carga do sistema no último mínuto"
 
 #: src/library/loadavg.cc:141
 msgid "System load in the last 5 minutes"
-msgstr ""
+msgstr "Carga do sistema nos últimos 5 minutos"
 
 #: src/library/loadavg.cc:142
 msgid "Average system load in the last five minutes"
@@ -52,31 +52,30 @@ msgstr "Média de carga do sistema nos últimos cinco minutos"
 
 #: src/library/loadavg.cc:148
 msgid "System load in the last 15 minutes"
-msgstr ""
+msgstr "Carga do sistema nos últimos 15 minutos"
 
 #: src/library/loadavg.cc:149
 msgid "Average system load in the last fifteen minutes"
-msgstr "Média de carga do sistema nos últimos quinze minutos."
+msgstr "Média de carga do sistema nos últimos quinze minutos"
 
 #: src/library/loadavg.cc:202 src/library/loadavg.cc:209
 #: src/library/loadavg.cc:216 src/library/loadavg.cc:223
 msgid "System load is ${value}"
-msgstr ""
+msgstr "Carga do sistema é ${value}"
 
-#: src/library/swapusage.cc:69 src/library/uptime.cc:73
+#: src/library/swapusage.cc:69 src/library/uptime.cc:72
 msgid "Can't get system information"
-msgstr ""
+msgstr "Não foi possível obter informações do sistema"
 
 #: src/library/swapusage.cc:111 src/library/swapusage.cc:118
 #: src/library/swapusage.cc:125 src/library/swapusage.cc:132
 #: src/library/swapusage.cc:139
 msgid "Swap usage is ${value}"
-msgstr ""
+msgstr "Uso de swap é ${value}"
 
-#: src/library/uptime.cc:42 src/library/uptime.cc:59
-#, fuzzy
+#: src/library/uptime.cc:41 src/library/uptime.cc:58
 msgid "System up Time"
-msgstr "Horário do sistema"
+msgstr "Tempo que o sistema está ligado"
 
 #~ msgid "Average disk speed"
 #~ msgstr "Velocidade média do disco"

@@ -15,3 +15,17 @@ src/library/storage/data.cc
 src/library/storage/unit.cc
 src/library/storage/action.cc
 src/module/init.cc
+src/include/udjat/tools/system/info.h
+src/include/udjat/tools/system/stat.h
+src/include/udjat/tools/actions/storage.h
+src/include/udjat/tools/storage/stat.h
+src/include/udjat/tools/storage/unit.h
+src/include/udjat/agent/systime.h
+src/include/udjat/agent/loadavg.h
+src/include/udjat/agent/swapusage.h
+src/include/udjat/agent/memusage.h
+src/include/udjat/agent/uptime.h
+src/include/udjat/agent/logicaldisk.h
+src/include/udjat/module/sysinfo.h
+src/include/private/storagecontroller.h
+src/module/private.h
