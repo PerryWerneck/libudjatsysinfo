@@ -1,0 +1,35 @@
+Source: libudjatsysinfo
+Section: unknown
+Priority: optional
+Maintainer: Perry Werneck <perry.werneck@gmail.com>
+Build-Depends: debhelper (>= 7), meson, pkg-config, libudjat2-dev
+
+Package: libudjatsysinfo
+Architecture: any
+Section: libs
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Provides: libudjatsysinfo (= ${binary:Version})
+Description: Udjat core library.
+ Udjat core library.
+
+Package: udjat-module-sysinfo
+Architecture: any
+Section: libs
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Udjat core library.
+ Udjat core library.
+
+Package: libudjatsysinfo-dev
+Architecture: any
+Provides: libudjatsysinfo-dev (= ${binary:Version})
+Section: libdevel
+Depends: ${misc:Depends}, libudjat-dev, libudjatsysinfo (= ${binary:Version})
+Description: Libudjat development files.
+ Development headers for libudjatsysinfo
+
+Package: libudjatsysinfo-dbg
+Architecture: any
+Depends: libudjatsysinfo (= ${binary:Version})
+Description: Debugging symbols for libudjatsysinfo
+ This package contains the debugging symbols for libudjatsysinfo.
+

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjat-module-sysinfo 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-13 09:10-0300\n"
+"POT-Creation-Date: 2026-03-13 09:48-0300\n"
 "PO-Revision-Date: 2026-03-13 09:10-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -25,10 +25,6 @@ msgstr ""
 #: src/library/os/linux/memoryusage.cc:199
 msgid "${value} of total memory in use"
 msgstr "Memória total em uso é ${value}"
-
-#: src/library/systime.cc:37 src/library/systime.cc:54
-msgid "System Time"
-msgstr "Horário do sistema"
 
 #: src/library/loadavg.cc:79
 msgid "Can't get system load average"
@@ -72,6 +68,10 @@ msgstr "Não foi possível obter informações do sistema"
 #: src/library/swapusage.cc:139
 msgid "Swap usage is ${value}"
 msgstr "Uso de swap é ${value}"
+
+#: src/library/systime.cc:37 src/library/systime.cc:54
+msgid "System Time"
+msgstr "Horário do sistema"
 
 #: src/library/uptime.cc:41 src/library/uptime.cc:58
 msgid "System up Time"
