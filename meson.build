@@ -153,20 +153,12 @@ if host_machine.system() == 'windows'
     name: 'lib' + meson.project_name(),
     description: project_description,
     requires: [ 'libudjat' ],
-    libraries: [ '-l' + meson.project_name() + '.dll' ]
-  )
-
-  pkg.generate(
-    name: 'lib' + meson.project_name() + '-static',
-    description: project_description,
+#    requires_private: [  ],
     libraries: [ 
       '-l' + meson.project_name(),
       '-lws2_32',
     ]
   )
-
-  lib_src += [
-  ]
 
 else
 
@@ -174,13 +166,8 @@ else
     name: 'lib' + meson.project_name(),
     description: project_description,
     requires: [ 'libudjat' ],
+#    requires_private: [  ],
     libraries: [ '-l' + meson.project_name() ]
-  )
-
-  pkg.generate(
-    name: 'lib' + meson.project_name() + '-static',
-    description: project_description,
-    libraries: [ '-l:lib' + meson.project_name() + '.a' ]
   )
 
   lib_src += [
@@ -273,13 +260,22 @@ else
 
 endif
 
-static_library(
-  meson.project_name(), 
-  config_src + lib_src,
-  install: true,
-  cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+static_library = declare_dependency(
+  link_with: static_library(
+    meson.project_name(), 
+    config_src + lib_src,
+    cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+    install: true,
+    dependencies: lib_deps,
+    include_directories: includes_dir
+  ),
+  include_directories: includes_dir,
   dependencies: lib_deps,
-  include_directories: includes_dir
+)
+
+dynamic_library = declare_dependency(
+  link_with: dynamic,
+  include_directories: includes_dir,
 )
 
 executable(
