@@ -104,11 +104,11 @@
 	}
 
 	void System::MemoryUsage::start() {
-		refresh();
+		refresh(false);
 		Abstract::Agent::start();
 	}
 
-	bool System::MemoryUsage::refresh() {
+	bool System::MemoryUsage::refresh(bool) {
 		/**
 		 * @page free-memory Determining free memory on Linux
 		 *

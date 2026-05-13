@@ -65,11 +65,11 @@
 	}
 
 	void System::LoadAverage::start() {
-		refresh();
+		refresh(false);
 		Abstract::Agent::start();
 	}
 
-	bool System::LoadAverage::refresh() {
+	bool System::LoadAverage::refresh(bool) {
 
 #ifdef HAS_GETLOADAVG
 

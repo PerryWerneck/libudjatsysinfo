@@ -54,7 +54,7 @@
 			virtual ~Logical();
 
 			/// @brief Get device status, update state.
-			bool refresh() override;
+			bool refresh(bool) override;
 
 			std::shared_ptr<Abstract::State> computeState() override;
 

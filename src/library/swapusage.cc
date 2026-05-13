@@ -54,11 +54,11 @@
 	}
 
 	void System::SwapUsage::start() {
-		refresh();
+		refresh(false);
 		Abstract::Agent::start();
 	}
 
-	bool System::SwapUsage::refresh() {
+	bool System::SwapUsage::refresh(bool) {
 
 #ifdef HAVE_SYS_SYSINFO_H
 

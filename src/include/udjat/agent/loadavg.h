@@ -53,7 +53,7 @@
 			virtual ~LoadAverage();
 
 			void start() override;
-			bool refresh() override;
+			bool refresh(bool) override;
 
 			std::shared_ptr<Abstract::State> computeState() override;
 
@@ -63,39 +63,4 @@
 	}
 
  }
-
- /*
- 	static const Udjat::ModuleInfo moduleinfo{"Get system time"};
-
-	class SysInfo::SysTime::Agent : public Abstract::Agent {
-	public:
-		Agent(const xml_node UDJAT_UNUSED(&node)) : Abstract::Agent("systime") {
-			Object::properties.icon = "utilities-system-monitor";
-			Object::properties.label = _( "System Time" );
-		}
-
-		virtual ~Agent() {
-		}
-
-		Udjat::Value &get(Udjat::Value &value) const override {
-			value = TimeStamp();
-			return value;
-		}
-
-		std::string to_string() const noexcept override {
-			return TimeStamp().to_string();
-		}
-	};
-
-	SysInfo::SysTime::SysTime() : Udjat::Factory("system-systime",moduleinfo) {
-	}
-
-	SysInfo::SysTime::~SysTime() {
-	}
-
-	std::shared_ptr<Abstract::Agent> SysInfo::SysTime::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node)  const {
-		return make_shared<Agent>(node);
-	}
- }
-*/
 

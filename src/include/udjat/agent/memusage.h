@@ -45,7 +45,7 @@
 			virtual ~MemoryUsage();
 
 			void start() override;
-			bool refresh() override;
+			bool refresh(bool) override;
 
 			std::shared_ptr<Abstract::State> computeState() override;
 
