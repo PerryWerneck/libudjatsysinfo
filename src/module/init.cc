@@ -18,10 +18,14 @@
  */
 
  #include <config.h>
+ #include <udjat/defs.h>
+ #include <udjat/module.h>
  #include <udjat/module/sysinfo.h>
 
  /// @brief Register udjat module.
- Udjat::Module * udjat_module_init() {
-	return new Udjat::SysInfo::Module();
+ Udjat::Module * udjat_module_init(const Udjat::XML::Node &) {
+	auto module = new Udjat::SysInfo::Module();
+	module->autoclean();
+	return module;
  }
 
