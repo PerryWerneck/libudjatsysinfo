@@ -4,6 +4,7 @@
 
 	<module name='civetweb' required='no' />
 	<module name='information' required='no' />
+	<module path='.build/udjat-module-sysinfo.so' required='yes' />
 
 	<agent name='SysTime' type='SysTime' />
 	<agent name='LoadAverage' type='LoadAverage' />

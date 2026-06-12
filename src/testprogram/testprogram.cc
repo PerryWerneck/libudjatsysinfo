@@ -42,8 +42,6 @@
 			debug("----> Disk '",disk.name(),"' is ",(disk.physical() ? "Physical" : "Not physical"));
 		}
 
-		udjat_module_init();
-
 		return 0;
 
 	});
