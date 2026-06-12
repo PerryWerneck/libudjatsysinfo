@@ -46,7 +46,11 @@ subdir('po')
 #
 # Required libraries
 #
-libudjat = dependency('libudjat') 
+libudjat = dependency(
+  'libudjat',
+  version: '>=2.7.0',
+  fallback: ['libudjat', 'static_library'],
+) 
 lib_deps = [
   libudjat,
 ]
