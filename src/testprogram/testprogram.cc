@@ -19,7 +19,7 @@
 
  #include <config.h>
  #include <udjat/defs.h>
- #include <udjat/loader.h>
+ #include <udjat/tools/loader.h>
  #include <udjat/module.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/tools/storage/stat.h>
@@ -29,7 +29,7 @@
  using namespace Udjat;
  using namespace std;
  
- int main(int argc, char **argv) {
+ int main(const int argc, const char **argv) {
 	return loader(argc,argv,[](Application &app) -> int {
 
 		{
