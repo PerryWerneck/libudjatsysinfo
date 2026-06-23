@@ -73,6 +73,7 @@ compiler_flags = [
   '-DHAVE_CONFIG_H=1',
   '-DBUILD_DATE='+time_epoch,
   '-DLOG_DOMAIN="sysinfo"',
+  '-Wno-overloaded-virtual',
 ]
 
 if enable_debug
@@ -131,6 +132,7 @@ lib_src = [
   'src/library/storage/stat.cc',
   'src/library/storage/controller.cc',
   'src/library/storage/data.cc',
+  'src/library/testprogram.cc',
 ]
 
 module_src = [
