@@ -30,19 +30,6 @@
  using namespace std;
  
  int main(const int argc, const char **argv) {
-	return loader(argc,argv,[](Application &app) -> int {
-
-		{
-
-		}
-
-		for(const auto &disk : Storage::Stat::get()) {
-			debug("----> Disk '",disk.name(),"' is ",(disk.physical() ? "Physical" : "Not physical"));
-		}
-
-		return 0;
-
-	});
-
+	return loader(argc,argv);
  }
 

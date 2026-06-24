@@ -25,8 +25,11 @@
 
  /// @brief Register udjat module.
  Udjat::Module * udjat_module_init(const Udjat::Properties &) {
-	auto module = new Udjat::SysInfo::Module();
-	module->autoclean();
-	return module;
+#ifdef LIBUDJAT_STATIC
+	throw logic_error("Cant use modules on static libudjat");
+#else
+	return Udjat::SysInfo::Module::Factory();
+#endif // LIBUDJAT_STATIC
+
  }
 

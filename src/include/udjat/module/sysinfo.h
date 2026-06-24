@@ -20,7 +20,7 @@
  #pragma once
 
  #include <udjat/defs.h>
- #include <udjat/module/abstract.h>
+ #include <udjat/module.h>
 
  // Agent types
  #include <udjat/agent/systime.h>
@@ -48,6 +48,9 @@
 
 			Module(const char *name = "SysInfo");
 			virtual ~Module();
+
+			static Udjat::Module * Factory();
+
 
 		};
 

@@ -23,6 +23,12 @@
 
  namespace Udjat {
 
+	Udjat::Module * SysInfo::Module::Factory() {
+		auto module = new Udjat::SysInfo::Module();
+		module->autoclean();
+		return module;
+	}
+
 	SysInfo::Module::Module(const char *name) : Udjat::Module(name) {
 	}
 
