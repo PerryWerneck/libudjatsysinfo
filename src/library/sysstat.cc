@@ -161,7 +161,7 @@
 			return true;
 		}
 
-		std::shared_ptr<Abstract::State> StateFactory(const pugi::xml_node &node) override {
+		std::shared_ptr<Abstract::State> StateFactory(const Udjat::Properties &props) override {
 			auto state = std::make_shared<State>(node);
 			states.push_back(state);
 			return state;
@@ -175,7 +175,7 @@
 	SysInfo::SysStat::~SysStat() {
 	}
 
-	std::shared_ptr<Abstract::Agent> SysInfo::SysStat::AgentFactory(const pugi::xml_node &node)  const {
+	std::shared_ptr<Abstract::Agent> SysInfo::SysStat::AgentFactory(const Udjat::Properties &props)  const {
 		return make_shared<Agent>(node);
 	}
 

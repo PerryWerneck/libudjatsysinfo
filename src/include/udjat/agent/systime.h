@@ -82,7 +82,7 @@
 	SysInfo::SysTime::~SysTime() {
 	}
 
-	std::shared_ptr<Abstract::Agent> SysInfo::SysTime::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node)  const {
+	std::shared_ptr<Abstract::Agent> SysInfo::SysTime::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const Udjat::Properties &props)  const {
 		return make_shared<Agent>(node);
 	}
  }

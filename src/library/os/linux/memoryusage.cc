@@ -67,13 +67,13 @@
 
 	std::shared_ptr<Abstract::Agent> System::MemoryUsage::Factory::AgentFactory(const Properties &props) const {
 		debug("--- Building Memory Usage agent");
-		return std::make_shared<MemoryUsage>(node);
+		return std::make_shared<MemoryUsage>(props);
 	}
 
 	System::MemoryUsage::MemoryUsage(const char *name) : Agent<Percentage>{name} {
 	}
 
-	System::MemoryUsage::MemoryUsage(const Properties &props) : Agent<Percentage>{node} {
+	System::MemoryUsage::MemoryUsage(const Properties &props) : Agent<Percentage>{props} {
 	}
 
 	System::MemoryUsage::~MemoryUsage() {

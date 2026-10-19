@@ -46,7 +46,7 @@
 				Device(const char *name, bool required = true) : String{NameFactory(name,required)} {
 				}
 
-				Device(const Properties &props, bool required = true) : String{NameFactory(node,required)} {
+				Device(const Properties &props, bool required = true) : String{NameFactory(props,required)} {
 				}
 
 				inline const char *name() const {

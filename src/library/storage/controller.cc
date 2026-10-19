@@ -55,9 +55,9 @@
 
 	void Storage::Controller::setup(const Properties &props) {
 		
-		debug("Setting up controller from <",node.name(),"> node (timer-interval=",node.attribute("timer-interval").as_uint(0),")");
+		debug("Setting up controller from <",props.node_name(),"> node (timer-interval=",props.get("timer-interval",0),")");
 
-		const char *domain = node.attribute("name").as_string(LOG_DOMAIN);
+		auto domain = props.get("name",LOG_DOMAIN);
 
 		auto saved_interval = interval();
 		if(!saved_interval) {
@@ -65,7 +65,7 @@
 		}
 		debug("---------------------> ",saved_interval);
 
-		Timer::set(node);
+		Timer::set(props);
 		debug("Set to ",interval()," from xml");
 
 		if(saved_interval < interval() || interval() == 0) {

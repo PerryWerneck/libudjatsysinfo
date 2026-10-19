@@ -22,6 +22,7 @@
  #include <sys/sysinfo.h>
  #include <errno.h>
  #include <system_error>
+ #include <udjat/tools/intl.h>
 
  using namespace std;
 
@@ -34,7 +35,7 @@
 			struct sysinfo info;
 
 			if(sysinfo(&info)) {
-				throw system_error(errno,system_category(),"Can't get system information");
+				throw system_error(errno,system_category(),_("Can't get system information"));
 			}
 
 			this->procs = info.procs;

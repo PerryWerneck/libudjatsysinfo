@@ -44,7 +44,7 @@
 
 	Storage::Unit Storage::UnitFactory(const Properties &props) {
 
-		String attr{node,"size-unit","KB"};
+		auto attr = props.get("size-unit","KB");
 		
 		for(size_t ix = 0; ix < ((sizeof(units)/sizeof(units[0]))); ix++) {
 			if(!strcasecmp(attr.c_str(),units[ix].str)) {

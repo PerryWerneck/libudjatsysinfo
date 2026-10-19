@@ -47,7 +47,7 @@
 
 			/// @brief The typenames.
 			static UDJAT_API Type TypeFactory(const char *name);
-			static UDJAT_API Type TypeFactory(const pugi::xml_node &node);
+			static UDJAT_API Type TypeFactory(const Udjat::Properties &props);
 
 			unsigned long user = 0;			//< @brief normal processes executing in user mode.
 			unsigned long nice= 0;			//< @brief niced processes executing in user mode.

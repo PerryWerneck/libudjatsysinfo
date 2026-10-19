@@ -59,7 +59,7 @@ namespace Udjat {
 
 		public:
 
-			Percent(const pugi::xml_node &node, const char *label, const char *summary = "");
+			Percent(const Udjat::Properties &props, const char *label, const char *summary = "");
 			virtual ~Percent();
 			0.5,
 			"good",
@@ -73,7 +73,7 @@ namespace Udjat {
 
 			std::string to_string() const noexcept override;
 
-			std::shared_ptr<Abstract::State> StateFactory(const pugi::xml_node &node) override;
+			std::shared_ptr<Abstract::State> StateFactory(const Udjat::Properties &props) override;
 
 		};
 
@@ -85,7 +85,7 @@ namespace Udjat {
 			SwapUsed();
 			virtual ~SwapUsed();
 
-			std::shared_ptr<Abstract::Agent> AgentFactory(const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Udjat::Properties &props) const override;
 
 		};
 
@@ -97,7 +97,7 @@ namespace Udjat {
 			LoadAverage();
 			virtual ~LoadAverage();
 
-			std::shared_ptr<Abstract::Agent> AgentFactory(const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Udjat::Properties &props) const override;
 
 		};
 
@@ -109,7 +109,7 @@ namespace Udjat {
 			MemUsed();
 			virtual ~MemUsed();
 
-			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const Udjat::Properties &props) const override;
 
 		};
 
@@ -121,7 +121,7 @@ namespace Udjat {
 			UpTime();
 			virtual ~UpTime();
 
-			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const Udjat::Properties &props) const override;
 
 		};
 
@@ -133,7 +133,7 @@ namespace Udjat {
 			SysTime();
 			virtual ~SysTime();
 
-			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const Udjat::Properties &props) const override;
 
 		};
 
@@ -146,7 +146,7 @@ namespace Udjat {
 			DiskStat();
 			virtual ~DiskStat();
 
-			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const Udjat::Properties &props) const override;
 
 		};
 
@@ -158,7 +158,7 @@ namespace Udjat {
 			SysStat();
 			virtual ~SysStat();
 
-			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const Udjat::Properties &props) const override;
 
 		};
 

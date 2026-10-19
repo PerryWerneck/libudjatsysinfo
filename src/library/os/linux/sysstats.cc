@@ -25,6 +25,9 @@
  #include <iomanip>
  #include <cstring>
  #include <udjat/tools/system/stat.h>
+ #include <udjat/tools/intl.h>
+ #include <udjat/tools/properties.h>
+ #include <udjat/tools/string.h>
  #include <ostream>
 
  using namespace std;
@@ -45,49 +48,49 @@
 
  static const Udjat::System::Stat::TypeInfo typeinfo[] = {
 	{
-		"Normal processes",
-		"CPU used by normal processes executing in user mode"
+		N_("Normal processes"),
+		N_("CPU used by normal processes executing in user mode")
 	},
 	{
-		"Niced processes",
-		"Ticks used by niced processes executing in user mode"
+		N_("Niced processes"),
+		N_("Ticks used by niced processes executing in user mode")
 	},
 	{
-		"Kernel mode",
-		"Ticks used by processes executing in kernel mode"
+		N_("Kernel mode"),
+		N_("Ticks used by processes executing in kernel mode")
 	},
 	{
-		"IDLE",
-		"twiddling thumbs"
+		N_("IDLE"),
+		N_("twiddling thumbs")
 	},
 	{
-		"Waiting for I/O",
-		"Ticks waiting for I/O to complete"
+		N_("Waiting for I/O"),
+		N_("Ticks waiting for I/O to complete")
 	},
 	{
-		"Interrupts",
-		"Ticks spent servicing interrupts"
+		N_("Interrupts"),
+		N_("Ticks spent servicing interrupts")
 	},
 	{
-		"Soft IRQS",
-		"Ticks spent servicing softirqs"
+		N_("Soft IRQS"),
+		N_("Ticks spent servicing softirqs")
 	},
 	{
-		"Involuntary wait",
-		"Ticks spent executing other virtual hosts (in virtual environments like Xen)" // Is this description ok?
+		N_("Involuntary wait"),
+		N_("Ticks spent executing other virtual hosts (in virtual environments like Xen)") // Is this description ok?
 	},
 	{
-		"Running a normal guest",
+		N_("Running a normal guest"),
 		""
 	},
 	{
-		"Running a niced guest",
+		N_("Running a niced guest"),
 		""
 	},
 
 	{
-		"Total use of CPU",
-		"Total CPU used by all processes and interrupts",
+		N_("Total use of CPU"),
+		N_("Total CPU used by all processes and interrupts"),
 	},
 	{
 		nullptr,
@@ -130,8 +133,8 @@
 		throw runtime_error(string{"Unexpected property name '"} + name + "'");
 	}
 
-	UDJAT_API System::Stat::Type System::Stat::TypeFactory(const pugi::xml_node &node) {
-		return TypeFactory(node.attribute("field-name").as_string("total"));
+	UDJAT_API System::Stat::Type System::Stat::TypeFactory(const Properties &props) {
+		return TypeFactory(props.get("field-name","total").c_str());
 	}
 
 	unsigned long System::Stat::operator[](const char *name) const {
@@ -209,11 +212,19 @@
 	}
 
 	const char * System::Stat::getLabel(const Type ix) noexcept {
+#ifdef GETTEXT_PACKAGE
+		return dgettext(GETTEXT_PACKAGE,typeinfo[ix].label);
+#else
 		return typeinfo[ix].label;
+#endif				
 	}
 
 	const char * System::Stat::getSummary(const Type ix) noexcept {
+#ifdef GETTEXT_PACKAGE
+		return dgettext(GETTEXT_PACKAGE,typeinfo[ix].summary);
+#else
 		return typeinfo[ix].summary;
+#endif				
 	}
 
  }

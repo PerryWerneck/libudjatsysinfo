@@ -52,45 +52,13 @@
 
 	String Storage::Stat::Device::NameFactory(const Properties &props, bool required) {
 
-		String devname{node,"name"};
+		auto devname = props["name"];
 		if(!devname.empty()) {
 			return NameFactory(devname.c_str(),required);
 		}
 
-		return NameFactory(String{node,"device-name"}.c_str(),required);
+		return NameFactory(props["device-name"].c_str(),required);
 	}
-
-/*
-
-	String Storage::DeviceNameFactory(const char * devname, bool required) {
-
-		if(!(devname && *devname)) {
-			if(required) {
-				throw runtime_error("A device name is required");
-			}
-			return "";
-		}
-
-		String result{devname};
-
-		if(result.has_prefix("/dev/")) {
-			return result;
-		}
-
-		return String{"/dev/",devname};
-
-	}
-
-	String Storage::DeviceNameFactory(const Properties &props, bool required) {
-
-		String devname{node,"device-name"};
-		if(!devname.empty()) {
-			return DeviceNameFactory(devname.c_str(),required);
-		}
-
-		return DeviceNameFactory(String{node,"name"}.c_str(),required);
-	}
-*/
 
  }
 
