@@ -22,7 +22,7 @@
  #include <udjat/action.h>
  #include <udjat/tools/actions/storage.h>
  #include <udjat/tools/response.h>
- #include <udjat/tools/report.h>
+ #include <udjat/tools/variant.h>
  #include <udjat/tools/storage/stat.h>
  #include <private/storagecontroller.h>
  #include <udjat/tools/string.h>
@@ -30,6 +30,7 @@
  #include <udjat/tools/timer.h>
  #include <udjat/tools/value.h>
  #include <udjat/tools/storage/unit.h>
+ #include <udjat/tools/variant.h>
  #include <memory>
  
  using namespace std;
@@ -37,20 +38,17 @@
  namespace Udjat {
 
 	std::shared_ptr<Udjat::Action> Storage::Action::Factory::ActionFactory(const Properties &props) const {
-		return make_shared<Storage::Action>(node);	
+		return make_shared<Storage::Action>(props);	
 	}
 
-	Storage::Action::Action(const Properties &props) : Udjat::Action{node}, unit{Storage::UnitFactory(node)} {
-		
+	Storage::Action::Action(const Properties &props) : Udjat::Action{props}, unit{Storage::UnitFactory(props)} {
 		auto &controller = Storage::Controller::getInstance();
 		for(const auto &unit : Storage::Stat::get()) {
 			if(unit.physical()) {
 				controller.push_back(unit);
 			}
 		}
-
-		controller.setup(node);
-
+		controller.setup(props);
 	}
 
 	Storage::Action::~Action() {
@@ -64,29 +62,37 @@
 
 		return exec(response,except,[&]() -> int {
 
-			auto cntrl = Storage::Controller::getInstance();
-			auto it = cntrl.begin();
-			if(it == cntrl.end()) {
-				throw system_error(ENODATA,system_category());
+			for(const auto &row : Storage::Controller::getInstance()) {
+				auto &value = response.append();
+				value["device"] = row.c_str();
+				value["read"] = std::to_string(row.read,this->unit);
+				value["write"] = std::to_string(row.write,this->unit);
+				getValues(row,value);
 			}
+
+			// auto cntrl = Storage::Controller::getInstance();
+			// auto it = cntrl.begin();
+			// if(it == cntrl.end()) {
+			// 	throw system_error(ENODATA,system_category());
+			// }
 
 			// Get first line.
-			Value value;
-			value["device"] = it->c_str();
-			value["read"] = std::to_string(it->read,this->unit);
-			value["write"] = std::to_string(it->write,this->unit);
-			getValues(*it,value);
+			// Value value;
+			// value["device"] = it->c_str();
+			// value["read"] = std::to_string(it->read,this->unit);
+			// value["write"] = std::to_string(it->write,this->unit);
+			// getValues(*it,value);
 
-			auto &report = response.ReportFactory(value);
+			// auto &report = response.ReportFactory(value);
 
-			while(++it != cntrl.end()) {
-				value.clear();
-				value["device"] = it->c_str();
-				value["read"] = std::to_string(it->read,this->unit);
-				value["write"] = std::to_string(it->write,this->unit);
-				getValues(*it,value);
-				report << value;
-			}
+			// while(++it != cntrl.end()) {
+			// 	value.clear();
+			// 	value["device"] = it->c_str();
+			// 	value["read"] = std::to_string(it->read,this->unit);
+			// 	value["write"] = std::to_string(it->write,this->unit);
+			// 	getValues(*it,value);
+			// 	report << value;
+			// }
 		
 			return 0;
 

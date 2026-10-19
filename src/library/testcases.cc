@@ -20,7 +20,7 @@
  #include <config.h>
  #include <udjat/defs.h>
  #include <udjat/tools/logger.h>
- #include <udjat/tools/unit-test.h>
+ #include <udjat/tools/testsuite.h>
  #include <string>
  #include <udjat/agent/percentage.h>
  #include <udjat/tools/storage/stat.h>
@@ -30,24 +30,27 @@
 
  #ifdef DEBUG 
 
- UDJAT_API void enum_udjat_unit_tests(Udjat::UnitTests &tests) noexcept {
+ UDJAT_API void udjat_register_tests(Udjat::TestSuite &suite) noexcept {
 
-	tests.append(
-		UnitTests::Worker{
+	using Case = TestSuite::Case;
+
+	suite.add(
+		PACKAGE_DESCRIPTION,
+		Case {
 			"Test percent agent",
-			[]() {				
+			[](std::ostream &stream) {				
 				Agent<Percentage> percent{"test-percent",0.1};
-				debug("Expanding----> '",String{"The percent value is ${value}"}.expand(percent).c_str(),"'");
-				return true;
+				stream << String{"The percent value is ${value}"}.expand(percent).c_str() << "'" << endl;
+				return "Percent agent ok";
 			}
 		},
-		UnitTests::Worker{
+		Case {
 			"Test storage enumerator",
-			[]() {
+			[](std::ostream &stream) {
 				for(const auto &disk : Storage::Stat::get()) {
-					debug("----> Disk '",disk.name(),"' is ",(disk.physical() ? "Physical" : "Not physical"));
+					stream << disk.name() << "' is " << (disk.physical() ? "Physical" : "Not physical") << endl;
 				}
-				return true;
+				return "Storage enumerator ok";
 			}
 		}
 	);

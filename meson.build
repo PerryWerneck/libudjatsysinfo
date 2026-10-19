@@ -133,7 +133,7 @@ lib_src = [
   'src/library/storage/stat.cc',
   'src/library/storage/controller.cc',
   'src/library/storage/data.cc',
-  'src/library/testprogram.cc',
+  'src/library/testcases.cc',
 ]
 
 module_src = [
