@@ -20,8 +20,8 @@
  /// @brief Declares partition monitor.
  
  #include <udjat/defs.h>
- #include <udjat/agent/abstract.h>
- #include <udjat/tools/xml.h>
+ #include <udjat/agent.h>
+ #include <udjat/tools/properties.h>
  
  namespace Udjat {
 
@@ -41,16 +41,16 @@
 				Factory(const char *name = "LogicalDisk") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
-				std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
+				std::shared_ptr<Abstract::Agent> AgentFactory(const Properties &props) const override;
 			};
 
 			static String NameFactory(const char * devname, bool required = true);
 			static String DeviceNameFactory(const char * devname, bool required = true);
-			static String DeviceNameFactory(const XML::Node &node, bool required = true);
+			static String DeviceNameFactory(const Properties &props, bool required = true);
 
 			Logical(const char *name);
-			Logical(const pugi::xml_node &node);
-			Logical(const char *name, const pugi::xml_node &node);
+			Logical(const const Properties &props);
+			Logical(const char *name, const Properties &props);
 			virtual ~Logical();
 
 			/// @brief Get device status, update state.

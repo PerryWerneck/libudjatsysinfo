@@ -20,7 +20,7 @@
  #pragma once
 
  #include <udjat/defs.h>
- #include <pugixml.hpp>
+ #include <udjat/tools/properties.h>
 
  namespace Udjat {
 

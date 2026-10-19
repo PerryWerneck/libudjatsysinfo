@@ -24,7 +24,7 @@
  #include <sstream>
  #include <iomanip>
  #include <udjat/tools/storage/unit.h>
- #include <udjat/tools/xml.h>
+ #include <udjat/tools/properties.h>
  #include <udjat/tools/string.h>
 
  using namespace std;
@@ -42,7 +42,7 @@
 
  namespace Udjat {
 
-	Storage::Unit Storage::UnitFactory(const XML::Node &node) {
+	Storage::Unit Storage::UnitFactory(const Properties &props) {
 
 		String attr{node,"size-unit","KB"};
 		

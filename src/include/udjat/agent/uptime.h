@@ -22,9 +22,9 @@
  #include <udjat/defs.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/tools/timestamp.h>
- #include <udjat/agent/abstract.h>
  #include <udjat/agent.h>
- #include <udjat/tools/xml.h>
+ #include <udjat/agent.h>
+ #include <udjat/tools/properties.h>
  
  namespace Udjat {
 
@@ -38,11 +38,11 @@
 				Factory(const char *name = "SystemUpTime") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
-				std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
+				std::shared_ptr<Abstract::Agent> AgentFactory(const Properties &props) const override;
 			};
 
 			UpTime(const char *name = "SystemUpTime");
-			UpTime(const XML::Node &node);
+			UpTime(const Properties &props);
 			virtual ~UpTime();
 
 			static time_t get(); 

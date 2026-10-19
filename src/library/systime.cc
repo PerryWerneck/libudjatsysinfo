@@ -26,8 +26,8 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::Time::Factory::AgentFactory(const XML::Node &node) const {
-		return std::make_shared<Time>(node);
+	std::shared_ptr<Abstract::Agent> System::Time::Factory::AgentFactory(const Properties &props) const {
+		return std::make_shared<Time>(props);
 	}
 
 	System::Time::Time(const char *nm) : Abstract::Agent{nm} {
@@ -41,7 +41,7 @@
 		return !(str && *str);
 	}
 
-	System::Time::Time(const XML::Node &node) : Abstract::Agent{node} {
+	System::Time::Time(const Properties &props) : Abstract::Agent{props} {
 		
 #ifdef DEBUG
 		Logger::String{"Building system time agent"}.info(name());
@@ -59,7 +59,7 @@
 	}
 
 	Udjat::Value & System::Time::get(Udjat::Value &value) const {
-		value.set(TimeStamp());
+		value.assign(TimeStamp());
 		return value;
 	}
 

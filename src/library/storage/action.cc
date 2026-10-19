@@ -36,11 +36,11 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Udjat::Action> Storage::Action::Factory::ActionFactory(const XML::Node &node) const {
+	std::shared_ptr<Udjat::Action> Storage::Action::Factory::ActionFactory(const Properties &props) const {
 		return make_shared<Storage::Action>(node);	
 	}
 
-	Storage::Action::Action(const XML::Node &node) : Udjat::Action{node}, unit{Storage::UnitFactory(node)} {
+	Storage::Action::Action(const Properties &props) : Udjat::Action{node}, unit{Storage::UnitFactory(node)} {
 		
 		auto &controller = Storage::Controller::getInstance();
 		for(const auto &unit : Storage::Stat::get()) {

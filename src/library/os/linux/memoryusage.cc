@@ -54,7 +54,7 @@
  #include <udjat/agent/memusage.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/agent.h>
- #include <udjat/tools/xml.h>
+ #include <udjat/tools/properties.h>
  #include <udjat/tools/intl.h>
  #include <udjat/tools/system.h>
 
@@ -65,7 +65,7 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::MemoryUsage::Factory::AgentFactory(const XML::Node &node) const {
+	std::shared_ptr<Abstract::Agent> System::MemoryUsage::Factory::AgentFactory(const Properties &props) const {
 		debug("--- Building Memory Usage agent");
 		return std::make_shared<MemoryUsage>(node);
 	}
@@ -73,7 +73,7 @@
 	System::MemoryUsage::MemoryUsage(const char *name) : Agent<Percentage>{name} {
 	}
 
-	System::MemoryUsage::MemoryUsage(const XML::Node &node) : Agent<Percentage>{node} {
+	System::MemoryUsage::MemoryUsage(const Properties &props) : Agent<Percentage>{node} {
 	}
 
 	System::MemoryUsage::~MemoryUsage() {

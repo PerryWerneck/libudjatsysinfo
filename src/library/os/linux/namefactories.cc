@@ -50,7 +50,7 @@
 
 	}
 
-	String Storage::Stat::Device::NameFactory(const XML::Node &node, bool required) {
+	String Storage::Stat::Device::NameFactory(const Properties &props, bool required) {
 
 		String devname{node,"name"};
 		if(!devname.empty()) {
@@ -81,7 +81,7 @@
 
 	}
 
-	String Storage::DeviceNameFactory(const XML::Node &node, bool required) {
+	String Storage::DeviceNameFactory(const Properties &props, bool required) {
 
 		String devname{node,"device-name"};
 		if(!devname.empty()) {

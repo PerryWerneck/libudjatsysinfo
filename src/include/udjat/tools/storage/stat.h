@@ -21,7 +21,7 @@
 
  #include <udjat/defs.h>
  #include <udjat/tools/storage/stat.h>
- #include <pugixml.hpp>
+ #include <udjat/tools/properties.h>
  #include <string>
  #include <list>
  #include <udjat/tools/string.h>
@@ -38,7 +38,7 @@
 			public:
 			
 				static String NameFactory(const char * devname, bool required = true);
-				static String NameFactory(const XML::Node &node, bool required = true);
+				static String NameFactory(const Properties &props, bool required = true);
 
 				Device() : String{} {
 				}
@@ -46,7 +46,7 @@
 				Device(const char *name, bool required = true) : String{NameFactory(name,required)} {
 				}
 
-				Device(const XML::Node &node, bool required = true) : String{NameFactory(node,required)} {
+				Device(const Properties &props, bool required = true) : String{NameFactory(node,required)} {
 				}
 
 				inline const char *name() const {

@@ -26,7 +26,7 @@
  #include <fstream>
  #include <iomanip>
  #include <udjat/tools/system/stat.h>
- #include <udjat/agent/abstract.h>
+ #include <udjat/agent.h>
  #include <udjat/moduleinfo.h>
 
  #include "private.h"

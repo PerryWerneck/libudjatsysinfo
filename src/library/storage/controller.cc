@@ -19,7 +19,7 @@
 
  #include <config.h>
  #include <udjat/defs.h>
- #include <udjat/tools/xml.h>
+ #include <udjat/tools/properties.h>
  #include <udjat/tools/container.h>
  #include <udjat/tools/storage/stat.h>
 
@@ -53,7 +53,7 @@
 
 	}
 
-	void Storage::Controller::setup(const XML::Node &node) {
+	void Storage::Controller::setup(const Properties &props) {
 		
 		debug("Setting up controller from <",node.name(),"> node (timer-interval=",node.attribute("timer-interval").as_uint(0),")");
 

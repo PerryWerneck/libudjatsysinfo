@@ -21,7 +21,6 @@
 
  #include <udjat/defs.h>
  #include <udjat/tools/storage/stat.h>
- #include <pugixml.hpp>
  #include <string>
  #include <vector>
  #include <udjat/tools/string.h>
@@ -83,7 +82,7 @@
 			static Controller & getInstance();
 
 			/// @brief Setup from XML node.
-			void setup(const XML::Node &node);
+			void setup(const Properties &props);
 
 			/// @brief Insert disk into controller.
 			/// @param stat The disk to insert.

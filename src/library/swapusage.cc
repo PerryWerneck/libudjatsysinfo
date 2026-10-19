@@ -21,11 +21,11 @@
  #include <config.h>
  #include <udjat/defs.h>
 
- #include <udjat/agent/abstract.h>
+ #include <udjat/agent.h>
  #include <udjat/agent/swapusage.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/agent.h>
- #include <udjat/tools/xml.h>
+ #include <udjat/tools/properties.h>
  #include <udjat/tools/intl.h>
 
  #include <memory>
@@ -38,15 +38,15 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::SwapUsage::Factory::AgentFactory(const XML::Node &node) const {
+	std::shared_ptr<Abstract::Agent> System::SwapUsage::Factory::AgentFactory(const Properties &props) const {
 		debug("--- Building Swap Usage agent");
-		return std::make_shared<SwapUsage>(node);
+		return std::make_shared<SwapUsage>(props);
 	}
 
 	System::SwapUsage::SwapUsage(const char *name) : Agent<Percentage>{name} {
 	}
 
-	System::SwapUsage::SwapUsage(const XML::Node &node) : Agent<Percentage>{node} {
+	System::SwapUsage::SwapUsage(const Properties &props) : Agent<Percentage>{props} {
 	}
 
 	System::SwapUsage::~SwapUsage() {

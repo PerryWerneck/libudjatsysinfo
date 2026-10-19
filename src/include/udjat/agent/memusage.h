@@ -22,8 +22,8 @@
  #include <udjat/defs.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/agent.h>
- #include <udjat/agent/abstract.h>
- #include <udjat/tools/xml.h>
+ #include <udjat/agent.h>
+ #include <udjat/tools/properties.h>
  
  namespace Udjat {
 
@@ -37,11 +37,11 @@
 				Factory(const char *name = "MemoryUsage") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
-				std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
+				std::shared_ptr<Abstract::Agent> AgentFactory(const Properties &props) const override;
 			};
 
 			MemoryUsage(const char *name = "MemoryUsage");
-			MemoryUsage(const XML::Node &node);
+			MemoryUsage(const Properties &props);
 			virtual ~MemoryUsage();
 
 			void start() override;

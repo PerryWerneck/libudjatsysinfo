@@ -23,8 +23,8 @@
  #include <udjat/agent/percentage.h>
  #include <udjat/tools/timestamp.h>
  #include <udjat/agent.h>
- #include <udjat/agent/abstract.h>
- #include <udjat/tools/xml.h>
+ #include <udjat/agent.h>
+ #include <udjat/tools/properties.h>
  #include <cstdlib>
  
  namespace Udjat {
@@ -45,11 +45,11 @@
 				Factory(const char *name = "LoadAverage") : Udjat::Abstract::Agent::Factory{name} {
 				}
 
-				std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
+				std::shared_ptr<Abstract::Agent> AgentFactory(const Properties &props) const override;
 			};
 
 			LoadAverage(const char *name = "LoadAverage");
-			LoadAverage(const XML::Node &node);
+			LoadAverage(const Properties &props);
 			virtual ~LoadAverage();
 
 			void start() override;

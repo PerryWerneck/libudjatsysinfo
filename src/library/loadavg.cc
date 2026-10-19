@@ -32,13 +32,13 @@
  #include <config.h>
  #include <udjat/defs.h>
 
- #include <udjat/agent/abstract.h>
+ #include <udjat/agent.h>
  #include <udjat/agent/percentage.h>
  #include <udjat/agent/loadavg.h>
  #include <udjat/tools/file/text.h>
  #include <udjat/tools/intl.h>
  #include <udjat/tools/logger.h>
- #include <udjat/tools/xml.h>
+ #include <udjat/tools/properties.h>
  #include <sstream>
  #include <iomanip>
  #include <memory>
@@ -47,17 +47,17 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::LoadAverage::Factory::AgentFactory(const XML::Node &node) const {
+	std::shared_ptr<Abstract::Agent> System::LoadAverage::Factory::AgentFactory(const Properties &props) const {
 		debug("--- Building Load Average agent");
-		return std::make_shared<LoadAverage>(node);
+		return std::make_shared<LoadAverage>(props);
 	}
 
 	System::LoadAverage::LoadAverage(const char *name) : Agent<Percentage>{name} {
 		setup(5);
 	}
 
-	System::LoadAverage::LoadAverage(const XML::Node &node) : Agent<Percentage>{node} {
-		setup(XML::AttributeFactory(node,"minutes").as_uint(5));
+	System::LoadAverage::LoadAverage(const Properties &props) : Agent<Percentage>{props} {
+		setup(props.get("minutes",(unsigned int) 5));
 	}
 
 	System::LoadAverage::~LoadAverage() {
@@ -114,7 +114,7 @@
 					cores++;
 				}
 			}
-			info() << "Number of CPU cores: " << cores << endl;
+			Logger::String{"Number of CPU cores: ",cores,}.info(name());
 		}
 
 		//
@@ -228,7 +228,7 @@
 #ifdef DEBUG
 		{
 			string str;
-			getProperty("value",str);
+			get_property("value",str);
 			debug(name()," --------------------------> ",str.c_str());
 		}
 #endif

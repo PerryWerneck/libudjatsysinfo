@@ -22,7 +22,7 @@
  #include <config.h>
  #include <udjat/defs.h>
  #include <string>
- #include <udjat/tools/xml.h>
+ #include <udjat/tools/properties.h>
 
  namespace Udjat {
 
@@ -37,7 +37,7 @@
 			Terabyte
 		};
 
-		Unit UDJAT_API UnitFactory(const XML::Node &node);
+		Unit UDJAT_API UnitFactory(const Properties &props);
 
 	} // Storage
  }

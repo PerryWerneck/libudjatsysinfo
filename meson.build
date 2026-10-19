@@ -20,8 +20,8 @@
 project(
 	'udjatsysinfo', 
 	['cpp'],
-	version: '2.1.0',
-	default_options : ['c_std=c11', 'cpp_std=c++17'],
+	version: '3.0.0',
+	default_options : [ 'c_std=c11', 'cpp_std=c++17', 'buildtype=release', 'default_library=shared' ],
 	license: 'GPL-3.0-or-later',
 )
 
@@ -48,16 +48,12 @@ subdir('po')
 #
 libudjat = dependency(
   'libudjat',
-  version: '>=2.7.0',
+  version: '>=3.0.0',
   fallback: ['libudjat'],
 ) 
+
 lib_deps = [
   libudjat,
-  dependency(
-    'pugixml',
-    method : 'pkg-config',
-    required: true,
-  ),
 ]
 
 #
@@ -230,10 +226,9 @@ if host_machine.system() == 'windows'
   # https://mesonbuild.com/Reference-manual_functions.html#shared_library
   module = shared_library(
     'sysinfo', 
-    config_src + module_src + resources,
+    config_src + module_src + lib_src + resources,
     name_prefix: 'udjat-module-',
     install: true,
-    link_with: dynamic,
     install_dir: libudjat.get_variable('module_path'),
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps,
@@ -257,12 +252,11 @@ else
   # https://mesonbuild.com/Reference-manual_functions.html#shared_library
   module = shared_library(
     'sysinfo', 
-    config_src + module_src,
+    config_src + module_src + lib_src,
     name_prefix: 'udjat-module-',
     install: true,
     install_tag: 'module',
     cpp_args: [ '-ffat-lto-objects' ],
-    link_with: dynamic,
     install_dir: libudjat.get_variable('module_path'),
     gnu_symbol_visibility: 'hidden',
     dependencies: lib_deps,

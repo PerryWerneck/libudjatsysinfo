@@ -30,8 +30,8 @@
 
  namespace Udjat {
 
-	std::shared_ptr<Abstract::Agent> System::UpTime::Factory::AgentFactory(const XML::Node &node) const {
-		return std::make_shared<UpTime>(node);
+	std::shared_ptr<Abstract::Agent> System::UpTime::Factory::AgentFactory(const Properties &props) const {
+		return std::make_shared<UpTime>(props);
 	}
 
 	System::UpTime::UpTime(const char *nm) : Abstract::Agent{nm} {
@@ -45,7 +45,7 @@
 		return !(str && *str);
 	}
 
-	System::UpTime::UpTime(const XML::Node &node) : Abstract::Agent{node} {
+	System::UpTime::UpTime(const Properties &props) : Abstract::Agent{props} {
 		
 #ifdef DEBUG
 		Logger::String{"Building system up time agent"}.info(name());
