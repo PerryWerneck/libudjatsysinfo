@@ -209,7 +209,7 @@ if host_machine.system() == 'windows'
     )
   )
 
-  dynamic = shared_library(
+  libudjatsysinfo = library(
     meson.project_name(), 
     config_src + lib_src + resources,
     install: true,
@@ -237,7 +237,7 @@ if host_machine.system() == 'windows'
 
 else
 
-  dynamic = shared_library(
+  libudjatsysinfo = shared_library(
     meson.project_name(), 
     config_src + lib_src,
     install: true,
@@ -265,29 +265,16 @@ else
 
 endif
 
-static_library = declare_dependency(
-  link_with: static_library(
-    meson.project_name(), 
-    config_src + lib_src,
-    cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-    install: true,
-    dependencies: lib_deps,
-    include_directories: includes_dir
-  ),
-  include_directories: includes_dir,
-  dependencies: lib_deps,
-)
-
-dynamic_library = declare_dependency(
-  link_with: dynamic,
-  include_directories: includes_dir,
-)
+libudjatsysinfo_dep = declare_dependency(
+  link_with : libudjatsysinfo,
+  include_directories : includes_dir
+) 
 
 executable(
   meson.project_name(),
   config_src + test_src,
   install: false,
-  link_with: [ dynamic, module ],
+  link_with: [ module ],
   dependencies: [ libudjat ],
   include_directories: includes_dir
 )
